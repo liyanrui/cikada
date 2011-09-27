@@ -13,3 +13,21 @@ $ mkdir build ; cd build
 $ ../configure
 $ make
 $ sudo make install
+
+Usage
+====
+
+The simplest way:
+
+$ cikada your-pdf-file
+
+If you want to use fullscreen, you can
+
+$ cikada -f your-pdf-file
+
+If you do not want to save some memory, you can
+
+$ cikada -s 9999 your-pdf-file
+
+It can load all the pages once unless the page number of your pdf file is bigger than 9999.
+

@@ -1,1 +1,15 @@
-Cikada is a pdf presentation tool. It is licensed in GPLv3.
+Introduction
+====
+
+Cikada is a pdf presentation tool. 
+
+It is licensed in GPLv3.
+
+Installation
+====
+
+$ autoreconf -i
+$ mkdir build ; cd build
+$ ../configure
+$ make
+$ sudo make install

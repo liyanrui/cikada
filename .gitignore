@@ -1,0 +1,12 @@
+design/
+data/
+autom4te.cache/
+config*
+!configure.ac
+m4/
+Makefile
+Makefile.in
+stamp*
+build-aux
+aclocal.m4
+ABOUT-NLS

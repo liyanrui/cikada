@@ -4,6 +4,7 @@ struct _CkdPageManager {
         PopplerDocument *pdf;
         GQueue *pages;
         GQueue *cache;
+        GList  *thumbs;
         gint number_of_pages;
         gint head_page_number;
         gint tail_page_number;
@@ -133,7 +134,7 @@ ckd_page_manager_set_capacity (CkdPageManager *pm, guint capacity)
         h = delta_len_abs / 2;
         t = delta_len_abs - h;
 
-        if (delta_len > 0) { /* 所设滑块长度大于当前滑块长度 */
+        if (delta_len > 0) { /* 所设缓冲页面数量大于当前缓冲页面数量 */
                 if (pm->head_page_number - h <= 0) {
                         h = 0;
                         t = delta_len;
@@ -152,7 +153,7 @@ ckd_page_manager_set_capacity (CkdPageManager *pm, guint capacity)
                 }
                 pm->head_page_number -= h;
                 pm->tail_page_number += t;
-        } else { /* 所设滑块长度小于当前滑块长度 */
+        } else { /* 所设缓冲页面数量小于当前缓冲页面数量 */
                 d = pm->current_page_number - pm->head_page_number;
                 if (d < h) {
                         h = d;
@@ -167,13 +168,13 @@ ckd_page_manager_set_capacity (CkdPageManager *pm, guint capacity)
                 
                 for (i = h; i > 0; i--) {
                         page = g_queue_pop_head (pm->pages);
-                        /* Cache 内的页面不释放 */
+                        /* 被缓冲的页面不释放 */
                         if (g_queue_index (pm->cache, page) < 0)
                                 clutter_actor_destroy (page);
                 }
                 for (i = t; i > 0; i--) {
                         page = g_queue_pop_tail (pm->pages);
-                        /* Cache 内的页面不释放 */
+                        /* 被缓冲的页面不释放 */
                         if (g_queue_index (pm->cache, page) < 0)
                                 clutter_actor_destroy (page);
                 }

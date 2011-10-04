@@ -1,32 +1,63 @@
 #include "ckd-page-manager.h"
 
-struct _CkdPageManager {
-        PopplerDocument *pdf;
-        GQueue *pages;
+/* 页面队列默认容量 */
+#define CKD_PAGE_MANAGER_CAPACITY 3
+
+G_DEFINE_TYPE (CkdPageManager, ckd_page_manager, G_TYPE_OBJECT);
+
+#define CKD_PAGE_MANAGER_GET_PRIVATE(obj) (\
+        G_TYPE_INSTANCE_GET_PRIVATE ((obj), CKD_TYPE_PAGE_MANAGER, CkdPageManagerPriv))
+
+typedef struct _CkdPageManagerPriv CkdPageManagerPriv;
+struct  _CkdPageManagerPriv {
+        PopplerDocument *doc;
+        GString *doc_uri;
+        gint capacity;
+        GQueue  *pages;
         GQueue *cache;
         GList  *thumbs;
         gint number_of_pages;
         gint head_page_number;
-        gint tail_page_number;
         gint current_page_number;
         gfloat page_width;
         gfloat page_height;
 };
 
-static PopplerDocument * _ckd_page_manager_open_pdf (const gchar * path);
+enum {
+        PROP_CPM_0,
+        PROP_CPM_DOC_URI,
+        PROP_CPM_CAPACITY,
+        PROP_CPM_DOC,
+        PROP_CPM_THUMBS,
+        PROP_CPM_NUMBER_OF_PAGES,
+        PROP_CPM_HEAD_PAGE_NUMBER,
+        PROP_CPM_CURRENT_PAGE_NUMBER,
+        PROP_CPM_PAGE_WIDTH,
+        PROP_CPM_PAGE_HEIGHT,
+        N_PROPS
+};
+
+static gchar *           _ckd_page_manager_get_uri_from_path (const gchar * path);
+static void              _ckd_page_manager_set_capacity (CkdPageManager *pm, guint capacity);
 static ClutterActor *    _ckd_page_manager_create_page (CkdPageManager *pm, gint i);
 static void              _ckd_page_destroy_in_pages (gpointer data, gpointer user_data);
 static void              _ckd_page_is_in_cache (gpointer data, gpointer user_data);
 static void              _ckd_page_destroy_in_cache (gpointer data, gpointer user_data);
 static void              _ckd_page_manager_refresh_page_size (gpointer data, gpointer user_data);
 static void              _ckd_page_manager_goto (CkdPageManager *pm, gint i);
-static void              _ckd_page_hide (gpointer data, gpointer user_data);
-static void              _ckd_page_show (gpointer data, gpointer user_data);
 
-static PopplerDocument *
-_ckd_page_manager_open_pdf (const gchar * path)
+/* GObject 属性设置函数 */
+static void ckd_page_manager_set_property (GObject *obj,
+                                           guint property_id,
+                                           const GValue *value,
+                                           GParamSpec *pspec);
+static void ckd_page_manager_get_property (GObject *obj,
+                                           guint property_id,
+                                           GValue *value,
+                                           GParamSpec *pspec);
+static gchar *
+_ckd_page_manager_get_uri_from_path (const gchar * path)
 {
-        PopplerDocument *pdf;
         gchar *pdf_file_uri = NULL;
         gchar *rel_path = NULL;
         gchar *abs_path = NULL;
@@ -42,14 +73,210 @@ _ckd_page_manager_open_pdf (const gchar * path)
                 g_free (rel_path);
         }
 
-        pdf = poppler_document_new_from_file (pdf_file_uri, NULL, NULL);
-        g_free (pdf_file_uri);
-
-        g_assert (pdf != NULL);
-
-        return pdf;
+        return pdf_file_uri;
 }
 
+static void
+_ckd_page_manager_set_capacity (CkdPageManager *self, guint capacity)
+{
+        CkdPageManagerPriv *priv = CKD_PAGE_MANAGER_GET_PRIVATE (self);
+        
+        PopplerPage *pdf_page;
+        ClutterActor *page;
+        gint i, d, tail_page_number, left_rest, right_rest;
+
+        if (capacity > priv->number_of_pages)
+                capacity = priv->number_of_pages;
+
+        d = capacity - priv->capacity;
+        if (d == 0)
+                return;
+                
+        tail_page_number = priv->head_page_number + priv->capacity -1;
+
+        if (d > 0) {
+                left_rest =  (priv->head_page_number < d / 2) ? priv->head_page_number : d / 2;
+                right_rest = d - left_rest;
+                
+                for (i = 1; i <= left_rest; i++) {
+                        page = _ckd_page_manager_create_page (self, priv->head_page_number - i);
+                        g_queue_push_head (priv->pages, page);                                
+                }
+                
+                for (i = 1; i <= right_rest; i++) {
+                        page = _ckd_page_manager_create_page (self, tail_page_number + i);
+                        g_queue_push_tail (priv->pages, page);
+                }
+                
+        } else {
+                left_rest = (priv->current_page_number + d / 2
+                             < priv->head_page_number) ? (priv->head_page_number - priv->current_page_number) : d / 2;
+                right_rest = d - left_rest;
+                
+                for (i = left_reset; i < 0; i++) {
+                        page = g_queue_pop_head (priv->pages);
+                        /* 被缓冲的页面不释放 */
+                        if (g_queue_index (priv->cache, page) < 0)
+                                clutter_actor_destroy (page);
+                }
+                for (i = right_rest; i < 0; i++) {
+                        page = g_queue_pop_tail (priv->pages);
+                        /* 被缓冲的页面不释放 */
+                        if (g_queue_index (priv->cache, page) < 0)
+                                clutter_actor_destroy (page);
+                }
+        }
+        
+        priv->head_page_number -= left_rest;
+        priv->capacity = capacity;
+}
+
+static void
+ckd_page_manager_set_property (GObject *obj,
+                               guint property_id,
+                               const GValue *value,
+                               GParamSpec *pspec)
+{
+        CkdPageManager *self = CKD_PAGE_MANAGER (obj);
+        CkdPageManagerPriv *priv = CKD_PAGE_MANAGER_GET_PRIVATE (self);
+
+        gint i;
+        gchar *uri = NULL;
+        gint capacity = 0;
+        
+        switch (property_id) {
+        case PROP_CPM_DOC_PATH:
+                uri = _ckd_page_manager_get_uri_from_path (g_value_get_string (value));
+                priv->doc_path = g_string_new (uri);
+                g_string_free (uri, TRUE);
+
+                priv->doc = poppler_document_new_from_file (priv->uri, NULL, NULL);
+                g_assert (priv->doc != NULL);
+
+                /* 确保页面队列长度不会大于 PDF 文档页面数量 */
+                priv->number_of_pages = poppler_document_get_n_pages (priv->doc);
+                if (priv->capacity > priv->number_of_pages)
+                        priv->capacity = priv->number_of_pages;
+                
+                /* 页面队列初始化 */
+                for (i = 0; i < priv->capacity; i++)
+                        g_queue_push_tail (self->pages, _ckd_page_manager_create_page (pm, i));
+                break;
+        case PROP_CPM_CAPACITY:
+                _ckd_page_manager_set_capacity (self,g_value_get_int (value));
+                break;
+        case PROP_CPM_PAGE_WIDTH:
+                priv->page_width = g_value_get_float (value);
+                break;
+        case PROP_CPM_PAGE_HEIGHT:
+                priv->page_height = g_value_get_float (value);
+                break;
+        default:
+                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+                break;
+        }
+}
+
+static void
+ckd_page_manager_get_property (GObject *obj,
+                               guint property_id,
+                               GValue *value,
+                               GParamSpec *pspec)
+{
+        CkdPageManager *self = CKD_PAGE_MANAGER (obj);
+        CkdPageManagerPriv *priv = CKD_PAGE_MANAGER_GET_PRIVATE (self);
+        
+        switch (property_id) {
+        case PROP_CPM_DOC:
+                g_value_set_pointer (value, priv->doc);
+                break;
+        case PROP_CPM_PAGE_WIDTH:
+                g_value_set_float (value, priv->page_width);
+                break;
+        case PROP_CPM_PAGE_HEIGHT:
+                g_value_set_float (value, priv->page_height);
+                break;
+        case PROP_CPM_NUMBER_OF_PAGES:
+                g_value_set_int (value, priv->number_of_pages);
+                break;
+        case PROP_CPM_HEAD_PAGE_NUMBER:
+                g_value_set_int (value, priv->head_page_number);
+                break;
+        case PROP_CPM_CAPACITY:
+                g_value_set_int (value, priv->capacity);
+                break;
+        case PROP_CPM_CURRENT_PAGE_NUMBER:
+                g_value_set_int (value, priv->current_page_number);
+                break;
+        case PROP_CPM_THUMBS:
+                g_value_set_pointer (value, priv->thumbs);
+        default:
+                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+                break;
+        }        
+}
+
+static void
+ckd_page_manager_class_init (CkdPageManagerClass *klass)
+{
+        g_type_class_add_private (klass, sizeof (CkdPageManagerPrivate));
+
+        GObjectClass *base_class = G_OBJECT_CLASS (klass);
+        base_class->set_property = ckd_page_manager_set_property;
+        base_class->get_property = ckd_page_manager_get_property;
+        
+        GParamSpec *props[N_PROPS] = {NULL,};
+        props[PROP_CPM_DOC_URI] =
+                g_param_spec_string ("document-uri", "Document URI", "PDF document uri",
+                                     NULL, G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY);
+        props[PROP_CPM_CAPACITY] =
+                g_param_spec_int ("capacity", "Capacity",
+                                  "Page manager capacity",
+                                  0, G_MAXINT, 0, G_PARAM_READWRITE);
+        props[PROP_CPM_DOC] =
+                g_param_spec_pointer ("document", "Document", "PDF document object",
+                                      G_PARAM_READWRITE);
+        props[PROP_CPM_THUMBS] =
+                g_param_spec_pointer ("thumbs", "Thumbs", "Thumbs of PDF document",
+                                      G_PARAM_READWRITE);
+        props[PROP_CPM_NUMBER_OF_PAGES] =
+                g_param_spec_int ("number-of-pages", "Number of pages",
+                                  "Number of pages in PDF document",
+                                  0, G_MAXINT, 0, G_PARAM_READABLE);
+        props[PROP_CPM_HEAD_PAGE_NUMBER] =
+                g_param_spec_int ("head-page-number", "Head page number",
+                                  "Number of head page in queue",
+                                  0, G_MAXINT, 0, G_PARAM_READABLE);
+        props[PROP_CPM_CURRENT_PAGE_NUMBER] =
+                g_param_spec_int ("current-page-number", "Current page number",
+                                  "Number of current page in queue",
+                                  0, G_MAXINT, 0, G_PARAM_READABLE);
+        props[PROP_CPM_PAGE_WIDTH] =
+                g_param_spec_float ("page-width", "Page Width", "Page Width",
+                                    1.0, G_MAXFLOAT, 1.0, G_PARAM_READWRITE);
+        props[PROP_CPM_PAGE_HEIGHT] =
+                g_param_spec_float ("page-height", "Page Height", "Page Height",
+                                    1.0, G_MAXFLOAT, 1.0, G_PARAM_READWRITE);
+        g_object_class_install_properties (base_class, N_PROPS, props);
+}
+ 
+static void
+ckd_page_manager_init (CkdPageManager *self)
+{
+        CkdPageManagerPrivate *priv = CKD_PAGE_MANAGER_GET_PRIVATE (self);
+
+        priv->pages = g_queue_new ();
+        priv->cache = g_queue_new ();
+        priv->capcity = CKD_PAGE_MANAGER_CAPACITY;
+}
+
+
+
+
+
+/******************************************/
+/* 以下是重构之前的代码 */
+/*********************/
 static void
 _ckd_page_manager_refresh_page_size (gpointer data, gpointer user_data)
 {
@@ -81,18 +308,6 @@ _ckd_page_destroy_in_pages (gpointer data, gpointer user_data)
                 clutter_actor_destroy (page);
 }
 
-static void
-_ckd_page_hide (gpointer data, gpointer user_data)
-{
-        clutter_actor_hide (data);
-}
-
-static void
-_ckd_page_show (gpointer data, gpointer user_data)
-{
-        clutter_actor_show (data);
-}
-
 CkdPageManager *
 ckd_page_manager_new_with_page_size (const gchar *pdf_name, gfloat width, gfloat height)
 {
@@ -113,75 +328,7 @@ ckd_page_manager_new_with_page_size (const gchar *pdf_name, gfloat width, gfloat
         return pm;
 }
 
-void
-ckd_page_manager_set_capacity (CkdPageManager *pm, guint capacity)
-{
-        PopplerPage *pdf_page;
-        ClutterActor *page;
 
-        gint delta_len, delta_len_abs, d, h, t, i;
-        gint n = pm->number_of_pages;
-        
-        if (capacity > n)
-                capacity = n;
-
-        delta_len = capacity - (pm->tail_page_number - pm->head_page_number + 1);
-        delta_len_abs = abs (delta_len);
-
-        if (delta_len == 0)
-                return;
-        
-        h = delta_len_abs / 2;
-        t = delta_len_abs - h;
-
-        if (delta_len > 0) { /* 所设缓冲页面数量大于当前缓冲页面数量 */
-                if (pm->head_page_number - h <= 0) {
-                        h = 0;
-                        t = delta_len;
-                }
-                if (pm->tail_page_number + t >= n) {
-                        h = delta_len;
-                        t = 0;
-                }
-                for (i = 1; i <= h; i++) {
-                        page = _ckd_page_manager_create_page (pm, pm->head_page_number - i);
-                        g_queue_push_head (pm->pages, page);
-                }
-                for (i = 1; i <= t; i++) {
-                        page = _ckd_page_manager_create_page (pm, pm->tail_page_number + i);
-                        g_queue_push_tail (pm->pages, page);
-                }
-                pm->head_page_number -= h;
-                pm->tail_page_number += t;
-        } else { /* 所设缓冲页面数量小于当前缓冲页面数量 */
-                d = pm->current_page_number - pm->head_page_number;
-                if (d < h) {
-                        h = d;
-                        t = delta_len_abs - h;
-                }
-
-                d = pm->tail_page_number - pm->current_page_number;
-                if (d < t) {
-                        t = d;
-                        h = delta_len_abs - t;
-                }
-                
-                for (i = h; i > 0; i--) {
-                        page = g_queue_pop_head (pm->pages);
-                        /* 被缓冲的页面不释放 */
-                        if (g_queue_index (pm->cache, page) < 0)
-                                clutter_actor_destroy (page);
-                }
-                for (i = t; i > 0; i--) {
-                        page = g_queue_pop_tail (pm->pages);
-                        /* 被缓冲的页面不释放 */
-                        if (g_queue_index (pm->cache, page) < 0)
-                                clutter_actor_destroy (page);
-                }
-                pm->head_page_number += h;
-                pm->tail_page_number -= t;
-        }
-}
 
 void
 ckd_page_manager_set_page_size (CkdPageManager *pm, gfloat width, gfloat height)
@@ -350,28 +497,4 @@ ckd_page_manager_uncache (CkdPageManager *pm, ClutterActor *page)
         g_queue_remove_all (pm->cache, page);
         if (g_queue_index (pm->pages, page) < 0)
                 clutter_actor_destroy (page);
-}
-
-gint
-ckd_page_manager_get_number_of_pages (CkdPageManager *pm)
-{
-        return pm->number_of_pages;
-}
-
-void
-ckd_page_manager_hide_pages (CkdPageManager *pm)
-{
-        g_queue_foreach (pm->pages, _ckd_page_hide, NULL);
-}
-
-void
-ckd_page_manager_show_pages (CkdPageManager *pm)
-{
-        g_queue_foreach (pm->pages, _ckd_page_show, NULL);
-}
-
-PopplerDocument *
-ckd_page_manager_get_pdf (CkdPageManager *pm)
-{
-        return pm->pdf;
 }

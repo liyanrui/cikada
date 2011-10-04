@@ -240,7 +240,7 @@ ckd_page_class_init (CkdPageClass *klass)
         pspec = g_param_spec_pointer ("pdf-page",
                                       "PDF Page",
                                       "A PDF Page which to be convert to CairoTexture",
-                                      G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT);
+                                      G_PARAM_READWRITE);
         g_object_class_install_property (base_class, PROP_PDF_PAGE, pspec);
 
         pspec = g_param_spec_float ("quality",
@@ -249,7 +249,7 @@ ckd_page_class_init (CkdPageClass *klass)
                                     0.1,
                                     4.0,
                                     DEFAULT_PAGE_QUALITY,
-                                    G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT);
+                                    G_PARAM_READWRITE);
         g_object_class_install_property (base_class, PROP_QUALITY, pspec);
         
         pspec = g_param_spec_float ("border",
@@ -258,7 +258,7 @@ ckd_page_class_init (CkdPageClass *klass)
                                     0.0,
                                     100,
                                     10.0,
-                                    G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT);
+                                    G_PARAM_READWRITE);
         g_object_class_install_property (base_class, PROP_BORDER, pspec);
         
         ClutterActorClass *actor_class = CLUTTER_ACTOR_CLASS (klass);

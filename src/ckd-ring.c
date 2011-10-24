@@ -4,6 +4,7 @@
 G_DEFINE_TYPE (CkdRing, ckd_ring, CLUTTER_TYPE_ACTOR);
 
 #define CKD_RING_DIAMETER 240
+#define CKD_RING_WIDTH 24
 
 #define CKD_RING_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), CKD_TYPE_RING, CkdRingPriv))
 
@@ -32,41 +33,41 @@ ckd_ring_render (ClutterCairoTexture *actor, cairo_t *cr, gpointer user_data)
         gfloat cx = 0.5 * clutter_actor_get_width (priv->ring);
         gfloat cy = 0.5 * clutter_actor_get_height (priv->ring);
         gfloat r_out  = (cx < cy) ? cx : cy;
-        gfloat r_in   = r_out - 20;
+        gfloat r_in   = r_out - CKD_RING_WIDTH;
 
         cairo_pattern_t *pat = cairo_pattern_create_radial (cx, cy, r_out, cx, cy, r_in);
-        cairo_pattern_add_color_stop_rgb (pat, 0.0, 0, 0, 0);
-        cairo_pattern_add_color_stop_rgb (pat, 0.15, 0.1, 0.1, 0.1);
-        cairo_pattern_add_color_stop_rgb (pat, 0.5, 0.2, 0.4, 0.8);
-        cairo_pattern_add_color_stop_rgb (pat, 0.85, 0.1, 0.1, 0.1);
-        cairo_pattern_add_color_stop_rgb (pat, 1.0, 0, 0, 0);
+        cairo_pattern_add_color_stop_rgba (pat, 0.0, 0, 0, 0, 0.0);
+        cairo_pattern_add_color_stop_rgba (pat, 0.1, 0.1, 0.1, 0.1, 0.2);
+        cairo_pattern_add_color_stop_rgba (pat, 0.5, 0.2, 0.4, 0.8, 1.0);
+        cairo_pattern_add_color_stop_rgba (pat, 0.9, 0.1, 0.1, 0.1, 0.2);
+        cairo_pattern_add_color_stop_rgba (pat, 1.0, 0, 0, 0, 0.0);
         cairo_set_source (cr, pat);
         cairo_set_fill_rule (cr, CAIRO_FILL_RULE_EVEN_ODD);
         cairo_arc (cr, cx, cy, r_out, 0, 2 * G_PI);
         cairo_arc (cr, cx, cy, r_in, 0, 2 * G_PI);
         cairo_fill (cr);
 
-        gfloat r_hour = 0.75 * r_in;
-        gfloat r_minute = 0.95 * r_in;
+
         gfloat delta = 2 * G_PI / priv->number_of_slides;
-        gfloat begin = - G_PI / 2;
+        gfloat start = - G_PI / 2;
+        gfloat r = 0.85 * r_in;
+        gfloat mark_len = 0.05 * r_in;
+        gfloat handle_len = 0.75 * r_in;
+        gfloat theta = start + priv->index * delta;
         
         cairo_set_line_width (cr, 8);
         cairo_set_line_cap (cr, CAIRO_LINE_CAP_ROUND);        
 
         cairo_set_source_rgba (cr, 0.8, 0.4, 0.2, 0.8);
-        cairo_move_to (cr, cx, cy);
-        cairo_line_to (cr, cx + r_hour * cos (begin), cy + r_hour * sin (begin));
+        cairo_move_to (cr, cx, cy - r_in + mark_len);
+        cairo_line_to (cr, cx, cy - r_in);
         cairo_stroke (cr);
         
         cairo_set_source_rgba (cr, 0.2, 0.4, 0.8, 0.8);
         cairo_move_to (cr, cx, cy);
-        cairo_line_to (cr,
-                       cx + r_minute * cos (begin + priv->index * delta),
-                       cy + r_minute * sin (begin + priv->index * delta)
-                );
+        cairo_line_to (cr, cx + r * cos (theta), cy + r * sin (theta));
         cairo_stroke (cr);
-        
+
         return TRUE;
 }
 
@@ -79,11 +80,8 @@ ckd_ring_set_property (GObject *obj, guint prop_id, const GValue *value, GParamS
         
         switch (prop_id) {
         case PROP_RING_INDEX:
-                index =  g_value_get_int (value);
-                if (priv->index != index) {
-                        priv->index = index;
-                        clutter_cairo_texture_invalidate (CLUTTER_CAIRO_TEXTURE(priv->ring));
-                }
+                priv->index = g_value_get_int (value);
+                clutter_cairo_texture_invalidate (CLUTTER_CAIRO_TEXTURE(priv->ring));
                 break;
         case PROP_RING_NUMBER_OF_SLIDES:
                 priv->number_of_slides = g_value_get_int (value);
@@ -177,6 +175,15 @@ ckd_ring_paint (ClutterActor *actor)
 }
 
 static void
+ckd_ring_pick (ClutterActor *actor, const ClutterColor *pick_color)
+{
+        CkdRing *self = CKD_RING (actor);
+        CkdRingPriv *priv = CKD_RING_GET_PRIVATE (self);
+        
+        CLUTTER_ACTOR_CLASS (ckd_ring_parent_class)->pick (actor, pick_color);
+}
+
+static void
 ckd_ring_class_init (CkdRingClass *klass)
 {
         g_type_class_add_private (klass, sizeof (CkdRingPriv));
@@ -207,6 +214,7 @@ ckd_ring_class_init (CkdRingClass *klass)
         ClutterActorClass *actor_class = CLUTTER_ACTOR_CLASS (klass);
         actor_class->destroy = ckd_ring_destroy;
         actor_class->paint = ckd_ring_paint;
+        actor_class->pick = ckd_ring_pick;
         actor_class->get_preferred_height = ckd_ring_get_preferred_height;
         actor_class->get_preferred_width = ckd_ring_get_preferred_width;
         actor_class->allocate = ckd_ring_allocate;
@@ -222,4 +230,42 @@ ckd_ring_init (CkdRing *self)
         clutter_cairo_texture_set_auto_resize (CLUTTER_CAIRO_TEXTURE (priv->ring), TRUE);
         
         g_signal_connect (priv->ring, "draw", G_CALLBACK (ckd_ring_render), self);
+}
+
+gint
+ckd_ring_get_polar_coordinates_map (CkdRing *self, gfloat x, gfloat y)
+{
+        CkdRingPriv *priv = CKD_RING_GET_PRIVATE (self);
+
+        gfloat w = clutter_actor_get_width (CLUTTER_ACTOR(self));
+        gfloat h = clutter_actor_get_height (CLUTTER_ACTOR(self));
+        gfloat r = (w < h) ? w : h;
+        gfloat cx = w / 2;
+        gfloat cy = h / 2;
+        
+        gfloat outer  = (cx < cy) ? cx : cy;
+        gfloat inner   = 0.5 * outer;
+        
+        x -= cx;
+        y -= cy;
+
+        /* 将 y 轴反向 */
+        y = -y;
+        gfloat m = sqrtf(x * x + y * y);
+        if (m < inner || m > outer)
+                return -1;
+        
+        gfloat theta = asinf (fabs (y) / m);
+        if (x >= 0 && y > 0 )
+                theta = (G_PI / 2) - theta;
+        else if (x > 0 && y <= 0)
+                theta += (G_PI / 2);
+        else if (x < 0 && y <= 0)
+                theta = (3 * G_PI / 2) - theta;
+        else
+                theta += (3 * G_PI / 2);
+
+        gint index = (theta / (2 * G_PI)) * (gfloat)priv->number_of_slides + 1;
+        
+        return index;
 }

@@ -24,4 +24,7 @@ struct _CkdRingClass {
 
 GType ckd_ring_get_type (void);
 
+gint ckd_ring_get_polar_coordinates_map (CkdRing *self, gfloat x, gfloat y);
+
+
 #endif

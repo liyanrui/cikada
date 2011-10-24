@@ -48,9 +48,11 @@ _on_stage_key_press (ClutterActor *actor, ClutterEvent *event, gpointer user_dat
         gboolean is_overview = FALSE;
         
         switch (keyval) {
+        case CLUTTER_KEY_Left:
         case CLUTTER_KEY_Up:
                 ckd_slides_switch_to_next_slide (slides, -1);
                 break;
+        case CLUTTER_KEY_Right:
         case CLUTTER_KEY_Down:
                 ckd_slides_switch_to_next_slide (slides, 1);
                 break;
@@ -62,6 +64,7 @@ _on_stage_key_press (ClutterActor *actor, ClutterEvent *event, gpointer user_dat
                 else
                         clutter_stage_set_fullscreen (CLUTTER_STAGE(actor), TRUE);
                 break;
+        case CLUTTER_KEY_O:
         case CLUTTER_KEY_o:
                 g_object_get (slides, "is-overview", &is_overview, NULL);
                 if (!is_overview) 
@@ -105,7 +108,7 @@ main (int argc, char **argv)
         bind_textdomain_codeset (PACKAGE, "UTF-8");
         textdomain (PACKAGE);
         
-        context = g_option_context_new (_("- Cikada is a presentation tool for PDF slides"));
+        context = g_option_context_new (_("filename.pdf - Cikada is a presentation tool for PDF slides"));
         g_option_context_add_main_entries (context, _ckd_entries, PACKAGE);
 
         if (!g_option_context_parse (context, &argc, &argv, NULL))
@@ -116,13 +119,16 @@ main (int argc, char **argv)
         }
         
         ClutterColor stage_color = { 0x00, 0x00, 0x00, 0xff };
-        ClutterActor *stage = clutter_stage_new ();
-        clutter_actor_set_size (stage, CKD_STAGE_WIDTH, CKD_STAGE_HEIGHT);
+        ClutterActor *stage = clutter_stage_get_default ();
+        clutter_stage_set_minimum_size(stage, CKD_STAGE_WIDTH, CKD_STAGE_HEIGHT);
         clutter_stage_set_color (CLUTTER_STAGE (stage), &stage_color);
         clutter_stage_set_user_resizable (CLUTTER_STAGE(stage), TRUE);
-        if (_ckd_fullscreen)
-                clutter_stage_set_fullscreen (CLUTTER_STAGE(stage), TRUE);
 
+        /* 设置全屏。此处的全屏，只对 clutter_stage_get_default 有效，这是 Clutter 自身的问题！！！ */
+        if (_ckd_fullscreen) {
+                clutter_stage_set_fullscreen (CLUTTER_STAGE(stage), TRUE);
+        }
+        
         ClutterLayoutManager *layout = clutter_fixed_layout_new ();
         ClutterActor *slides_box = clutter_box_new (layout);
         clutter_actor_set_size (slides_box, CKD_STAGE_WIDTH, CKD_STAGE_HEIGHT);

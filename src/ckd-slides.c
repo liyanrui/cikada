@@ -1,4 +1,5 @@
 #include <math.h>
+#include <glib/gprintf.h>
 #include "ckd-slides.h"
 #include "ckd-ring.h"
 
@@ -13,6 +14,8 @@ struct  _CkdSlidesPriv {
         ClutterActor *current_slide;
         ClutterActor *next_slide;
         ClutterActor *index_ring;
+        ClutterActor *index;
+        ClutterActor *index_box;
         gboolean is_overview;
 };
 
@@ -47,6 +50,33 @@ _ckd_slides_box_paint (ClutterActor *actor, gpointer user_data)
         g_object_set (self, "page-width", w, "page-height", h, NULL);
 }
 
+/* 处理索引环上的鼠标单击事件 */
+static gboolean
+_ckd_slides_index_ring_on_button_press (ClutterActor *actor,
+                                       ClutterEvent *event,
+                                       gpointer      user_data)
+{
+        guint button_pressed = clutter_event_get_button (event);
+        if (button_pressed != 1)
+                return TRUE;
+        
+        CkdSlides *self = CKD_SLIDES (user_data);
+        gfloat stage_x, stage_y;
+        gfloat actor_x, actor_y;
+        
+        clutter_event_get_coords (event, &stage_x, &stage_y);
+        clutter_actor_transform_stage_point (actor,
+                                             stage_x, stage_y,
+                                             &actor_x, &actor_y);
+        
+        gint index = ckd_ring_get_polar_coordinates_map (CKD_RING(actor), actor_x,actor_y);
+        if (index > 0)
+                ckd_slides_goto (self, index);
+        
+        return TRUE;
+}
+
+
 static void
 _ckd_slides_set_box (GObject *obj, GParamSpec *pspec, gpointer user_data)
 {
@@ -69,6 +99,32 @@ _ckd_slides_set_box (GObject *obj, GParamSpec *pspec, gpointer user_data)
         gint n;
         g_object_get (self, "number-of-pages", &n, NULL);
         priv->index_ring = g_object_new (CKD_TYPE_RING, "number-of-slides", n, NULL);
+        
+        clutter_actor_set_reactive (priv->index_ring, TRUE);
+        g_signal_connect (priv->index_ring,
+                          "button-press-event",
+                          G_CALLBACK (_ckd_slides_index_ring_on_button_press),
+                          self);
+
+        /* 创建索引文本背景与索引文本 */
+        ClutterActor *stage = clutter_actor_get_stage (priv->box);
+        ClutterColor index_bg = { 0x11, 0x11, 0x11, 0x80 };
+        priv->index_box = clutter_rectangle_new_with_color (&index_bg);
+        clutter_actor_set_size (priv->index_box, 240, 100);
+        clutter_actor_add_constraint (priv->index_box,
+                                      clutter_align_constraint_new (stage, CLUTTER_ALIGN_X_AXIS, 1.0));
+        clutter_actor_add_constraint (priv->index_box,
+                                      clutter_align_constraint_new (stage, CLUTTER_ALIGN_Y_AXIS, 0.5));
+
+        ClutterColor text_color  = { 0xff, 0xe6, 0xe6, 0xff };
+        priv->index = clutter_text_new ();
+        clutter_text_set_color (CLUTTER_TEXT (priv->index), &text_color);
+        clutter_text_set_font_name (CLUTTER_TEXT(priv->index), "Sans 32");
+        clutter_text_set_line_alignment (CLUTTER_TEXT (priv->index), PANGO_ALIGN_CENTER);
+        clutter_actor_add_constraint (priv->index,
+                                      clutter_align_constraint_new (priv->index_box, CLUTTER_ALIGN_X_AXIS, 0.5));
+        clutter_actor_add_constraint (priv->index,
+                                      clutter_align_constraint_new (priv->index_box, CLUTTER_ALIGN_Y_AXIS, 0.5));
 }
 
 static void
@@ -161,7 +217,7 @@ ckd_slides_init (CkdSlides *self)
 }
 
 /********************************************************************************/
-/*                              CkdSlides 页面切换的淡入淡出效果
+/*     CkdSlides 页面切换的淡入淡出效果
 /********************************************************************************/
 static void
 _ckd_page_raise (ClutterActor *box, ClutterActor *page)
@@ -180,6 +236,26 @@ _ckd_slides_on_fade (ClutterAnimation *am, gpointer data)
 
         ckd_page_manager_uncache (self, priv->current_slide);
         priv->current_slide = priv->next_slide;
+
+        if (!priv->is_overview)
+                return;
+
+        /* 让索引环位于 Slides 盒子之前 */
+        ClutterActor *stage = clutter_actor_get_stage (priv->box);
+        clutter_container_raise_child (CLUTTER_CONTAINER(stage), priv->index_ring, NULL);
+        
+        /* 更新索引环的当前页面索引值 */
+        gint index = _ckd_slides_get_index (priv->current_slide);
+        g_object_set (priv->index_ring, "index", index, NULL);
+
+        /* 更新页码 */
+        gchar index_text[255];
+        g_sprintf (index_text, "%d", index + 1);
+        clutter_text_set_text (CLUTTER_TEXT(priv->index), index_text);
+        if (clutter_actor_get_stage (priv->index_box) != stage) {
+                clutter_container_add_actor (CLUTTER_CONTAINER(stage), priv->index_box);
+                clutter_container_add_actor (CLUTTER_CONTAINER(stage), priv->index);
+        }
 }
 
 static void
@@ -251,17 +327,31 @@ ckd_slides_switch_to_next_slide (CkdSlides *self, gint direction)
         
         _ckd_page_raise (priv->box, priv->next_slide);
         _ckd_page_raise (priv->box, priv->current_slide);
-        _ckd_slides_fade_out_and_in (self, time);
+        _ckd_slides_fade_out_and_in (self, 1.0);
+}
 
-        /* 更新索引环的当前页面索引值 */
-        g_object_set (priv->index_ring, "index", _ckd_slides_get_index (priv->next_slide), NULL);
+void
+ckd_slides_goto (CkdSlides *self, gint index)
+{
+        CkdSlidesPriv *priv = CKD_SLIDES_GET_PRIVATE (self);
+        
+        priv->current_slide = ckd_page_manager_get_current_page (CKD_PAGE_MANAGER(self));
+        ckd_page_manager_cache (CKD_PAGE_MANAGER(self), priv->current_slide);
+        
+        priv->next_slide = ckd_page_manager_get_page (CKD_PAGE_MANAGER(self), index);
+        if (priv->current_slide == priv->next_slide) {
+                ckd_page_manager_uncache (CKD_PAGE_MANAGER(self), priv->current_slide);
+                return;
+        }
+        
+        _ckd_page_raise (priv->box, priv->next_slide);
+        _ckd_page_raise (priv->box, priv->current_slide);
+        _ckd_slides_fade_out_and_in (self, 1.0);
 }
 
 /********************************************************************************/
-/*                              CkdSlides 概览视图
+/*     CkdSlides 概览视图
 /********************************************************************************/
-static gfloat slide_offset_x_on_overview = 0;
-
 void
 ckd_slides_overview_on  (CkdSlides *self)
 {
@@ -269,14 +359,23 @@ ckd_slides_overview_on  (CkdSlides *self)
         priv->is_overview = TRUE;
         
         ClutterActor *stage = clutter_actor_get_stage (priv->box);
-        /* clutter_stage_set_user_resizable (CLUTTER_STAGE(stage), FALSE); */
-
         if (clutter_actor_get_stage (priv->index_ring) != stage) {
                 clutter_container_add_actor (CLUTTER_CONTAINER(stage), priv->index_ring);
         }
-        g_object_set (priv->index_ring, "index", _ckd_slides_get_index (priv->current_slide), NULL);
+
+        gint index = _ckd_slides_get_index (priv->current_slide);
+        
+        g_object_set (priv->index_ring, "index", index, NULL);
         clutter_actor_show (priv->index_ring);
 
+        gchar index_text[255];
+        g_sprintf (index_text, "%d", index + 1);
+        clutter_text_set_text (CLUTTER_TEXT(priv->index), index_text);
+        clutter_actor_show (priv->index_box);
+        clutter_actor_show (priv->index);
+        _ckd_page_raise (stage, priv->index_box);
+        _ckd_page_raise (stage, priv->index);
+        
         /* 让索引环位于 Slides 盒子之后 */
         clutter_container_lower_child (CLUTTER_CONTAINER(stage), priv->index_ring, NULL);
         
@@ -300,7 +399,6 @@ ckd_slides_overview_on  (CkdSlides *self)
                       "surface-height", &slide_h,
                       NULL);
         offset = 0.25 * slide_w;
-        
         clutter_actor_animate (priv->box, CLUTTER_LINEAR, 1000,
                                "scale-x", s,
                                "scale-y", s,
@@ -309,11 +407,11 @@ ckd_slides_overview_on  (CkdSlides *self)
         /* --End*/
 
         /* --Begin: 索引环 */
-        gfloat d = 0.5 * ((slide_w < slide_h) ? slide_w : slide_h);
+        gfloat d = 0.45 * ((slide_w < slide_h) ? slide_w : slide_h);
         gfloat r = 0.5 * d;
         clutter_actor_set_size (priv->index_ring, d, d);
         clutter_actor_set_position (priv->index_ring,
-                                    0.5 * (stage_w - slide_w),
+                                    0.25 * (stage_w - slide_w),
                                     cy - r);
         clutter_actor_set_opacity (priv->index_ring, 0);
         clutter_actor_animate (priv->index_ring, CLUTTER_LINEAR, 1000, "opacity", 255, NULL);
@@ -327,8 +425,6 @@ ckd_slides_overview_off (CkdSlides *self)
         ClutterActor *stage = clutter_actor_get_stage (priv->box);        
 
         priv->is_overview = FALSE;
-        
-        /* clutter_stage_set_user_resizable (CLUTTER_STAGE(stage), TRUE); */
 
         /* 华丽的逆转 */
         ClutterTimeline *timeline;
@@ -364,7 +460,9 @@ ckd_slides_overview_off (CkdSlides *self)
                 
                 clutter_timeline_set_direction (timeline, direction);
         } else {
-                clutter_actor_animate (priv->index_ring, CLUTTER_LINEAR, 500, "opacity", 0, NULL);
+                clutter_actor_hide (priv->index_ring);
         }
-        
+
+        clutter_actor_hide (priv->index_box);
+        clutter_actor_hide (priv->index);
 }

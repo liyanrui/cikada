@@ -80,7 +80,13 @@ _ckd_page_manager_create_page (CkdPageManager *self, gint i)
         PopplerPage *pdf_page;
         ClutterActor *page;
 
-        pdf_page = poppler_document_get_page (priv->doc, i);
+        /* 如果页码为负数，则从尾页向前计算 */
+        if (i < 0)
+                i += priv->number_of_pages;
+
+        /* 页码整除以页面总数，是防止页码溢出。页码溢出时，就从首页向后计算 */
+        pdf_page = poppler_document_get_page (priv->doc, i % priv->number_of_pages);
+        
         page = ckd_page_new_with_default_quality (pdf_page);
         clutter_actor_set_size (page, priv->page_width, priv->page_height);
         
@@ -114,22 +120,16 @@ _ckd_page_manager_set_capacity (CkdPageManager *self, guint capacity)
         
         tail_page_number = priv->head_page_number + priv->capacity -1;
         d = capacity - priv->capacity;
-        
+
         if (d == 0) {
                 return;
-        } else if (d > 0) {
-                /* 左侧与右侧空位通常是这么多 */
-                left_rest = d / 2;
-                right_rest = d - left_rest;
-                
-                /* 但是左侧和右侧可能会溢出，所以要修正空位 */
-                if (priv->head_page_number - left_rest < first_page_number) {
-                        left_rest = priv->head_page_number;
-                        right_rest = d - left_rest;
-                } else if (tail_page_number + right_rest > last_page_number) { 
-                        right_rest = last_page_number - tail_page_number;
-                        left_rest = d - right_rest;
-                }
+        }
+        
+        left_rest = d / 2;
+        right_rest = d - left_rest;
+        
+        if (d > 0) {
+                /* 左侧与右侧的空位 */
                 
                 for (int i = 1; i <= left_rest; i++) {
                         page = _ckd_page_manager_create_page (self, priv->head_page_number - i);
@@ -141,18 +141,9 @@ _ckd_page_manager_set_capacity (CkdPageManager *self, guint capacity)
                         g_queue_push_tail (priv->pages, page);
                 }
         } else {
-                /* 左侧与右侧的余量通常是这么多 */
+                /* 左侧与右侧的余量 */
                 left_rest = d / 2;
                 right_rest = d - left_rest;
-                
-                /* 但是左侧和右侧可能会溢出，所以要修正余量 */
-                if (priv->head_page_number + left_rest < first_page_number) {
-                        left_rest = - priv->head_page_number;
-                        right_rest = d - left_rest;
-                } else if (tail_page_number - right_rest > last_page_number) {
-                        right_rest = tail_page_number - last_page_number;
-                        left_rest = d - right_rest;
-                }
                 
                 for (int i = left_rest; i < 0; i++) {
                         page = g_queue_pop_head (priv->pages);
@@ -187,17 +178,9 @@ _ckd_page_manager_goto (CkdPageManager *self, gint i)
         gint p0 = priv->head_page_number;
         gint p1 = priv->head_page_number + priv->capacity - 1;
 
-        /* 新页面队列的首页与尾页，需要进行溢出判断与修正 */
+        /* 新页面队列的首页与尾页编码 */
         gint q0 = i - priv->capacity / 2;
         gint q1 = q0 + priv->capacity - 1;
-        if (q1 > last_page_number) {
-                q1 = last_page_number;
-                q0 = (q1 - priv->capacity + 1);
-        }
-        if (q0 < first_page_number) {
-                q0 = first_page_number;
-                q1 = q0 + priv->capacity - 1;
-        }
 
         /* 新旧页面队列重叠区域处理 */
         if (q0 >= p0 && q0 <= p1) {
@@ -224,7 +207,7 @@ _ckd_page_manager_goto (CkdPageManager *self, gint i)
                 g_queue_foreach (priv->pages, _ckd_page_destroy_in_queue, self);
                 g_queue_clear (priv->pages);
                 for (int i = 0; i < priv->capacity; i++) {
-                        page = _ckd_page_manager_create_page (self, p0 + i);
+                        page = _ckd_page_manager_create_page (self, q0 + i);
                         g_queue_push_tail (priv->pages, page);
                 }
         }
@@ -243,7 +226,6 @@ ckd_page_manager_get_page (CkdPageManager *self, gint i)
 
         enum {
                 PM_INIT,
-                PM_PAGE_VALID,
                 PM_PAGE_LOST,
                 PM_PAGE_OK,
                 PM_PAGE_NULL
@@ -255,12 +237,6 @@ ckd_page_manager_get_page (CkdPageManager *self, gint i)
                 
                 switch (pm_status) {
                 case PM_INIT:
-                        if (i >= 0 && i < priv->number_of_pages)
-                                pm_status = PM_PAGE_VALID;
-                        else
-                                pm_status = PM_PAGE_NULL;
-                        break;
-                case PM_PAGE_VALID:
                         if (i >= p0 && i <= p1)
                                 pm_status = PM_PAGE_OK;
                         else
@@ -479,12 +455,7 @@ ClutterActor *
 ckd_page_manager_advance_page (CkdPageManager *self)
 {
         CkdPageManagerPriv *priv = CKD_PAGE_MANAGER_GET_PRIVATE (self);
-        ClutterActor *page;
-
-        if (priv->current_page_number >= priv->number_of_pages - 1)
-                page = ckd_page_manager_get_page (self, priv->number_of_pages - 1);
-        else
-                page = ckd_page_manager_get_page (self, ++priv->current_page_number);
+        ClutterActor *page = ckd_page_manager_get_page (self, ++priv->current_page_number);
 
         return page;
 }
@@ -493,12 +464,7 @@ ClutterActor *
 ckd_page_manager_retreat_page (CkdPageManager *self)
 {
         CkdPageManagerPriv *priv = CKD_PAGE_MANAGER_GET_PRIVATE (self);
-        ClutterActor *page;
-        
-        if (priv->current_page_number <= 0)
-                page = ckd_page_manager_get_page (self, 0);
-        else
-                page = ckd_page_manager_get_page (self, --priv->current_page_number);
+        ClutterActor *page = ckd_page_manager_get_page (self, --priv->current_page_number);
         
         return page;
 }

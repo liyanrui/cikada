@@ -23,6 +23,7 @@ struct _CkdSlidesClass {
 GType ckd_slides_get_type (void);
 
 void ckd_slides_switch_to_next_slide (CkdSlides * self, gint direction);
+void ckd_slides_goto (CkdSlides * self, gint index);
 void ckd_slides_overview_on (CkdSlides *self);
 void ckd_slides_overview_off (CkdSlides *self);
 

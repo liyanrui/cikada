@@ -3,11 +3,10 @@
 
 G_DEFINE_TYPE (CkdPage, ckd_page, CLUTTER_TYPE_ACTOR);
 
-
 #define DEFAULT_PAGE_QUALITY 1.0
 
-#define LOW_RESOLUTION_FACTOR 1.8
 #define MEDIUM_RESOLUTION_FACTOR 1.2
+#define LOW_RESOLUTION_FACTOR 1.8
 
 #define LOW_RESOLUTION_H 640
 #define LOW_RESOLUTION_V 480
@@ -32,6 +31,8 @@ enum {
         PROP_0,
         PROP_PDF_PAGE,
         PROP_QUALITY,
+        PROP_SURFACE_WIDTH,
+        PROP_SURFACE_HEIGHT,
         PROP_BORDER
 };
 
@@ -117,6 +118,12 @@ ckd_page_get_property (GObject *obj, guint prop_id, GValue *value, GParamSpec *p
         case PROP_BORDER:
                 g_value_set_float (value, priv->border);
                 break;
+        case PROP_SURFACE_WIDTH:
+                g_value_set_float (value, priv->width);
+                break;
+        case PROP_SURFACE_HEIGHT:
+                g_value_set_float (value, priv->height);
+                break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
                 break;
@@ -143,12 +150,6 @@ ckd_page_get_preferred_height (ClutterActor *actor,
 
         *min_height = 0.0;
         *natural_height = priv->height;
-}
-
-static void
-ckd_page_finalize (GObject *object)
-{
-        G_OBJECT_CLASS (ckd_page_parent_class)->finalize (object);
 }
 
 static void
@@ -234,13 +235,12 @@ ckd_page_class_init (CkdPageClass *klass)
         GObjectClass *base_class = G_OBJECT_CLASS (klass);
         base_class->set_property = ckd_page_set_property;
         base_class->get_property = ckd_page_get_property;
-        base_class->finalize     = ckd_page_finalize;
 
         GParamSpec *pspec;
         pspec = g_param_spec_pointer ("pdf-page",
                                       "PDF Page",
                                       "A PDF Page which to be convert to CairoTexture",
-                                      G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT);
+                                      G_PARAM_READWRITE);
         g_object_class_install_property (base_class, PROP_PDF_PAGE, pspec);
 
         pspec = g_param_spec_float ("quality",
@@ -249,16 +249,31 @@ ckd_page_class_init (CkdPageClass *klass)
                                     0.1,
                                     4.0,
                                     DEFAULT_PAGE_QUALITY,
-                                    G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT);
+                                    G_PARAM_READWRITE);
         g_object_class_install_property (base_class, PROP_QUALITY, pspec);
-        
+        pspec = g_param_spec_float ("surface-width",
+                                    "Cairo Surface Width",
+                                    "Cairo Surface Width",
+                                    0.0,
+                                    G_MAXFLOAT,
+                                    0.0,
+                                    G_PARAM_READWRITE);
+        g_object_class_install_property (base_class, PROP_SURFACE_WIDTH, pspec);
+        pspec = g_param_spec_float ("surface-height",
+                                    "Cairo Surface Height",
+                                    "Cairo Surface Height",
+                                    0.0,
+                                    G_MAXFLOAT,
+                                    0.0,
+                                    G_PARAM_READWRITE);
+        g_object_class_install_property (base_class, PROP_SURFACE_HEIGHT, pspec);
         pspec = g_param_spec_float ("border",
                                     "Page Border",
                                     "Page border size which around page",
                                     0.0,
                                     100,
                                     10.0,
-                                    G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT);
+                                    G_PARAM_READWRITE | G_PARAM_CONSTRUCT);
         g_object_class_install_property (base_class, PROP_BORDER, pspec);
         
         ClutterActorClass *actor_class = CLUTTER_ACTOR_CLASS (klass);

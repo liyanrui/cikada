@@ -8,5 +8,6 @@ Makefile
 Makefile.in
 stamp*
 build-aux
+build
 aclocal.m4
 ABOUT-NLS

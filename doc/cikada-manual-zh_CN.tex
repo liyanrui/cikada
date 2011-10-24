@@ -1,0 +1,88 @@
+\environment env-plain
+
+\starttext
+\title{Cikada 0.0.2 使用指南}
+
+\placefigure[][]{none}{\externalfigure[cikada][width=.1\textwidth]}
+
+\midaligned{李延瑞\\liyanrui.m2@gmail.com\\ \date}
+
+\subject{简介}
+
+Cikada 是面向 PDF 文档格式的演示工具，基于 clutter 与 poppler-glib 库实现。这意味着 Cikada 目前主要面向已经开启了显卡 3D 加速的 Linux 桌面用户。
+
+Cikada 这个名字取自英文单词 Cicada，其意为“蝉”。之所以将中间的字母“c”改为“k”，是考虑到网络搜索引擎的查找。取“蝉”为项目之名，寓“居高声自远”之意，并警示演讲者不要过度聒噪而使听众失去耐心，同时表示这个项目创建于一个炎热的夏天午后。 
+
+\subject{功能}
+
+\startitemize
+\item 可由用户设定缓冲 PDF 文档页面数量，繁殖页面全部载入导致内存过度消耗；
+\item 页面渐入渐出的切换效果；
+\item 全屏模式切换；
+\item 时钟模式的概览视图，用于显示演示进度以及页面跳转。
+\stopitemize
+
+\subject{安装}
+
+目前 Cikada 尚无面向 Linux 发行版的二进制包，所以需要编译安装。可从 Cikada 项目仓库中迁出 Cikada 最新的源代码并进行编译，可参考以下命令：
+
+\starttyping
+$ git clone git://github.com/liyanrui/cikada.git
+$ cd cikada
+$ autoreconf -i
+$ ./configure && make
+$ sudo make install
+\stoptyping
+
+\subject{运行 Cikada}
+
+Cikada 无图形交互界面，需在终端（命令行）中运行。命令格式如下：
+
+\starttyping
+$ cikada [选项...] filename.pdf
+
+选项:
+  -f, --fullscreen           程序启动时进入全屏模式
+  -s, --segment-length=N     设置 PDF 文档页面缓冲数量
+\stoptyping
+
+例如使用 Cikada 放映文件名为 foo.pdf 的演示文档：
+
+\starttyping
+$ cikada -f -s 5 foo.pdf
+\stoptyping
+
+如果在运行 Cikada 时未指定“\type{-f}”选项，那么在 Cikada 窗口开启后，可使用“\type{F11}”键进行全屏模式切换。
+
+选项“\type{-s}”的作用是设定 Cikada 单次载入的 PDF 文档页面数量。若在运行 Cikada 时未设定“\type{-s}”选项，那么 Cikada 默认的单词载入的 PDF 文档页面数量为 3。之所以提供这一选项，是因为一次性载入 PDF 文档全部页面容易导致内存负担过重。如果你确定一次性载入 PDF 文档的全部页面不会出现内存不足问题，那么可在“\type{-s}”之后放置一个大于页面总数的整数值便可一次载入全部页面，例如：
+
+\starttyping
+$ cikada -s 9999 foo.pdf
+\stoptyping
+
+\subject{页面切换}
+
+借助鼠标的左键与右键的单击行为可进行页面切换，其中左键单击是向后翻页，右键单击是向前翻页。
+
+使用键盘上的“${\blue\leftarrow}$”（或“$\blue\uparrow$”）与“$\blue\rightarrow$”（或“$\blue{\downarrow}$”）按键也可完成向前与向后翻页。
+
+页面切换仅有渐入/渐出这一种效果，并且无继续开发其他页面切换效果的打算。主要是鉴于页面的飞入、飞出、百叶窗、放大和缩小等效果已经在 MS PowerPoint 之类的工具中滥用的令人起腻，而且在演讲中企图用较多的页面切换效果吸引听众的注意力，并非好主意。
+
+\subject{概览视图}
+
+概览视图的主要功能是查看演示进度，也可进行页面跳转。使用按键“O”或“o”可以打开/关闭 Cikada 的概览视图。
+
+Cikada 的概览视图分为索引区与页面预览区，如图 \in[cikada-overview] 所示，左侧为类似钟表形式的索引区，右侧为页面预览区并负责显示当前页面的页码。
+
+\placefigure[][cikada-overview]{Cikada 概览视图}{\externalfigure[ckd-overview.png][width=.8\textwidth]}
+
+圆环顶部内侧的浅红色的点表示演示文档的起始页。在圆环的顺时针方向上，PDF 文档各页的页码被均匀映射到圆环的相应位置。在索引区靠近圆环内侧的区域内，鼠标左键单击行为可产生页面跳转事件，主要表现为：
+
+\startitemize
+\item 索引区的指针指向鼠标左键单击位置。由于页码在圆环上的并非连续映射，所以指针实际上只是被定位到鼠标左键单击位置的附近区域。
+\item 页面预览区显示索引区指针所指位置对应页面及页码。
+\stopitemize
+
+如果 Cikada 处于概览视图模式，当 Cikada 窗口尺寸发生变化时，那么概览视图会自动退出，Cikada 便会回转到演讲视图模式。与其说这是特性，不如说是 Bug。主要是因为窗口尺寸发生变化时，维护索引区与页面预览区的布局管理的实现会非常繁琐。
+
+\stoptext

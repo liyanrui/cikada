@@ -1,0 +1,25 @@
+\startenvironment env-plain
+
+\usemodule[zhfonts]
+
+\setuppapersize[A4]
+\setuplayout[backspace=3cm, width=15cm]
+
+\setuppagenumbering[location={footer, middle}]
+
+\setuphead[title][style=\bfc, align={middle,broad}]
+\setuphead[subject][style=\bfa,indentnext=yes]
+
+\setupinterlinespace[line=1.6em]
+\setupindenting[always,first,2em]
+\setupfootnotes[style={\zhfonts[none]}]
+
+\setupitemize[paragraph, packed, broad]
+
+\setuptyping[escape=yes,before={\blank[2mm]},after={\blank[2mm]}]
+
+\setuplabeltext[en][figure=图\;]
+\setupcaptions[style=small,headstyle=normal]
+\setupcaption[figure][align={middle,broad}]
+
+\stopenvironment

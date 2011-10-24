@@ -407,7 +407,7 @@ ckd_slides_overview_on  (CkdSlides *self)
         /* --End*/
 
         /* --Begin: 索引环 */
-        gfloat d = 0.45 * ((slide_w < slide_h) ? slide_w : slide_h);
+        gfloat d = 0.5 * ((slide_w < slide_h) ? slide_w : slide_h);
         gfloat r = 0.5 * d;
         clutter_actor_set_size (priv->index_ring, d, d);
         clutter_actor_set_position (priv->index_ring,

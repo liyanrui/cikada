@@ -108,7 +108,7 @@ main (int argc, char **argv)
         bind_textdomain_codeset (PACKAGE, "UTF-8");
         textdomain (PACKAGE);
         
-        context = g_option_context_new (_("filename.pdf - Cikada is a presentation tool for PDF slides"));
+        context = g_option_context_new (_("filename.pdf\n\nDescription:\n Cikada is a presentation tool for PDF slides"));
         g_option_context_add_main_entries (context, _ckd_entries, PACKAGE);
 
         if (!g_option_context_parse (context, &argc, &argv, NULL))
@@ -120,7 +120,7 @@ main (int argc, char **argv)
         
         ClutterColor stage_color = { 0x00, 0x00, 0x00, 0xff };
         ClutterActor *stage = clutter_stage_get_default ();
-        clutter_stage_set_minimum_size(stage, CKD_STAGE_WIDTH, CKD_STAGE_HEIGHT);
+        clutter_stage_set_minimum_size(CLUTTER_STAGE(stage), CKD_STAGE_WIDTH, CKD_STAGE_HEIGHT);
         clutter_stage_set_color (CLUTTER_STAGE (stage), &stage_color);
         clutter_stage_set_user_resizable (CLUTTER_STAGE(stage), TRUE);
 

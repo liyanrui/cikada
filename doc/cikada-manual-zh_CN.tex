@@ -3,7 +3,7 @@
 \starttext
 \title{Cikada 0.0.2 使用指南}
 
-\placefigure[][]{none}{\externalfigure[cikada][width=.1\textwidth]}
+\placefigure[][]{none}{\externalfigure[cikada][width=.2\textwidth]}
 
 \midaligned{李延瑞\\liyanrui.m2@gmail.com\\ \date}
 
@@ -11,12 +11,12 @@
 
 Cikada 是面向 PDF 文档格式的演示工具，基于 clutter 与 poppler-glib 库实现。这意味着 Cikada 目前主要面向已经开启了显卡 3D 加速的 Linux 桌面用户。
 
-Cikada 这个名字取自英文单词 Cicada，其意为“蝉”。之所以将中间的字母“c”改为“k”，是考虑到网络搜索引擎的查找。取“蝉”为项目之名，寓“居高声自远”之意，并警示演讲者不要过度聒噪而使听众失去耐心，同时表示这个项目创建于一个炎热的夏天午后。 
+Cikada 这个名字取自英文单词“Cicada”，其意为“蝉”。之所以将“Cicada”中间的字母“c”改为“k”，是便于网络搜索引擎的查找。取“蝉”为项目之名，寓“居高声自远”之意，并警示演讲者不要过度聒噪而使听众失去耐心，同时表示这个项目创建于一个炎热的夏天午后。 
 
 \subject{功能}
 
 \startitemize
-\item 可由用户设定缓冲 PDF 文档页面数量，繁殖页面全部载入导致内存过度消耗；
+\item 可由用户设定缓冲 PDF 文档页面数量，防止页面全部载入导致内存过度消耗；
 \item 页面渐入渐出的切换效果；
 \item 全屏模式切换；
 \item 时钟模式的概览视图，用于显示演示进度以及页面跳转。
@@ -54,7 +54,7 @@ $ cikada -f -s 5 foo.pdf
 
 如果在运行 Cikada 时未指定“\type{-f}”选项，那么在 Cikada 窗口开启后，可使用“\type{F11}”键进行全屏模式切换。
 
-选项“\type{-s}”的作用是设定 Cikada 单次载入的 PDF 文档页面数量。若在运行 Cikada 时未设定“\type{-s}”选项，那么 Cikada 默认的单词载入的 PDF 文档页面数量为 3。之所以提供这一选项，是因为一次性载入 PDF 文档全部页面容易导致内存负担过重。如果你确定一次性载入 PDF 文档的全部页面不会出现内存不足问题，那么可在“\type{-s}”之后放置一个大于页面总数的整数值便可一次载入全部页面，例如：
+选项“\type{-s}”的作用是设定 Cikada 单次载入的 PDF 文档页面数量。若在运行 Cikada 时未设定“\type{-s}”选项，那么 Cikada 默认的单次载入的 PDF 文档页面数量为 3。之所以提供这一选项，是因为一次性载入 PDF 文档全部页面容易导致内存负担过重。如果你确定一次性载入 PDF 文档的全部页面不会出现内存不足问题，那么可在“\type{-s}”之后放置一个大于页面总数的整数值便可一次载入全部页面，例如：
 
 \starttyping
 $ cikada -s 9999 foo.pdf

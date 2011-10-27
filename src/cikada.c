@@ -80,7 +80,7 @@ _on_stage_key_press (ClutterActor *actor, ClutterEvent *event, gpointer user_dat
 }
 
 static gboolean
-_on_stage_button_press (ClutterActor *actor, ClutterEvent * event, gpointer user_data)
+_on_slides_box_button_press (ClutterActor *actor, ClutterEvent * event, gpointer user_data)
 {
         guint button_pressed;
         CkdSlides *slides = user_data;
@@ -89,11 +89,33 @@ _on_stage_button_press (ClutterActor *actor, ClutterEvent * event, gpointer user
 
         if (button_pressed == 1)
                 ckd_slides_switch_to_next_slide (slides, 1);
-
+        if (button_pressed == 2){
+                gboolean is_overview = FALSE;
+                g_object_get (slides, "is-overview", &is_overview, NULL);
+                if (!is_overview) 
+                        ckd_slides_overview_on (slides);
+                else
+                        ckd_slides_overview_off (slides);
+        }
         if (button_pressed == 3)
                 ckd_slides_switch_to_next_slide (slides, -1);
 
         return TRUE;
+}
+
+static gboolean
+_on_stage_fullscreen (ClutterStage *stage, gpointer user_data)
+{
+        gfloat w, h;
+        w = clutter_actor_get_width (CLUTTER_ACTOR(stage));
+        h = clutter_actor_get_height (CLUTTER_ACTOR(stage));
+        
+        CkdSlides *slides = user_data;
+        ClutterActor *slides_box;
+        
+        g_object_get (slides, "box", &slides_box, NULL);
+        clutter_actor_set_opacity(slides_box, 0);
+        clutter_actor_animate (slides_box, CLUTTER_LINEAR, 1000, "opacity", 255, NULL);
 }
 
 int
@@ -124,6 +146,9 @@ main (int argc, char **argv)
         clutter_stage_set_color (CLUTTER_STAGE (stage), &stage_color);
         clutter_stage_set_user_resizable (CLUTTER_STAGE(stage), TRUE);
 
+        /* 试验：将帧率设为 120 */
+        clutter_set_default_frame_rate (120);
+        
         /* 设置全屏。此处的全屏，只对 clutter_stage_get_default 有效，这是 Clutter 自身的问题！！！ */
         if (_ckd_fullscreen) {
                 clutter_stage_set_fullscreen (CLUTTER_STAGE(stage), TRUE);
@@ -145,7 +170,8 @@ main (int argc, char **argv)
         g_signal_connect (stage, "destroy", G_CALLBACK(clutter_main_quit), NULL);
         g_signal_connect (stage, "key-press-event", G_CALLBACK (_on_stage_key_press), slides);
         g_signal_connect (stage, "allocation-changed", G_CALLBACK(_on_stage_allocation_change), slides);
-        g_signal_connect (slides_box, "button-press-event", G_CALLBACK(_on_stage_button_press), slides);
+        g_signal_connect (stage, "fullscreen", G_CALLBACK(_on_stage_fullscreen), slides);
+        g_signal_connect (slides_box, "button-press-event", G_CALLBACK(_on_slides_box_button_press), slides);
         
         clutter_actor_show_all (stage);
 

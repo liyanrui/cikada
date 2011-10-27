@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cikada 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-31 23:50+0800\n"
+"POT-Creation-Date: 2011-10-26 15:10+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,18 +17,22 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/cikada.c:10
+#: src/cikada.c:13
 msgid "Set fullscreen mode"
 msgstr ""
 
-#: src/cikada.c:11
+#: src/cikada.c:14
 msgid "Set segment length of slides"
 msgstr ""
 
-#: src/cikada.c:92
-msgid "- Cikada is a presentation tool for PDF slides"
+#: src/cikada.c:111
+msgid ""
+"filename.pdf\n"
+"\n"
+"Description:\n"
+" Cikada is a presentation tool for PDF slides"
 msgstr ""
 
-#: src/cikada.c:98
+#: src/cikada.c:117
 msgid "You should input PDF file name!\n"
 msgstr ""

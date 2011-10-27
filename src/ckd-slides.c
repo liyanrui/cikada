@@ -8,6 +8,9 @@ G_DEFINE_TYPE (CkdSlides, ckd_slides, CKD_TYPE_PAGE_MANAGER);
 #define CKD_SLIDES_GET_PRIVATE(obj) (\
         G_TYPE_INSTANCE_GET_PRIVATE ((obj), CKD_TYPE_SLIDES, CkdSlidesPriv))
 
+
+#define CKD_SLIDES_AM_TIME_BASE 1000
+
 typedef struct _CkdSlidesPriv CkdSlidesPriv;
 struct  _CkdSlidesPriv {
         ClutterActor *box;
@@ -46,7 +49,7 @@ _ckd_slides_box_paint (ClutterActor *actor, gpointer user_data)
         gfloat w, h;
         w = clutter_actor_get_width (actor);
         h = clutter_actor_get_height (actor);
-        
+
         g_object_set (self, "page-width", w, "page-height", h, NULL);
 }
 
@@ -86,7 +89,7 @@ _ckd_slides_set_box (GObject *obj, GParamSpec *pspec, gpointer user_data)
         
         g_object_ref (priv->box);
         g_signal_connect (priv->box, "paint", G_CALLBACK(_ckd_slides_box_paint), self);
-        
+
         page = ckd_page_manager_get_page (CKD_PAGE_MANAGER(self), 0);
         ckd_page_manager_cache (CKD_PAGE_MANAGER(self), page);
 
@@ -258,6 +261,29 @@ _ckd_slides_on_fade (ClutterAnimation *am, gpointer data)
         }
 }
 
+static gboolean
+_ckd_slides_am_reverse_guard (ClutterActor *actor)
+{
+        ClutterTimeline *timeline;
+        ClutterTimelineDirection direction;
+        ClutterAnimation *am = clutter_actor_get_animation (actor);
+
+        if (!am)
+                return TRUE;
+        
+        timeline = clutter_animation_get_timeline (am);
+        direction = clutter_timeline_get_direction (timeline);
+        
+        if (direction == CLUTTER_TIMELINE_FORWARD)
+                direction = CLUTTER_TIMELINE_BACKWARD;
+        else
+                direction = CLUTTER_TIMELINE_FORWARD;
+        
+        clutter_timeline_set_direction (timeline, direction);
+
+        return FALSE;
+}
+
 static void
 _ckd_slides_fade_out_and_in (CkdSlides *self, gdouble time)
 {
@@ -266,27 +292,13 @@ _ckd_slides_fade_out_and_in (CkdSlides *self, gdouble time)
         clutter_actor_set_opacity (priv->next_slide, 255);
         clutter_actor_set_opacity (priv->current_slide, 255);
 
-        /* 华丽的逆转 */
-        ClutterTimeline *timeline;
-        ClutterTimelineDirection direction;
-        ClutterAnimation *am = clutter_actor_get_animation (priv->next_slide);
-        if (am) {
-                timeline = clutter_animation_get_timeline (am);
-                direction = clutter_timeline_get_direction (timeline);
-                
-                if (direction == CLUTTER_TIMELINE_FORWARD)
-                        direction = CLUTTER_TIMELINE_BACKWARD;
-                else
-                        direction = CLUTTER_TIMELINE_FORWARD;
-                
-                clutter_timeline_set_direction (timeline, direction);
-        }
+        _ckd_slides_am_reverse_guard (priv->next_slide);
 
         /* 让当前页消隐 */
         clutter_actor_animate (
                 priv->current_slide,
                 CLUTTER_LINEAR,
-                1000 * ((guint)time),
+                CKD_SLIDES_AM_TIME_BASE * ((guint)time),
                 "opacity", 0,
                 "signal-after::completed", _ckd_slides_on_fade, self,
                 NULL);
@@ -399,14 +411,14 @@ ckd_slides_overview_on  (CkdSlides *self)
                       "surface-height", &slide_h,
                       NULL);
         offset = 0.25 * slide_w;
-        clutter_actor_animate (priv->box, CLUTTER_LINEAR, 1000,
+        clutter_actor_animate (priv->box, CLUTTER_LINEAR, CKD_SLIDES_AM_TIME_BASE,
                                "scale-x", s,
                                "scale-y", s,
                                "x", offset,
                                NULL);
         /* --End*/
 
-        /* --Begin: 索引环 */
+        /* --Begin: 索引 */
         gfloat d = 0.5 * ((slide_w < slide_h) ? slide_w : slide_h);
         gfloat r = 0.5 * d;
         clutter_actor_set_size (priv->index_ring, d, d);
@@ -414,7 +426,11 @@ ckd_slides_overview_on  (CkdSlides *self)
                                     0.25 * (stage_w - slide_w),
                                     cy - r);
         clutter_actor_set_opacity (priv->index_ring, 0);
-        clutter_actor_animate (priv->index_ring, CLUTTER_LINEAR, 1000, "opacity", 255, NULL);
+        clutter_actor_set_opacity (priv->index_box, 0);
+        clutter_actor_set_opacity (priv->index, 0);
+        clutter_actor_animate (priv->index_ring, CLUTTER_LINEAR, CKD_SLIDES_AM_TIME_BASE, "opacity", 255, NULL);
+        clutter_actor_animate (priv->index_box, CLUTTER_LINEAR, CKD_SLIDES_AM_TIME_BASE, "opacity", 255, NULL);
+        clutter_actor_animate (priv->index, CLUTTER_LINEAR, CKD_SLIDES_AM_TIME_BASE, "opacity", 255, NULL);
         /* --End */
 }
 
@@ -425,44 +441,22 @@ ckd_slides_overview_off (CkdSlides *self)
         ClutterActor *stage = clutter_actor_get_stage (priv->box);        
 
         priv->is_overview = FALSE;
-
-        /* 华丽的逆转 */
-        ClutterTimeline *timeline;
-        ClutterTimelineDirection direction;
-        ClutterAnimation *slides_am = clutter_actor_get_animation (priv->box);
-        ClutterAnimation *index_ring_am = clutter_actor_get_animation (priv->index_ring);
-        if (slides_am) {
-                timeline = clutter_animation_get_timeline (slides_am);
-                direction = clutter_timeline_get_direction (timeline);
-                
-                if (direction == CLUTTER_TIMELINE_FORWARD)
-                        direction = CLUTTER_TIMELINE_BACKWARD;
-                else
-                        direction = CLUTTER_TIMELINE_FORWARD;
-                
-                clutter_timeline_set_direction (timeline, direction);
-        } else {
-                clutter_actor_animate (priv->box, CLUTTER_LINEAR, 1000,
+        
+        if (_ckd_slides_am_reverse_guard (priv->box)) {
+                clutter_actor_animate (priv->box, CLUTTER_LINEAR, CKD_SLIDES_AM_TIME_BASE,
                                        "scale-x", 1.0,
                                        "scale-y", 1.0,
                                        "x", 0.0,
                                        NULL);
         }
         
-        if (index_ring_am) {
-                timeline = clutter_animation_get_timeline (index_ring_am);
-                direction = clutter_timeline_get_direction (timeline);
-                
-                if (direction == CLUTTER_TIMELINE_FORWARD)
-                        direction = CLUTTER_TIMELINE_BACKWARD;
-                else
-                        direction = CLUTTER_TIMELINE_FORWARD;
-                
-                clutter_timeline_set_direction (timeline, direction);
-        } else {
-                clutter_actor_hide (priv->index_ring);
-        }
-
-        clutter_actor_hide (priv->index_box);
-        clutter_actor_hide (priv->index);
+        if (_ckd_slides_am_reverse_guard (priv->index_ring))
+                clutter_actor_animate (priv->index_ring, CLUTTER_LINEAR,
+                                       CKD_SLIDES_AM_TIME_BASE, "opacity", 0, NULL);
+        if (_ckd_slides_am_reverse_guard (priv->index_box))
+                clutter_actor_animate (priv->index_box, CLUTTER_LINEAR,
+                                       CKD_SLIDES_AM_TIME_BASE, "opacity", 0, NULL);
+        if (_ckd_slides_am_reverse_guard (priv->index))
+                clutter_actor_animate (priv->index, CLUTTER_LINEAR,
+                                       CKD_SLIDES_AM_TIME_BASE, "opacity", 0, NULL);
 }

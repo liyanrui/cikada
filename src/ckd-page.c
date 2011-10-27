@@ -5,14 +5,21 @@ G_DEFINE_TYPE (CkdPage, ckd_page, CLUTTER_TYPE_ACTOR);
 
 #define DEFAULT_PAGE_QUALITY 1.0
 
-#define MEDIUM_RESOLUTION_FACTOR 1.2
-#define LOW_RESOLUTION_FACTOR 1.8
-
+/*
+  如果 PDF 页面分辨率比较小，那么在将其转化为 Cairo 纹理之前，
+  缩放倍数可以设的较大一些，保证 Cairo 纹理清晰
+*/
 #define LOW_RESOLUTION_H 640
 #define LOW_RESOLUTION_V 480
+#define LOW_RESOLUTION_FACTOR 3.0
 
+/*
+  如果 PDF 页面分辨率比较小，那么在将其转化为 Cairo 纹理之前，
+  缩放倍数可以设的较小一些，保证 Cairo 纹理渲染效率
+*/
 #define MEDIUM_RESOLUTION_H 800
 #define MEDIUM_RESOLUTION_V 600
+#define MEDIUM_RESOLUTION_FACTOR 1.5
 
 #define CKD_PAGE_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), CKD_TYPE_PAGE, CkdPagePriv))
 

@@ -4,7 +4,7 @@
 G_DEFINE_TYPE (CkdRing, ckd_ring, CLUTTER_TYPE_ACTOR);
 
 #define CKD_RING_DIAMETER 240
-#define CKD_RING_WIDTH 24
+#define CKD_RING_WIDTH 32
 
 #define CKD_RING_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), CKD_TYPE_RING, CkdRingPriv))
 
@@ -37,9 +37,9 @@ ckd_ring_render (ClutterCairoTexture *actor, cairo_t *cr, gpointer user_data)
 
         cairo_pattern_t *pat = cairo_pattern_create_radial (cx, cy, r_out, cx, cy, r_in);
         cairo_pattern_add_color_stop_rgba (pat, 0.0, 0, 0, 0, 0.0);
-        cairo_pattern_add_color_stop_rgba (pat, 0.1, 0.1, 0.1, 0.1, 0.2);
+        cairo_pattern_add_color_stop_rgba (pat, 0.05, 0.1, 0.1, 0.1, 0.2);
         cairo_pattern_add_color_stop_rgba (pat, 0.5, 0.2, 0.4, 0.8, 1.0);
-        cairo_pattern_add_color_stop_rgba (pat, 0.9, 0.1, 0.1, 0.1, 0.2);
+        cairo_pattern_add_color_stop_rgba (pat, 0.95, 0.1, 0.1, 0.1, 0.2);
         cairo_pattern_add_color_stop_rgba (pat, 1.0, 0, 0, 0, 0.0);
         cairo_set_source (cr, pat);
         cairo_set_fill_rule (cr, CAIRO_FILL_RULE_EVEN_ODD);
@@ -63,7 +63,7 @@ ckd_ring_render (ClutterCairoTexture *actor, cairo_t *cr, gpointer user_data)
         cairo_line_to (cr, cx, cy - r_in);
         cairo_stroke (cr);
         
-        cairo_set_source_rgba (cr, 0.2, 0.4, 0.8, 0.8);
+        cairo_set_source_rgba (cr, 0.74, 0.8, 0.075, 0.8);
         cairo_move_to (cr, cx, cy);
         cairo_line_to (cr, cx + r * cos (theta), cy + r * sin (theta));
         cairo_stroke (cr);

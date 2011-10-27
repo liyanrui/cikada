@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cikada 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-31 23:50+0800\n"
-"PO-Revision-Date: 2011-08-31 23:52+0800\n"
+"POT-Creation-Date: 2011-10-26 15:10+0800\n"
+"PO-Revision-Date: 2011-10-26 15:20+0800\n"
 "Last-Translator: garfileo <liyanrui.m2@gmail.com>\n"
 "Language-Team: Chinese (simplified)\n"
 "Language: zh_CN\n"
@@ -16,18 +16,26 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/cikada.c:10
+#: src/cikada.c:13
 msgid "Set fullscreen mode"
 msgstr "设置全屏"
 
-#: src/cikada.c:11
+#: src/cikada.c:14
 msgid "Set segment length of slides"
 msgstr "设置每次加载的幻灯片序列长度"
 
-#: src/cikada.c:92
-msgid "- Cikada is a presentation tool for PDF slides"
-msgstr "- Cikada 是一款 PDF 文档演示工具"
+#: src/cikada.c:111
+msgid ""
+"filename.pdf\n"
+"\n"
+"Description:\n"
+" Cikada is a presentation tool for PDF slides"
+msgstr ""
+"PDF 文件名\n"
+"\n"
+"简介：\n"
+" Cikada 是一款 PDF 文档演示工具"
 
-#: src/cikada.c:98
+#: src/cikada.c:117
 msgid "You should input PDF file name!\n"
 msgstr "你应当输入 PDF 文件名！\n"

@@ -106,14 +106,12 @@ _on_slides_box_button_press (ClutterActor *actor, ClutterEvent * event, gpointer
 static gboolean
 _on_stage_fullscreen (ClutterStage *stage, gpointer user_data)
 {
-        gfloat w, h;
-        w = clutter_actor_get_width (CLUTTER_ACTOR(stage));
-        h = clutter_actor_get_height (CLUTTER_ACTOR(stage));
-        
+        /* 对演示画面所在的盒子赋以动画，避免全屏时演示画面不能及时更新而出现残影 */
         CkdSlides *slides = user_data;
-        ClutterActor *slides_box;
         
+        ClutterActor *slides_box;
         g_object_get (slides, "box", &slides_box, NULL);
+
         clutter_actor_set_opacity(slides_box, 0);
         clutter_actor_animate (slides_box, CLUTTER_LINEAR, 1000, "opacity", 255, NULL);
 }
@@ -145,9 +143,6 @@ main (int argc, char **argv)
         clutter_stage_set_minimum_size(CLUTTER_STAGE(stage), CKD_STAGE_WIDTH, CKD_STAGE_HEIGHT);
         clutter_stage_set_color (CLUTTER_STAGE (stage), &stage_color);
         clutter_stage_set_user_resizable (CLUTTER_STAGE(stage), TRUE);
-
-        /* 试验：将帧率设为 120 */
-        clutter_set_default_frame_rate (120);
         
         /* 设置全屏。此处的全屏，只对 clutter_stage_get_default 有效，这是 Clutter 自身的问题！！！ */
         if (_ckd_fullscreen) {

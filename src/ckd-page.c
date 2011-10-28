@@ -94,8 +94,6 @@ ckd_page_set_property (GObject *obj, guint prop_id, const GValue *value, GParamS
                 break;
         case PROP_QUALITY:
                 priv->quality = g_value_get_float (value);
-                if (fabsf (priv->quality - DEFAULT_PAGE_QUALITY) < G_MINFLOAT)
-                        break;
                 poppler_page_get_size (priv->pdf_page, &w, &h);
                 clutter_cairo_texture_set_surface_size (CLUTTER_CAIRO_TEXTURE(priv->cairo_texture),
                                                         priv->quality * w, priv->quality * h);

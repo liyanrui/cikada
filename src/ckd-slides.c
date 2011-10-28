@@ -81,7 +81,7 @@ _ckd_slides_index_ring_on_button_press (ClutterActor *actor,
 
 
 static void
-_ckd_slides_set_box (GObject *obj, GParamSpec *pspec, gpointer user_data)
+_ckd_slides_set_environment (GObject *obj, GParamSpec *pspec, gpointer user_data)
 {
         CkdSlides *self = CKD_SLIDES (obj);
         CkdSlidesPriv *priv = CKD_SLIDES_GET_PRIVATE (self);
@@ -111,7 +111,7 @@ _ckd_slides_set_box (GObject *obj, GParamSpec *pspec, gpointer user_data)
 
         /* 创建索引文本背景与索引文本 */
         ClutterActor *stage = clutter_actor_get_stage (priv->box);
-        ClutterColor index_bg = { 0x11, 0x11, 0x11, 0x80 };
+        ClutterColor index_bg = { 0x33, 0x33, 0x33, 0x80 };
         priv->index_box = clutter_rectangle_new_with_color (&index_bg);
         clutter_actor_set_size (priv->index_box, 240, 100);
         clutter_actor_add_constraint (priv->index_box,
@@ -216,7 +216,7 @@ ckd_slides_init (CkdSlides *self)
 {
         CkdSlidesPriv *priv = CKD_SLIDES_GET_PRIVATE (self);
         
-        g_signal_connect (self, "notify::box", G_CALLBACK (_ckd_slides_set_box), NULL);
+        g_signal_connect (self, "notify::box", G_CALLBACK (_ckd_slides_set_environment), NULL);
 }
 
 /********************************************************************************/
@@ -390,47 +390,41 @@ ckd_slides_overview_on  (CkdSlides *self)
         
         /* 让索引环位于 Slides 盒子之后 */
         clutter_container_lower_child (CLUTTER_CONTAINER(stage), priv->index_ring, NULL);
+
+        /* 索引环与 Slide 预览视图各占 Stage 宽度的 0.45，使得二者之间存有一定的间距*/
+        gfloat s = 0.4;        
         
         /* --Begin: Slide */
         gfloat stage_w, stage_h;
         stage_w = clutter_actor_get_width (stage);
         stage_h = clutter_actor_get_height (stage);
-        
-        gfloat cx = 0.5 * stage_w;
-        gfloat cy = 0.5 * stage_h;
-        gfloat s = 0.5;
-        g_object_set (priv->box,
-                      "scale-center-x", cx,
-                      "scale-center-y", cy,
-                      "scale-gravity", CLUTTER_GRAVITY_CENTER,
-                      NULL);
 
         gfloat slide_w, slide_h, offset;
-        g_object_get (priv->current_slide,
-                      "surface-width", &slide_w,
-                      "surface-height", &slide_h,
-                      NULL);
-        offset = 0.25 * slide_w;
-        clutter_actor_animate (priv->box, CLUTTER_LINEAR, CKD_SLIDES_AM_TIME_BASE,
-                               "scale-x", s,
-                               "scale-y", s,
-                               "x", offset,
-                               NULL);
+        g_object_get (priv->current_slide, "surface-width", &slide_w, "surface-height", &slide_h, NULL);        
+
+        gfloat sc_x = 0.5 * (stage_w + slide_w) ;
+        gfloat sc_y = 0.5 * stage_h;
+
+        g_object_set (priv->box, "scale-center-x", sc_x, "scale-center-y", sc_y, NULL);
+        clutter_actor_animate (priv->box, CLUTTER_LINEAR, CKD_SLIDES_AM_TIME_BASE, "scale-x", s, "scale-y", s, NULL);
         /* --End*/
 
         /* --Begin: 索引 */
-        gfloat d = 0.5 * ((slide_w < slide_h) ? slide_w : slide_h);
+        gfloat d = s * ((slide_w < slide_h) ? slide_w : slide_h);
         gfloat r = 0.5 * d;
         clutter_actor_set_size (priv->index_ring, d, d);
         clutter_actor_set_position (priv->index_ring,
-                                    0.25 * (stage_w - slide_w),
-                                    cy - r);
+                                    0.5 * (stage_w - slide_w),
+                                    sc_y - r);
         clutter_actor_set_opacity (priv->index_ring, 0);
-        clutter_actor_set_opacity (priv->index_box, 0);
-        clutter_actor_set_opacity (priv->index, 0);
         clutter_actor_animate (priv->index_ring, CLUTTER_LINEAR, CKD_SLIDES_AM_TIME_BASE, "opacity", 255, NULL);
+
+        clutter_actor_set_opacity (priv->index_box, 0);
         clutter_actor_animate (priv->index_box, CLUTTER_LINEAR, CKD_SLIDES_AM_TIME_BASE, "opacity", 255, NULL);
-        clutter_actor_animate (priv->index, CLUTTER_LINEAR, CKD_SLIDES_AM_TIME_BASE, "opacity", 255, NULL);
+        
+        clutter_actor_set_opacity (priv->index, 0);
+        clutter_actor_animate (priv->index, CLUTTER_LINEAR, CKD_SLIDES_AM_TIME_BASE, "opacity", 255, NULL);      
+        
         /* --End */
 }
 
@@ -443,11 +437,9 @@ ckd_slides_overview_off (CkdSlides *self)
         priv->is_overview = FALSE;
         
         if (_ckd_slides_am_reverse_guard (priv->box)) {
-                clutter_actor_animate (priv->box, CLUTTER_LINEAR, CKD_SLIDES_AM_TIME_BASE,
-                                       "scale-x", 1.0,
-                                       "scale-y", 1.0,
-                                       "x", 0.0,
-                                       NULL);
+                clutter_actor_animate (priv->box, CLUTTER_LINEAR,
+                                       CKD_SLIDES_AM_TIME_BASE,
+                                       "scale-x", 1.0, "scale-y", 1.0, NULL);
         }
         
         if (_ckd_slides_am_reverse_guard (priv->index_ring))

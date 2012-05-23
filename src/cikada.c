@@ -6,7 +6,7 @@
 #define CKD_STAGE_HEIGHT 480
 
 static gboolean _ckd_fullscreen = FALSE;
-static gint     _ckd_segment_length = 3;
+static gint     _ckd_segment_length = 1;
 
 static GOptionEntry _ckd_entries[] =
 {
@@ -128,7 +128,8 @@ main (int argc, char **argv)
         bind_textdomain_codeset (PACKAGE, "UTF-8");
         textdomain (PACKAGE);
         
-        context = g_option_context_new (_("filename.pdf\n\nDescription:\n Cikada is a presentation tool for PDF slides"));
+        context = g_option_context_new (_("filename.pdf\n\nDescription:\n"
+                                          "Cikada is a presentation tool for PDF slides"));
         g_option_context_add_main_entries (context, _ckd_entries, PACKAGE);
 
         if (!g_option_context_parse (context, &argc, &argv, NULL))
@@ -150,7 +151,8 @@ main (int argc, char **argv)
         }
         
         ClutterLayoutManager *layout = clutter_fixed_layout_new ();
-        ClutterActor *slides_box = clutter_box_new (layout);
+        ClutterActor *slides_box = clutter_actor_new ();
+        clutter_actor_set_layout_manager (slides_box, layout);
         clutter_actor_set_size (slides_box, CKD_STAGE_WIDTH, CKD_STAGE_HEIGHT);
         clutter_actor_set_reactive (slides_box, TRUE);
         clutter_container_add_actor (CLUTTER_CONTAINER(stage), slides_box);

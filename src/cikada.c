@@ -1,119 +1,35 @@
 #include <config.h>
 #include <glib/gi18n.h>
-#include "ckd-slides.h"
+#include <gio/gio.h>
+#include "ckd-meta-slides.h"
+#include "ckd-view.h"
+#include "ckd-player.h"
 
 #define CKD_STAGE_WIDTH  640
 #define CKD_STAGE_HEIGHT 480
 
 static gboolean _ckd_fullscreen = FALSE;
-static gint     _ckd_segment_length = 1;
+static gdouble _ckd_quality = 0.8;
 
 static GOptionEntry _ckd_entries[] =
 {
-        {"fullscreen", 'f', 0, G_OPTION_ARG_NONE, &_ckd_fullscreen, N_("Set fullscreen mode"), NULL},
-        {"segment-length", 's', 0, G_OPTION_ARG_INT, &_ckd_segment_length, N_("Set segment length of slides"), "N"},
+        {"fullscreen", 'f', 0, G_OPTION_ARG_NONE, &_ckd_fullscreen,
+         N_("Set fullscreen mode"), NULL},
+        {"quality", 'q', 0, G_OPTION_ARG_DOUBLE, &_ckd_quality,
+         N_("Set image quality with the given factors"), NULL},
         {NULL}
 };
 
-
 static void
-_on_stage_allocation_change (ClutterActor          *actor,
-                             ClutterActorBox       *box,
-                             ClutterAllocationFlags flags,
-                             gpointer               user_data)
+ckd_stage_allocate (ClutterActor *stage,
+                    ClutterActorBox *box,
+                    ClutterAllocationFlags flags,
+                    gpointer view)
 {
-        gfloat w, h;
-        w = clutter_actor_box_get_width (box);
-        h = clutter_actor_box_get_height (box);
+        gfloat w = clutter_actor_box_get_width (box);
+        gfloat h = clutter_actor_box_get_height (box);
 
-        CkdSlides *slides = user_data;
-        ClutterActor *slides_box;
-
-        g_object_get (slides, "box", &slides_box, NULL);
-        clutter_actor_set_size (slides_box, w, h);
-
-        /* 如果视图模式是概览视图，那么就将其关闭 */
-        gboolean is_overview;
-        g_object_get (slides, "is-overview", &is_overview, NULL);
-        if (is_overview)
-                ckd_slides_overview_off (slides);
-}
-
-static gboolean
-_on_stage_key_press (ClutterActor *actor, ClutterEvent *event, gpointer user_data)
-{
-        CkdSlides *slides = user_data;
-        ClutterActor *box;
-        guint keyval = clutter_event_get_key_symbol (event);
-        gboolean is_overview = FALSE;
-        
-        switch (keyval) {
-        case CLUTTER_KEY_Left:
-        case CLUTTER_KEY_Up:
-                ckd_slides_switch_to_next_slide (slides, -1);
-                break;
-        case CLUTTER_KEY_Right:
-        case CLUTTER_KEY_Down:
-                ckd_slides_switch_to_next_slide (slides, 1);
-                break;
-        case CLUTTER_KEY_Escape:
-                break;
-        case CLUTTER_KEY_F11:
-                if (clutter_stage_get_fullscreen (CLUTTER_STAGE(actor)))
-                        clutter_stage_set_fullscreen (CLUTTER_STAGE(actor), FALSE);
-                else
-                        clutter_stage_set_fullscreen (CLUTTER_STAGE(actor), TRUE);
-                break;
-        case CLUTTER_KEY_O:
-        case CLUTTER_KEY_o:
-                g_object_get (slides, "is-overview", &is_overview, NULL);
-                if (!is_overview) 
-                        ckd_slides_overview_on (slides);
-                else
-                        ckd_slides_overview_off (slides);
-                break;
-        default:
-                break;
-        }
-        
-        return TRUE;
-}
-
-static gboolean
-_on_slides_box_button_press (ClutterActor *actor, ClutterEvent * event, gpointer user_data)
-{
-        guint button_pressed;
-        CkdSlides *slides = user_data;
-
-        button_pressed = clutter_event_get_button (event);
-
-        if (button_pressed == 1)
-                ckd_slides_switch_to_next_slide (slides, 1);
-        if (button_pressed == 2){
-                gboolean is_overview = FALSE;
-                g_object_get (slides, "is-overview", &is_overview, NULL);
-                if (!is_overview) 
-                        ckd_slides_overview_on (slides);
-                else
-                        ckd_slides_overview_off (slides);
-        }
-        if (button_pressed == 3)
-                ckd_slides_switch_to_next_slide (slides, -1);
-
-        return TRUE;
-}
-
-static gboolean
-_on_stage_fullscreen (ClutterStage *stage, gpointer user_data)
-{
-        /* 对演示画面所在的盒子赋以动画，避免全屏时演示画面不能及时更新而出现残影 */
-        CkdSlides *slides = user_data;
-        
-        ClutterActor *slides_box;
-        g_object_get (slides, "box", &slides_box, NULL);
-
-        clutter_actor_set_opacity(slides_box, 0);
-        clutter_actor_animate (slides_box, CLUTTER_LINEAR, 1000, "opacity", 255, NULL);
+        clutter_actor_set_size (CLUTTER_ACTOR(view), w, h);
 }
 
 int
@@ -138,43 +54,61 @@ main (int argc, char **argv)
                 g_print (_("You should input PDF file name!\n"));
                 return -1;
         }
-        
+
+        /* @begin: create stage */
         ClutterColor stage_color = { 0x00, 0x00, 0x00, 0xff };
         ClutterActor *stage = clutter_stage_get_default ();
         clutter_stage_set_minimum_size(CLUTTER_STAGE(stage), CKD_STAGE_WIDTH, CKD_STAGE_HEIGHT);
-        clutter_stage_set_color (CLUTTER_STAGE (stage), &stage_color);
         clutter_stage_set_user_resizable (CLUTTER_STAGE(stage), TRUE);
+        clutter_actor_set_background_color (stage, &stage_color);
         
-        /* 设置全屏。此处的全屏，只对 clutter_stage_get_default 有效，这是 Clutter 自身的问题！！！ */
         if (_ckd_fullscreen) {
                 clutter_stage_set_fullscreen (CLUTTER_STAGE(stage), TRUE);
         }
+        /* @end */
+
+        /* @begin: 获取 pdf 文档 */
+        GFile *source = g_file_new_for_path (argv[1]);
+        gchar *pdf_uri = g_file_get_uri (source);
+        PopplerDocument *pdf_doc = poppler_document_new_from_file (pdf_uri, NULL, NULL);
+        g_free (pdf_uri);
+        /* @end */
         
-        ClutterLayoutManager *layout = clutter_fixed_layout_new ();
-        ClutterActor *slides_box = clutter_actor_new ();
-        clutter_actor_set_layout_manager (slides_box, layout);
-        clutter_actor_set_size (slides_box, CKD_STAGE_WIDTH, CKD_STAGE_HEIGHT);
-        clutter_actor_set_reactive (slides_box, TRUE);
-        clutter_container_add_actor (CLUTTER_CONTAINER(stage), slides_box);
-        
-        /* 创建 CkdSlides 实例 */
-        CkdSlides *slides = g_object_new (CKD_TYPE_SLIDES,
-                                          "document-path", argv[1],
-                                          "capacity", _ckd_segment_length,
-                                          "box", slides_box,
+        /* @begin: 创建幻灯片元集及其缓存 */
+        CkdMetaSlides *meta_slides = g_object_new (CKD_TYPE_META_SLIDES,
+                                                   "source",
+                                                   source,
+                                                   "pdf-doc",
+                                                   pdf_doc,
+                                                   "cache-mode",
+                                                   CKD_META_SLIDES_DISK_CACHE,
+                                                   "scale",
+                                                   _ckd_quality * CKD_META_SLIDES_QUALITY_DELTA,
+                                                   NULL);
+        ckd_meta_slides_create_cache (meta_slides);
+        /* @end */
+
+        /* @begin: 创建幻灯片视图 */
+        ClutterActor *slide = ckd_meta_slides_output_slide (meta_slides, 0);
+        ClutterActor *view = g_object_new (CKD_TYPE_VIEW,
+                                           "slide", slide,
+                                           NULL);
+        clutter_actor_set_size (CLUTTER_ACTOR(view), CKD_STAGE_WIDTH, CKD_STAGE_HEIGHT);
+        clutter_actor_add_child (stage, view);
+        /* @end */
+
+        /* @begin: 创建 plaer */
+        CkdPlayer *player = g_object_new (CKD_TYPE_PLAYER,
+                                          "meta-slides", meta_slides,
+                                          "view", view,
                                           NULL);
         
         g_signal_connect (stage, "destroy", G_CALLBACK(clutter_main_quit), NULL);
-        g_signal_connect (stage, "key-press-event", G_CALLBACK (_on_stage_key_press), slides);
-        g_signal_connect (stage, "allocation-changed", G_CALLBACK(_on_stage_allocation_change), slides);
-        g_signal_connect (stage, "fullscreen", G_CALLBACK(_on_stage_fullscreen), slides);
-        g_signal_connect (slides_box, "button-press-event", G_CALLBACK(_on_slides_box_button_press), slides);
+        g_signal_connect (stage, "allocation-changed", G_CALLBACK(ckd_stage_allocate), view);
         
         clutter_actor_show_all (stage);
 
         clutter_main ();
-
-        g_object_unref (G_OBJECT(slides));
         
         return 0;
 }

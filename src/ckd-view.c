@@ -387,7 +387,7 @@ ckd_view_slide_fade_enter (CkdView *self, gpointer data)
         ClutterActor *slide = data;
 
         clutter_actor_set_opacity (slide, 0);
-        clutter_actor_animate (slef, CLUTTER_LINEAR, priv->duration_base,
+        clutter_actor_animate (slide, CLUTTER_LINEAR, priv->duration_base,
                                "opacity", 255,
                                "signal::completed",
                                ckd_view_slide_enter_cb,

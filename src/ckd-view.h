@@ -2,6 +2,7 @@
 #define CKD_VIEW_H
 
 #include <clutter/clutter.h>
+#include "ckd-slide-script.h"
 
 #define CKD_TYPE_VIEW (ckd_view_get_type ())
 #define CKD_VIEW(o) (G_TYPE_CHECK_INSTANCE_CAST((o), CKD_TYPE_VIEW, CkdView))
@@ -20,21 +21,8 @@ struct _CkdViewClass {
         ClutterActorClass parent_class;
 };
 
-typedef enum {
-        CKD_SLIDE_SCALE_ENTERING,
-        CKD_SLIDE_FADE_ENTERING
-} CkdViewSlideInEffect;
-
-typedef enum {
-        CKD_SLIDE_LEFT_EXIT,
-        CKD_SLIDE_RIGHT_EXIT,
-        CKD_SLIDE_UP_EXIT,
-        CKD_SLIDE_DOWN_EXIT,
-        CKD_SLIDE_FADE_EXIT,
-} CkdViewSlideOutEffect;
-
 GType ckd_view_get_type (void);
 
-void ckd_view_transit_slide (CkdView *self, ClutterActor *next_slide);
+void ckd_view_transit_slide (CkdView *self, ClutterActor *next_slide, gint i);
 
 #endif

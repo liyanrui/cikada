@@ -1,29 +1,26 @@
-cikada-ckd-slide.o: ckd-slide.c /usr/include/math.h \
- /usr/include/features.h /usr/include/sys/cdefs.h \
- /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h \
- /usr/include/gnu/stubs-64.h /usr/include/bits/huge_val.h \
- /usr/include/bits/huge_valf.h /usr/include/bits/huge_vall.h \
- /usr/include/bits/inf.h /usr/include/bits/nan.h \
- /usr/include/bits/mathdef.h /usr/include/bits/mathcalls.h \
- /usr/include/bits/mathinline.h ckd-slide.h \
- /usr/include/clutter-1.0/clutter/clutter.h \
- /usr/include/clutter-1.0/clutter/clutter-config.h \
+cikada-ckd-page.o: ckd-page.c /usr/include/math.h /usr/include/features.h \
+ /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h \
+ /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h \
+ /usr/include/bits/huge_val.h /usr/include/bits/huge_valf.h \
+ /usr/include/bits/huge_vall.h /usr/include/bits/inf.h \
+ /usr/include/bits/nan.h /usr/include/bits/mathdef.h \
+ /usr/include/bits/mathcalls.h /usr/include/bits/mathinline.h ckd-page.h \
  /usr/include/glib-2.0/glib.h /usr/include/glib-2.0/glib/galloca.h \
  /usr/include/glib-2.0/glib/gtypes.h \
- /usr/lib/glib-2.0/include/glibconfig.h \
+ /usr/lib64/glib-2.0/include/glibconfig.h \
  /usr/include/glib-2.0/glib/gmacros.h \
- /usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/stddef.h \
- /usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include-fixed/limits.h \
- /usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include-fixed/syslimits.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/4.5.3/include/stddef.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/4.5.3/include-fixed/limits.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/4.5.3/include-fixed/syslimits.h \
  /usr/include/limits.h \
- /usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/float.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/4.5.3/include/float.h \
  /usr/include/glib-2.0/glib/gversionmacros.h /usr/include/time.h \
  /usr/include/bits/time.h /usr/include/bits/types.h \
  /usr/include/bits/typesizes.h /usr/include/glib-2.0/glib/garray.h \
  /usr/include/glib-2.0/glib/gasyncqueue.h \
  /usr/include/glib-2.0/glib/gthread.h \
  /usr/include/glib-2.0/glib/gatomic.h /usr/include/glib-2.0/glib/gerror.h \
- /usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/stdarg.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/4.5.3/include/stdarg.h \
  /usr/include/glib-2.0/glib/gquark.h \
  /usr/include/glib-2.0/glib/gbacktrace.h /usr/include/signal.h \
  /usr/include/bits/sigset.h /usr/include/bits/signum.h \
@@ -82,7 +79,8 @@ cikada-ckd-slide.o: ckd-slide.c /usr/include/math.h \
  /usr/include/glib-2.0/glib/deprecated/gthread.h /usr/include/pthread.h \
  /usr/include/endian.h /usr/include/bits/endian.h /usr/include/sched.h \
  /usr/include/bits/sched.h /usr/include/bits/pthreadtypes.h \
- /usr/include/bits/setjmp.h \
+ /usr/include/bits/setjmp.h /usr/include/clutter-1.0/clutter/clutter.h \
+ /usr/include/clutter-1.0/clutter/clutter-config.h \
  /usr/include/clutter-1.0/clutter/clutter-types.h \
  /usr/include/cairo/cairo.h /usr/include/cairo/cairo-version.h \
  /usr/include/cairo/cairo-features.h \
@@ -169,7 +167,7 @@ cikada-ckd-slide.o: ckd-slide.c /usr/include/math.h \
  /usr/include/atk-1.0/atk/atkvalue.h /usr/include/atk-1.0/atk/atkwindow.h \
  /usr/include/cogl/cogl/cogl.h /usr/include/cogl/cogl/cogl-defines.h \
  /usr/include/GL/gl.h /usr/include/GL/glext.h /usr/include/inttypes.h \
- /usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/stdint.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/4.5.3/include/stdint.h \
  /usr/include/stdint.h /usr/include/bits/wchar.h \
  /usr/include/cogl/cogl/cogl-object.h \
  /usr/include/cogl/cogl/cogl1-context.h \
@@ -519,11 +517,7 @@ cikada-ckd-slide.o: ckd-slide.c /usr/include/math.h \
 
 /usr/include/bits/mathinline.h:
 
-ckd-slide.h:
-
-/usr/include/clutter-1.0/clutter/clutter.h:
-
-/usr/include/clutter-1.0/clutter/clutter-config.h:
+ckd-page.h:
 
 /usr/include/glib-2.0/glib.h:
 
@@ -531,19 +525,19 @@ ckd-slide.h:
 
 /usr/include/glib-2.0/glib/gtypes.h:
 
-/usr/lib/glib-2.0/include/glibconfig.h:
+/usr/lib64/glib-2.0/include/glibconfig.h:
 
 /usr/include/glib-2.0/glib/gmacros.h:
 
-/usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/stddef.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/4.5.3/include/stddef.h:
 
-/usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include-fixed/limits.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/4.5.3/include-fixed/limits.h:
 
-/usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include-fixed/syslimits.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/4.5.3/include-fixed/syslimits.h:
 
 /usr/include/limits.h:
 
-/usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/float.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/4.5.3/include/float.h:
 
 /usr/include/glib-2.0/glib/gversionmacros.h:
 
@@ -565,7 +559,7 @@ ckd-slide.h:
 
 /usr/include/glib-2.0/glib/gerror.h:
 
-/usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/stdarg.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/4.5.3/include/stdarg.h:
 
 /usr/include/glib-2.0/glib/gquark.h:
 
@@ -716,6 +710,10 @@ ckd-slide.h:
 /usr/include/bits/pthreadtypes.h:
 
 /usr/include/bits/setjmp.h:
+
+/usr/include/clutter-1.0/clutter/clutter.h:
+
+/usr/include/clutter-1.0/clutter/clutter-config.h:
 
 /usr/include/clutter-1.0/clutter/clutter-types.h:
 
@@ -913,7 +911,7 @@ ckd-slide.h:
 
 /usr/include/inttypes.h:
 
-/usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/stdint.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/4.5.3/include/stdint.h:
 
 /usr/include/stdint.h:
 

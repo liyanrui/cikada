@@ -43,15 +43,14 @@ ckd_slide_allocate (ClutterActor *actor, const ClutterActorBox *box, ClutterAllo
 {
         CkdSlide *self = CKD_SLIDE (actor);
         CkdSlidePriv *priv = CKD_SLIDE_GET_PRIVATE (self);
- 
+       
         CLUTTER_ACTOR_CLASS (ckd_slide_parent_class)->allocate (actor, box, flags);
  
         gfloat w = clutter_actor_box_get_width (box);
         gfloat h = clutter_actor_box_get_height (box);
         
-        ClutterActorBox page_box = { 0, 0, w, h };
- 
-        clutter_actor_allocate (priv->content, &page_box, flags);
+        ClutterActorBox content_box = { 0, 0, w, h };
+        clutter_actor_allocate (priv->content, &content_box, flags);
 }
 
 static void
@@ -91,6 +90,13 @@ draw_page (ClutterCanvas *canvas, cairo_t *cr, int width, int height, gpointer d
         cairo_paint (cr);
         cairo_restore (cr);
         cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
+
+        /* @begin: 绘制白色背景 */
+        cairo_rectangle (cr, 0, 0, width, height);
+        cairo_set_source_rgba (cr, 1.0, 1.0, 1.0, 1.0);
+        cairo_fill (cr);
+        /* @end */
+
         poppler_page_render (POPPLER_PAGE(data), cr);
         return TRUE;
 }

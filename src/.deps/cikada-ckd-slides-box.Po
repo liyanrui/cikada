@@ -1,11 +1,11 @@
-cikada-ckd-slide.o: ckd-slide.c /usr/include/math.h \
+cikada-ckd-slides-box.o: ckd-slides-box.c /usr/include/math.h \
  /usr/include/features.h /usr/include/sys/cdefs.h \
  /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h \
  /usr/include/gnu/stubs-64.h /usr/include/bits/huge_val.h \
  /usr/include/bits/huge_valf.h /usr/include/bits/huge_vall.h \
  /usr/include/bits/inf.h /usr/include/bits/nan.h \
  /usr/include/bits/mathdef.h /usr/include/bits/mathcalls.h \
- /usr/include/bits/mathinline.h ckd-slide.h \
+ /usr/include/bits/mathinline.h ckd-slides-box.h \
  /usr/include/clutter-1.0/clutter/clutter.h \
  /usr/include/clutter-1.0/clutter/clutter-config.h \
  /usr/include/glib-2.0/glib.h /usr/include/glib-2.0/glib/galloca.h \
@@ -475,21 +475,7 @@ cikada-ckd-slide.o: ckd-slide.c /usr/include/math.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-texture.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-timeline.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-timeout-pool.h \
- /usr/include/clutter-1.0/clutter/deprecated/clutter-util.h \
- /usr/include/poppler/glib/poppler.h \
- /usr/include/poppler/glib/poppler-features.h \
- /usr/include/poppler/glib/poppler-document.h \
- /usr/include/poppler/glib/poppler.h \
- /usr/include/poppler/glib/poppler-page.h \
- /usr/include/poppler/glib/poppler-layer.h \
- /usr/include/poppler/glib/poppler-action.h \
- /usr/include/poppler/glib/poppler-form-field.h \
- /usr/include/poppler/glib/poppler-enums.h \
- /usr/include/poppler/glib/poppler-attachment.h \
- /usr/include/poppler/glib/poppler-annot.h \
- /usr/include/poppler/glib/poppler-date.h \
- /usr/include/poppler/glib/poppler-movie.h \
- /usr/include/poppler/glib/poppler-media.h
+ /usr/include/clutter-1.0/clutter/deprecated/clutter-util.h
 
 /usr/include/math.h:
 
@@ -519,7 +505,7 @@ cikada-ckd-slide.o: ckd-slide.c /usr/include/math.h \
 
 /usr/include/bits/mathinline.h:
 
-ckd-slide.h:
+ckd-slides-box.h:
 
 /usr/include/clutter-1.0/clutter/clutter.h:
 
@@ -1550,31 +1536,3 @@ ckd-slide.h:
 /usr/include/clutter-1.0/clutter/deprecated/clutter-timeout-pool.h:
 
 /usr/include/clutter-1.0/clutter/deprecated/clutter-util.h:
-
-/usr/include/poppler/glib/poppler.h:
-
-/usr/include/poppler/glib/poppler-features.h:
-
-/usr/include/poppler/glib/poppler-document.h:
-
-/usr/include/poppler/glib/poppler.h:
-
-/usr/include/poppler/glib/poppler-page.h:
-
-/usr/include/poppler/glib/poppler-layer.h:
-
-/usr/include/poppler/glib/poppler-action.h:
-
-/usr/include/poppler/glib/poppler-form-field.h:
-
-/usr/include/poppler/glib/poppler-enums.h:
-
-/usr/include/poppler/glib/poppler-attachment.h:
-
-/usr/include/poppler/glib/poppler-annot.h:
-
-/usr/include/poppler/glib/poppler-date.h:
-
-/usr/include/poppler/glib/poppler-movie.h:
-
-/usr/include/poppler/glib/poppler-media.h:

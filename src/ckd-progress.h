@@ -1,15 +1,14 @@
 #ifndef CKD_PROGRESS_H
 #define CKD_PROGRESS_H
 
-#include <glib.h>
 #include <clutter/clutter.h>
 
-#define CKD_TYPE_PAGE (ckd_progress_get_type ())
-#define CKD_PROGRESS(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), CKD_TYPE_PAGE, CkdProgress))
-#define CKD_IS_PAGE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), CKD_TYPE_PAGE))
-#define CKD_PROGRESS_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), CKD_TYPE_PAGE, CkdProgressClass))
-#define CKD_IS_PAGE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), CKD_TYPE_PAGE))
-#define CKD_PROGRESS_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), CKD_TYPE_PAGE, CkdProgressClass))
+#define CKD_TYPE_PROGRESS (ckd_progress_get_type ())
+#define CKD_PROGRESS(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), CKD_TYPE_PROGRESS, CkdProgress))
+#define CKD_IS_PROGRESS(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), CKD_TYPE_PROGRESS))
+#define CKD_PROGRESS_CLASS(c) (G_TYPE_CHECK_CLASS_CAST ((c), CKD_TYPE_PROGRESS, CkdProgressClass))
+#define CKD_IS_PROGRESS_CLASS(c) (G_TYPE_CHECK_CLASS_TYPE ((c), CKD_TYPE_PROGRESS))
+#define CKD_PROGRESS_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), CKD_TYPE_PROGRESS, CkdProgressClass))
 
 typedef struct _CkdProgress CkdProgress;
 typedef struct _CkdProgressClass CkdProgressClass;
@@ -24,7 +23,6 @@ struct _CkdProgressClass {
 
 GType ckd_progress_get_type (void);
 
-/* Public functons */
-ClutterActor *ckd_progress_new (void);
+void ckd_progress_am (ClutterActor *self, gdouble tick);
 
 #endif

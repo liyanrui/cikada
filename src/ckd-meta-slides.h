@@ -4,6 +4,7 @@
 #include <glib-object.h>
 #include <poppler.h>
 #include <clutter/clutter.h>
+#include "ckd-slide-script.h"
 
 #define CKD_META_SLIDES_QUALITY_MIN 0.1
 #define CKD_META_SLIDES_QUALITY_MAX 2.1
@@ -40,8 +41,10 @@ enum _CkdMetaSlidesCacheMode
 
 GType ckd_meta_slides_get_type (void);
 
-CkdMetaSlides *ckd_meta_slides_new (PopplerDocument *pdf, guint cache_mode);
 void ckd_meta_slides_create_cache (CkdMetaSlides *self);
-ClutterActor *ckd_meta_slides_output_slide (CkdMetaSlides *self, gint i);
+
+ClutterActor *ckd_meta_slides_get_slide (CkdMetaSlides *self, gint i);
+
+CkdMetaEntry *ckd_meta_slides_get_meta_entry (CkdMetaSlides *self, gint i);
 
 #endif

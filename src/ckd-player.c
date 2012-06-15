@@ -26,7 +26,7 @@ ckd_player_button_press (ClutterActor *a, ClutterEvent * e, gpointer data)
 {
         guint button_pressed;
         CkdPlayer *player = data;
-        
+
         button_pressed = clutter_event_get_button (e);
 
         switch (button_pressed) {
@@ -123,23 +123,31 @@ ckd_player_class_init (CkdPlayerClass *klass)
 
         GParamSpec *props[N_CKD_PLAYER_PROPS] = {NULL,};
         props[PROP_CKD_PLAYER_VIEW] =
-                g_param_spec_pointer ("view", "View", "View",
-                                      G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY);
+                g_param_spec_pointer ("view",
+                                      "View",
+                                      "View",
+                                      G_PARAM_WRITABLE
+                                      | G_PARAM_CONSTRUCT_ONLY);
         props[PROP_CKD_PLAYER_META_SLIDES] =
-                g_param_spec_pointer ("meta-slides", "Meta Slides", "Meta Slides",
-                                      G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY);
-        g_object_class_install_properties (base_class, N_CKD_PLAYER_PROPS, props);
+                g_param_spec_pointer ("meta-slides",
+                                      "Meta Slides",
+                                      "Meta Slides",
+                                      G_PARAM_WRITABLE
+                                      | G_PARAM_CONSTRUCT_ONLY);
+        g_object_class_install_properties (base_class,
+                                           N_CKD_PLAYER_PROPS,
+                                           props);
 }
 
 static
 void ckd_player_init (CkdPlayer *self)
 {
         CkdPlayerPriv *priv = CKD_PLAYER_GET_PRIVATE (self);
-        
+
         priv->meta_slides = NULL;
         priv->view = NULL;
 
-        
+
         priv->i = 0;
 }
 
@@ -148,13 +156,24 @@ ckd_player_forward (CkdPlayer *self)
 {
         CkdPlayerPriv *priv = CKD_PLAYER_GET_PRIVATE (self);
         ClutterActor *slide = NULL;
-        
-        slide = ckd_meta_slides_output_slide (priv->meta_slides, priv->i + 1);
+        CkdMetaEntry *e0 = NULL;
+        CkdMetaEntry *e1 = NULL;
+
+        slide = ckd_meta_slides_get_slide (priv->meta_slides, priv->i + 1);
+
         if (slide) {
+                e0 = ckd_meta_slides_get_meta_entry (priv->meta_slides, priv->i);
+                e1 = ckd_meta_slides_get_meta_entry (priv->meta_slides, priv->i + 1);
+
                 priv->i++;
-                g_object_set (priv->view, "slide-out-effect", CKD_SLIDE_FADE_EXIT, NULL);
-                g_object_set (priv->view, "slide-in-effect", CKD_SLIDE_SCALE_ENTERING, NULL);
-                ckd_view_transit_slide (priv->view, slide);
+                g_object_set (priv->view,
+                              "slide-out-effect",
+                              e0->exit, NULL);
+                g_object_set (priv->view,
+                              "slide-in-effect",
+                              e1->enter, NULL);
+
+                ckd_view_transit_slide (priv->view, slide, priv->i);
         }
 }
 
@@ -163,12 +182,18 @@ ckd_player_rewind (CkdPlayer *self)
 {
         CkdPlayerPriv *priv = CKD_PLAYER_GET_PRIVATE (self);
         ClutterActor *slide = NULL;
-        
-        slide = ckd_meta_slides_output_slide (priv->meta_slides, priv->i - 1);
+
+        CkdMetaEntry *e0 = NULL;
+        CkdMetaEntry *e1 = NULL;
+
+        e0 = ckd_meta_slides_get_meta_entry (priv->meta_slides, priv->i);
+        e1 = ckd_meta_slides_get_meta_entry (priv->meta_slides, priv->i - 1);
+
+        slide = ckd_meta_slides_get_slide (priv->meta_slides, priv->i - 1);
         if (slide) {
                 priv->i--;
-                g_object_set (priv->view, "slide-out-effect", CKD_SLIDE_FADE_EXIT, NULL);
-                g_object_set (priv->view, "slide-in-effect", CKD_SLIDE_SCALE_ENTERING, NULL);
-                ckd_view_transit_slide (priv->view, slide);
+                g_object_set (priv->view, "slide-out-effect", e0->exit, NULL);
+                g_object_set (priv->view, "slide-in-effect", e1->enter, NULL);
+                ckd_view_transit_slide (priv->view, slide, priv->i);
         }
 }

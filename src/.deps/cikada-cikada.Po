@@ -1,7 +1,7 @@
 cikada-cikada.o: cikada.c ../config.h /usr/include/glib-2.0/glib/gi18n.h \
  /usr/include/glib-2.0/glib.h /usr/include/glib-2.0/glib/galloca.h \
  /usr/include/glib-2.0/glib/gtypes.h \
- /usr/lib/glib-2.0/include/glibconfig.h \
+ /usr/lib64/glib-2.0/include/glibconfig.h \
  /usr/include/glib-2.0/glib/gmacros.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/stddef.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include-fixed/limits.h \
@@ -499,7 +499,7 @@ cikada-cikada.o: cikada.c ../config.h /usr/include/glib-2.0/glib/gi18n.h \
 
 /usr/include/glib-2.0/glib/gtypes.h:
 
-/usr/lib/glib-2.0/include/glibconfig.h:
+/usr/lib64/glib-2.0/include/glibconfig.h:
 
 /usr/include/glib-2.0/glib/gmacros.h:
 

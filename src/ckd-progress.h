@@ -23,6 +23,6 @@ struct _CkdProgressClass {
 
 GType ckd_progress_get_type (void);
 
-void ckd_progress_am (ClutterActor *self, gdouble tick);
+void ckd_progress_am (ClutterActor *self);
 
 #endif

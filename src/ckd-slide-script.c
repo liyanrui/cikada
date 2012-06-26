@@ -254,10 +254,10 @@ get_duration_from_text (gchar *text)
 static CkdSlideEnteringEffect
 get_entering_effect (gchar *effect)
 {
-        CkdSlideEnteringEffect enter = CKD_SLIDE_FADE_ENTER;
+        CkdSlideEnteringEffect enter = CKD_SLIDE_AM_FADE_ENTER;
 
         if (g_str_equal (effect, "fade"))
-                enter = CKD_SLIDE_FADE_ENTER;
+                enter = CKD_SLIDE_AM_FADE_ENTER;
         else if (g_str_equal (effect, "scale"))
                 enter = CKD_SLIDE_SCALE_ENTER;
         else if (g_str_equal (effect, "down"))
@@ -265,9 +265,9 @@ get_entering_effect (gchar *effect)
         else if (g_str_equal (effect, "up"))
                 enter = CKD_SLIDE_UP_ENTER;
         else if (g_str_equal (effect, "right"))
-                enter = CKD_SLIDE_RIGHT_ENTER;
+                enter = CKD_SLIDE_AM_RIGHT_ENTER;
         else if (g_str_equal (effect, "left"))
-                enter = CKD_SLIDE_LEFT_ENTER;
+                enter = CKD_SLIDE_AM_LEFT_ENTER;
 
         return enter;
 }
@@ -275,10 +275,10 @@ get_entering_effect (gchar *effect)
 static CkdSlideExitEffect
 get_exit_effect (gchar *effect)
 {
-        CkdSlideExitEffect exit = CKD_SLIDE_FADE_EXIT;
+        CkdSlideExitEffect exit = CKD_SLIDE_AM_FADE_EXIT;
 
         if (g_str_equal (effect, "fade"))
-                exit = CKD_SLIDE_FADE_EXIT;
+                exit = CKD_SLIDE_AM_FADE_EXIT;
         else if (g_str_equal (effect, "scale"))
                 exit = CKD_SLIDE_SCALE_EXIT;
         else if (g_str_equal (effect, "down"))
@@ -286,9 +286,9 @@ get_exit_effect (gchar *effect)
         else if (g_str_equal (effect, "up"))
                 exit = CKD_SLIDE_UP_EXIT;
         else if (g_str_equal (effect, "right"))
-                exit = CKD_SLIDE_RIGHT_EXIT;
+                exit = CKD_SLIDE_AM_RIGHT_EXIT;
         else if (g_str_equal (effect, "left"))
-                exit = CKD_SLIDE_LEFT_EXIT;
+                exit = CKD_SLIDE_AM_LEFT_EXIT;
 
         return exit;
 }
@@ -560,8 +560,8 @@ ckd_slide_script_out_meta_entry_list (GNode *script, gint n_of_slides)
         } else {
                 for (gint i = 0; i < n_of_slides; i++) {
                         entry = g_slice_alloc (sizeof(CkdMetaEntry));
-                        entry->enter = CKD_SLIDE_FADE_ENTER;
-                        entry->exit  = CKD_SLIDE_FADE_EXIT;
+                        entry->enter = CKD_SLIDE_AM_FADE_ENTER;
+                        entry->exit  = CKD_SLIDE_AM_FADE_EXIT;
                         meta_entry_list = g_list_append (meta_entry_list, entry);
                 }
         }

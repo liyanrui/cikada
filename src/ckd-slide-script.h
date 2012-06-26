@@ -5,22 +5,22 @@
 
 typedef enum {
         CKD_SLIDE_NULL_ENTER,
-        CKD_SLIDE_LEFT_ENTER,
-        CKD_SLIDE_RIGHT_ENTER,
+        CKD_SLIDE_AM_LEFT_ENTER,
+        CKD_SLIDE_AM_RIGHT_ENTER,
         CKD_SLIDE_UP_ENTER,
         CKD_SLIDE_DOWN_ENTER,
         CKD_SLIDE_SCALE_ENTER,
-        CKD_SLIDE_FADE_ENTER
+        CKD_SLIDE_AM_FADE_ENTER
 } CkdSlideEnteringEffect;
 
 typedef enum {
         CKD_SLIDE_NULL_EXIT,
-        CKD_SLIDE_LEFT_EXIT,
-        CKD_SLIDE_RIGHT_EXIT,
+        CKD_SLIDE_AM_LEFT_EXIT,
+        CKD_SLIDE_AM_RIGHT_EXIT,
         CKD_SLIDE_UP_EXIT,
         CKD_SLIDE_DOWN_EXIT,
         CKD_SLIDE_SCALE_EXIT,
-        CKD_SLIDE_FADE_EXIT,
+        CKD_SLIDE_AM_FADE_EXIT,
 } CkdSlideExitEffect;
 
 typedef struct _CkdMetaEntry CkdMetaEntry;

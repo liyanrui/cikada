@@ -1,5 +1,6 @@
 #include <poppler.h>
 #include <glib/gprintf.h>
+#include <glib/gi18n.h>
 #include <gio/gio.h>
 #include "ckd-meta-slides.h"
 #include "ckd-slide.h"
@@ -24,6 +25,7 @@ struct _CkdMetaSlidesPriv {
 
         /* 在硬盘缓存模式中用于记录缓存线程的进度 */
         gint next_cached_slide_id;
+        
         /* 配置 */
         GNode *script;
 };
@@ -35,6 +37,8 @@ enum {
         PROP_CKD_META_SLIDES_CACHE_MODE,
         PROP_CKD_META_SLIDES_CACHE,
         PROP_CKD_META_SLIDES_SCALE,
+        PROP_CKD_META_SLIDES_N_OF_SLIDES,
+        PROP_CKD_META_SLIDES_SCRIPT,
         N_CKD_META_SLIDES_PROPS
 };
 
@@ -74,7 +78,7 @@ ckd_meta_slides_set_property (GObject *obj,
                         g_string_append (script_path, ".ckd");
                         GFile *script_file = g_file_new_for_path (script_path->str);
                         if (g_file_query_exists (script_file, NULL))
-                                priv->script = ckd_slide_script_new (script_path->str);
+                                priv->script = ckd_script_new (script_path->str);
                         g_strfreev (splitted);
                         g_string_free (script_path, TRUE);
                         g_free (path);
@@ -90,12 +94,17 @@ ckd_meta_slides_set_property (GObject *obj,
                         priv->cache = g_array_new (FALSE,
                                                    FALSE,
                                                    sizeof(CkdMetaEntry *));
+
+                        /* \begin 避免 n_of_slides 为 1 的情况 */
+                        gint t = priv->n_of_slides - 1;
+                        if (t == 0)
+                                t == 1;
+                        /* \end */
                         for (gint i = 0; i < priv->n_of_slides; i++) {
                                 meta_entry = g_slice_alloc (sizeof(CkdMetaEntry));
                                 meta_entry->slide = NULL;
-                                meta_entry->duration = 60;
-                                meta_entry->enter = CKD_SLIDE_FADE_ENTER;
-                                meta_entry->exit = CKD_SLIDE_FADE_EXIT;
+                                meta_entry->am = CKD_SLIDE_AM_FADE;
+                                meta_entry->tick = (gfloat)i / (gfloat)t;
                                 meta_entry->text = NULL;
                                 g_array_append_val (priv->cache, meta_entry);
                         }
@@ -138,6 +147,12 @@ ckd_meta_slides_get_property (GObject *obj,
                 break;
         case PROP_CKD_META_SLIDES_SCALE:
                 g_value_set_double (value, priv->scale);
+                break;
+        case PROP_CKD_META_SLIDES_N_OF_SLIDES:
+                g_value_set_int (value, priv->n_of_slides);
+                break;
+        case PROP_CKD_META_SLIDES_SCRIPT:
+                g_value_set_pointer (value, priv->script);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, property_id, pspec);
@@ -182,7 +197,7 @@ ckd_meta_slides_dispose (GObject *obj)
         }
 
         if (priv->script) {
-                ckd_slide_script_free (priv->script);
+                ckd_script_free (priv->script);
                 priv->script = NULL;
         }
 
@@ -222,9 +237,9 @@ ckd_meta_slides_class_init (CkdMetaSlidesClass *klass)
                                   CKD_META_SLIDES_DISK_CACHE,
                                   G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
         props[PROP_CKD_META_SLIDES_CACHE] =
-                g_param_spec_pointer ("meta-data",
-                                      "Meta Data",
-                                      "Meta Data",
+                g_param_spec_pointer ("cache",
+                                      "Cache",
+                                      "Cache",
                                       G_PARAM_READABLE);
         props[PROP_CKD_META_SLIDES_SCALE] =
                 g_param_spec_double ("scale", "Scale", "Scale",
@@ -233,6 +248,19 @@ ckd_meta_slides_class_init (CkdMetaSlidesClass *klass)
                                      1.0,
                                      G_PARAM_READWRITE
                                      | G_PARAM_CONSTRUCT_ONLY);
+        props[PROP_CKD_META_SLIDES_N_OF_SLIDES] =
+                g_param_spec_int ("n-of-slides",
+                                  "n of slides",
+                                  "n of slides",
+                                  G_MININT,
+                                  G_MAXINT,
+                                  0,
+                                  G_PARAM_READABLE);
+        props[PROP_CKD_META_SLIDES_SCRIPT] =
+                g_param_spec_pointer ("script",
+                                      "Script",
+                                      "Script",
+                                      G_PARAM_READABLE);
         g_object_class_install_properties (base_class,
                                            N_CKD_META_SLIDES_PROPS,
                                            props);
@@ -364,7 +392,7 @@ ckd_meta_slides_create_disk_cache (CkdMetaSlides *self)
 
 static gpointer
 ckd_meta_slides_cache_thread (gpointer data)
-{
+{       
         CkdMetaSlides *self = data;
         CkdMetaSlidesPriv *priv = CKD_META_SLIDES_GET_PRIVATE (self);
         if (!priv->pdf_doc)
@@ -374,7 +402,7 @@ ckd_meta_slides_cache_thread (gpointer data)
         g_timer_start (t);
         ckd_meta_slides_create_disk_cache (self);
         g_timer_stop (t);
-        g_print ("硬盘缓冲时间：%f 秒\n", g_timer_elapsed (t, NULL));
+        g_print (_("the time of loading slides: %fs\n"), g_timer_elapsed (t, NULL));
         g_timer_destroy (t);
 }
 
@@ -386,8 +414,8 @@ ckd_meta_slides_create_cache (CkdMetaSlides *self)
 
         if (priv->script) {
                 /* 幻灯片备注还未实现 */
-                GList *list = ckd_slide_script_out_meta_entry_list (priv->script,
-                                                                    priv->n_of_slides);
+                GList *list = ckd_script_out_meta_entry_list (priv->script,
+                                                              priv->n_of_slides);
                 gint i = 0;
                 CkdMetaEntry *e1, *e2;
                 GList *iter;
@@ -396,16 +424,13 @@ ckd_meta_slides_create_cache (CkdMetaSlides *self)
                      iter = g_list_next (iter), i++) {
                         e1 = iter->data;
                         e2 = g_array_index (priv->cache, CkdMetaEntry *, i);
-                        if (e1->duration > 0)
-                                e2->duration = e1->duration;
-                        if (e1->enter != CKD_SLIDE_NULL_ENTER)
-                                e2->enter = e1->enter;
-                        if (e1->exit != CKD_SLIDE_NULL_EXIT)
-                                e2->exit = e1->exit;
+                        if (e1->am != CKD_SLIDE_AM_NULL)
+                                e2->am = e1->am;
+                        e2->tick = e1->tick;
                 }
         }
 
-        if (priv->cache_mode == CKD_META_SLIDES_MEM_CACHE) {
+        if (priv->cache_mode == CKD_META_SLIDES_NO_CACHE) {
                 for (gint i = 0; i < priv->n_of_slides; i++) {
                         entry = g_array_index (priv->cache, CkdMetaEntry *, i);
                         entry->slide =
@@ -434,7 +459,7 @@ ckd_meta_slides_get_slide (CkdMetaSlides *self, gint i)
 
         entry = g_array_index (priv->cache, CkdMetaEntry *, i);
 
-        if (priv->cache_mode == CKD_META_SLIDES_MEM_CACHE) {
+        if (priv->cache_mode == CKD_META_SLIDES_NO_CACHE) {
                 meta_slide = entry->slide;
                 slide = ckd_slide_new_for_poppler_page (meta_slide,
                                                         priv->scale);

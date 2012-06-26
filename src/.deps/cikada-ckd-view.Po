@@ -9,7 +9,7 @@ cikada-ckd-view.o: ckd-view.c /usr/include/math.h /usr/include/features.h \
  /usr/include/clutter-1.0/clutter/clutter-config.h \
  /usr/include/glib-2.0/glib.h /usr/include/glib-2.0/glib/galloca.h \
  /usr/include/glib-2.0/glib/gtypes.h \
- /usr/lib64/glib-2.0/include/glibconfig.h \
+ /usr/lib/glib-2.0/include/glibconfig.h \
  /usr/include/glib-2.0/glib/gmacros.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/stddef.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include-fixed/limits.h \
@@ -474,8 +474,21 @@ cikada-ckd-view.o: ckd-view.c /usr/include/math.h /usr/include/features.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-texture.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-timeline.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-timeout-pool.h \
- /usr/include/clutter-1.0/clutter/deprecated/clutter-util.h \
- ckd-slide-script.h ckd-progress.h
+ /usr/include/clutter-1.0/clutter/deprecated/clutter-util.h ckd-script.h \
+ ckd-meta-slides.h /usr/include/poppler/glib/poppler.h \
+ /usr/include/poppler/glib/poppler-features.h \
+ /usr/include/poppler/glib/poppler-document.h \
+ /usr/include/poppler/glib/poppler.h \
+ /usr/include/poppler/glib/poppler-page.h \
+ /usr/include/poppler/glib/poppler-layer.h \
+ /usr/include/poppler/glib/poppler-action.h \
+ /usr/include/poppler/glib/poppler-form-field.h \
+ /usr/include/poppler/glib/poppler-enums.h \
+ /usr/include/poppler/glib/poppler-attachment.h \
+ /usr/include/poppler/glib/poppler-annot.h \
+ /usr/include/poppler/glib/poppler-date.h \
+ /usr/include/poppler/glib/poppler-movie.h \
+ /usr/include/poppler/glib/poppler-media.h
 
 /usr/include/math.h:
 
@@ -517,7 +530,7 @@ ckd-view.h:
 
 /usr/include/glib-2.0/glib/gtypes.h:
 
-/usr/lib64/glib-2.0/include/glibconfig.h:
+/usr/lib/glib-2.0/include/glibconfig.h:
 
 /usr/include/glib-2.0/glib/gmacros.h:
 
@@ -1537,6 +1550,34 @@ ckd-view.h:
 
 /usr/include/clutter-1.0/clutter/deprecated/clutter-util.h:
 
-ckd-slide-script.h:
+ckd-script.h:
 
-ckd-progress.h:
+ckd-meta-slides.h:
+
+/usr/include/poppler/glib/poppler.h:
+
+/usr/include/poppler/glib/poppler-features.h:
+
+/usr/include/poppler/glib/poppler-document.h:
+
+/usr/include/poppler/glib/poppler.h:
+
+/usr/include/poppler/glib/poppler-page.h:
+
+/usr/include/poppler/glib/poppler-layer.h:
+
+/usr/include/poppler/glib/poppler-action.h:
+
+/usr/include/poppler/glib/poppler-form-field.h:
+
+/usr/include/poppler/glib/poppler-enums.h:
+
+/usr/include/poppler/glib/poppler-attachment.h:
+
+/usr/include/poppler/glib/poppler-annot.h:
+
+/usr/include/poppler/glib/poppler-date.h:
+
+/usr/include/poppler/glib/poppler-movie.h:
+
+/usr/include/poppler/glib/poppler-media.h:

@@ -5,6 +5,5 @@ cikada_SOURCES = cikada.c \
 		 ckd-meta-slides.c \
 		 ckd-slide.c \
 		 ckd-view.c \
-		 ckd-player.c \
-		 ckd-slide-script.c \
-		 ckd-progress.c
+		 ckd-script.c \
+		 ckd-player.c 

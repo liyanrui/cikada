@@ -25,7 +25,6 @@ struct _CkdPlayerClass {
 
 GType ckd_player_get_type (void);
 
-void ckd_player_forward (CkdPlayer *self);
-void ckd_player_rewind  (CkdPlayer *self);
+void ckd_player_step (CkdPlayer *self, gint step);
 
 #endif

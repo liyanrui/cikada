@@ -1,43 +1,163 @@
 #include <math.h>
 #include "ckd-view.h"
-#include "ckd-progress.h"
+#include "ckd-meta-slides.h"
 
-G_DEFINE_TYPE (CkdView, ckd_view, CLUTTER_TYPE_ACTOR);
+G_DEFINE_TYPE (CkdView, ckd_view, G_TYPE_OBJECT);
 
 #define CKD_VIEW_GET_PRIVATE(o) (\
         G_TYPE_INSTANCE_GET_PRIVATE ((o), CKD_TYPE_VIEW, CkdViewPriv))
 
 typedef struct _CkdViewPriv CkdViewPriv;
 struct _CkdViewPriv {
+        ClutterActor *stage;
+        CkdMetaSlides *meta_slides;
+
+        /* 当前幻灯片及其编号 */
         ClutterActor *slide;
-        gfloat time_axis_width;
+        gint slide_number;
+
+        /* 幻灯片与窗口之间的空白区域 */
         gfloat padding;
-        guint am_duration_base;
 
-        CkdSlideEnteringEffect slide_in_effect;
-        CkdSlideExitEffect slide_out_effect;
-
-        ClutterActor *progress;
-        
-        gfloat slide_w;
-        gfloat slide_h;
-        gfloat slide_x;
-        gfloat slide_y;
+        /* \begin 进度条 */
+        ClutterActor *bar;
+        ClutterActor *nonius;
+        ClutterColor *bar_color;
+        ClutterColor *nonius_color;
+        gfloat bar_vsize;
+        /* \end */
 };
 
 enum {
         PROP_CKD_VIEW_0,
+        PROP_CKD_VIEW_STAGE,
+        PROP_CKD_VIEW_META_SLIDES,
         PROP_CKD_VIEW_SLIDE,
-        PROP_CKD_VIEW_TIME_AXIS_WIDTH,
+        PROP_CKD_VIEW_SLIDE_NUMBER,
+        PROP_CKD_VIEW_BAR,
+        PROP_CKD_VIEW_NONIUS,
         PROP_CKD_VIEW_PADDING,
-        PROP_CKD_VIEW_AM_DURATION_BASE,
-        PROP_CKD_VIEW_SLIDE_IN_EFFECT,
-        PROP_CKD_VIEW_SLIDE_OUT_EFFECT,
+        PROP_CKD_VIEW_BAR_COLOR,
+        PROP_CKD_VIEW_BAR_VSIZE,
+        PROP_CKD_VIEW_NONIUS_COLOR,
         N_CKD_VIEW_PROPS
 };
 
-/* 动画回调函数 */
-typedef void (*CkdViewAnimationFunc) (CkdView *, gpointer);
+static void
+ckd_view_allocate_slide (CkdView *self, ClutterActor *slide)
+{
+        CkdViewPriv *priv = CKD_VIEW_GET_PRIVATE (self);
+
+        gfloat stage_w = clutter_actor_get_width (priv->stage);
+        gfloat stage_h = clutter_actor_get_height (priv->stage);
+        gfloat inner_w = stage_w - 2.0 * priv->padding;
+        gfloat inner_h = stage_h - 2.0 * priv->padding - priv->bar_vsize;
+
+        gfloat slide_w, slide_h, slide_r;
+        slide_w = clutter_actor_get_width (slide);
+        slide_h = clutter_actor_get_height (slide);
+        slide_r = slide_w / slide_h;
+
+        if (inner_w < slide_r * inner_h) {
+                slide_w = inner_w;
+                slide_h = inner_w / slide_r;
+        } else {
+                slide_h = inner_h;
+                slide_w = inner_h * slide_r;
+        }
+        
+        gfloat x1, y1, x2, y2;
+        x1 = 0.5 * (0.0 + stage_w - slide_w);
+        y1 = 0.5 * (0.0 + stage_h - slide_h - priv->bar_vsize);
+
+        clutter_actor_set_position (slide, x1, y1);
+        clutter_actor_set_size (slide, slide_w, slide_h);
+}
+
+void
+ckd_view_get_nonius_position (CkdView *self, gfloat *x, gfloat *y) 
+{
+        CkdViewPriv *priv = CKD_VIEW_GET_PRIVATE (self);
+        
+        gint n;
+        g_object_get (priv->meta_slides, "n-of-slides", &n, NULL);
+
+        CkdMetaEntry *e = ckd_meta_slides_get_meta_entry (priv->meta_slides, priv->slide_number);
+        gfloat progress = e->tick;
+
+        gfloat bar_x, bar_y, bar_w, bar_h;
+        clutter_actor_get_position (priv->bar, &bar_x, &bar_y);
+        clutter_actor_get_size (priv->bar, &bar_w, &bar_h);
+         
+        *x = bar_x + progress * (bar_w - priv->bar_vsize);
+        *y = bar_y;
+}
+
+static void
+ckd_view_allocate_progress_bar (CkdView *self)
+{
+        CkdViewPriv *priv = CKD_VIEW_GET_PRIVATE (self);
+        
+        gfloat slide_w, slide_h, slide_x, slide_y;
+        clutter_actor_get_size (priv->slide, &slide_w, &slide_h);
+        clutter_actor_get_position (priv->slide, &slide_x, &slide_y);
+
+        /*\begin 设置进度条的尺寸与位置 */
+        gfloat bar_x, bar_y, bar_w, bar_h;
+        bar_x = slide_x;
+        bar_y = slide_y + slide_h;
+        bar_w = slide_w;
+        bar_h = priv->bar_vsize;
+        clutter_actor_set_size (priv->bar, bar_w, bar_h);
+        clutter_actor_set_position (priv->bar, bar_x, bar_y);
+        /* \end */
+
+        /* \begin 设置滑块的尺寸与位置 */
+        gfloat nonius_x, nonius_y;
+        ckd_view_get_nonius_position (self, &nonius_x, &nonius_y);
+        clutter_actor_set_position (priv->nonius, nonius_x, nonius_y);
+        /*\end */
+}
+
+static void
+ckd_view_on_stage_allocation (ClutterActor *stage,
+                              ClutterActorBox *box,
+                              ClutterAllocationFlags flags,
+                              gpointer data)
+{
+        CkdView *view = data;
+        CkdViewPriv *priv = CKD_VIEW_GET_PRIVATE (view);
+
+        /*\begin 调整当前幻灯片以及缓存中幻灯片的尺寸与位置 */
+        ckd_view_allocate_slide (view, priv->slide);
+        /*\end */
+        
+        ckd_view_allocate_progress_bar (view);
+}
+
+static void
+ckd_view_config_stage (CkdView *self, ClutterActor *stage)
+{
+        CkdViewPriv *priv = CKD_VIEW_GET_PRIVATE (self);
+        
+        priv->stage = stage;
+        
+        /* 将进度条置入场景 */
+        clutter_actor_add_child (stage, priv->bar);
+        clutter_actor_add_child (stage, priv->nonius);
+        clutter_actor_set_child_above_sibling (stage, priv->nonius, priv->bar);
+        
+        /* 在设置 meta-slides 属性时，可能 stage 还未被设置，
+           因此这里保证要将初始的幻灯片添加到 stage 中 */
+        if (priv->slide) {
+                clutter_actor_add_child (priv->stage, priv->slide);
+        }
+        
+        g_signal_connect (priv->stage,
+                          "allocation-changed",
+                          G_CALLBACK(ckd_view_on_stage_allocation),
+                          self);      
+}
 
 static void
 ckd_view_set_property (GObject *o, guint prop, const GValue *v, GParamSpec *p)
@@ -46,25 +166,41 @@ ckd_view_set_property (GObject *o, guint prop, const GValue *v, GParamSpec *p)
         CkdViewPriv *priv = CKD_VIEW_GET_PRIVATE (self);
 
         switch (prop) {
-        case PROP_CKD_VIEW_SLIDE:
-                priv->slide = g_value_get_pointer (v);
-                clutter_actor_add_child (CLUTTER_ACTOR(self), priv->slide);
-                clutter_actor_queue_relayout (CLUTTER_ACTOR(self));
+        case PROP_CKD_VIEW_STAGE:
+                ckd_view_config_stage (self, g_value_get_pointer (v));
                 break;
-        case PROP_CKD_VIEW_TIME_AXIS_WIDTH:
-                priv->time_axis_width = g_value_get_float (v);
+        case PROP_CKD_VIEW_META_SLIDES:
+                priv->meta_slides = g_value_get_pointer (v);
+                /*\begin 向视图内放置第一张幻灯片 */
+                priv->slide = ckd_meta_slides_get_slide (priv->meta_slides,
+                                                         priv->slide_number);
+                if (priv->stage) {
+                        clutter_actor_add_child (priv->stage, priv->slide);
+                }
+                /*\end */
                 break;
         case PROP_CKD_VIEW_PADDING:
                 priv->padding = g_value_get_float (v);
                 break;
-        case PROP_CKD_VIEW_AM_DURATION_BASE:
-                priv->am_duration_base = g_value_get_uint (v);
+        case PROP_CKD_VIEW_BAR_COLOR:
+                if (priv->bar_color)
+                        clutter_color_free (priv->bar_color);
+                priv->bar_color = g_value_get_pointer (v);
+                clutter_actor_set_background_color (priv->bar, priv->bar_color);
                 break;
-        case PROP_CKD_VIEW_SLIDE_IN_EFFECT:
-                priv->slide_in_effect = g_value_get_int (v);
+        case PROP_CKD_VIEW_BAR_VSIZE:
+                priv->bar_vsize = g_value_get_float (v);
+                clutter_actor_set_height (priv->bar, priv->bar_vsize);
+                /* 将 nonius 的尺寸也设为该值 */
+                clutter_actor_set_size (priv->nonius,
+                                        priv->bar_vsize,
+                                        priv->bar_vsize);
                 break;
-        case PROP_CKD_VIEW_SLIDE_OUT_EFFECT:
-                priv->slide_out_effect = g_value_get_int (v);
+        case PROP_CKD_VIEW_NONIUS_COLOR:
+                if (priv->nonius_color)
+                        clutter_color_free (priv->nonius_color);
+                priv->nonius_color = g_value_get_pointer (v);
+                clutter_actor_set_background_color (priv->nonius, priv->nonius_color);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (o, prop, p);
@@ -79,14 +215,23 @@ ckd_view_get_property (GObject *o, guint prop, GValue *v, GParamSpec *p)
         CkdViewPriv *priv = CKD_VIEW_GET_PRIVATE (self);
 
         switch (prop) {
+        case PROP_CKD_VIEW_STAGE:
+                g_value_set_pointer (v, priv->stage);
+                break;
+        case PROP_CKD_VIEW_META_SLIDES:
+                g_value_set_pointer (v, priv->meta_slides);
+                break;
         case PROP_CKD_VIEW_SLIDE:
                 g_value_set_pointer (v, priv->slide);
                 break;
-        case PROP_CKD_VIEW_TIME_AXIS_WIDTH:
-                g_value_set_float (v, priv->time_axis_width);
+        case PROP_CKD_VIEW_SLIDE_NUMBER:
+                g_value_set_int (v, priv->slide_number);
                 break;
-        case PROP_CKD_VIEW_PADDING:
-                g_value_set_float (v, priv->padding);
+        case PROP_CKD_VIEW_NONIUS:
+                g_value_set_pointer (v, priv->nonius);
+                break;
+        case PROP_CKD_VIEW_BAR:
+                g_value_set_pointer (v, priv->bar);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (o, prop, p);
@@ -95,162 +240,120 @@ ckd_view_get_property (GObject *o, guint prop, GValue *v, GParamSpec *p)
 }
 
 static void
-ckd_view_destroy (ClutterActor *a)
+ckd_view_dispose (GObject *o)
 {
-        CkdView *self = CKD_VIEW (a);
+        CkdView *self = CKD_VIEW (o);
         CkdViewPriv *priv = CKD_VIEW_GET_PRIVATE (self);
+
+        if (priv->meta_slides) {
+                g_object_unref (priv->meta_slides);
+                priv->meta_slides = NULL;
+        }
 
         if (priv->slide) {
                 clutter_actor_destroy (priv->slide);
                 priv->slide = NULL;
         }
 
-        if (CLUTTER_ACTOR_CLASS (ckd_view_parent_class)->destroy)
-                CLUTTER_ACTOR_CLASS (ckd_view_parent_class)->destroy (a);
-}
-
-static void
-ckd_slides_allocate_slide (CkdView *self,
-                           const ClutterActorBox *box,
-                           ClutterAllocationFlags f)
-{
-
-        CkdViewPriv *priv = CKD_VIEW_GET_PRIVATE (self);
-        ClutterActor *slide = priv->slide;
-        gfloat time_axis_width = priv->time_axis_width;
-        gfloat padding = priv->padding;
-
-        gfloat inner_w, inner_h, slide_w, slide_h, slide_r;
-
-        inner_w = clutter_actor_box_get_width (box) - 2.0 * padding;
-        inner_h = clutter_actor_box_get_height (box)
-                - time_axis_width - 2.0 * padding;
-
-        slide_w = clutter_actor_get_width (slide);
-        slide_h = clutter_actor_get_height (slide);
-        slide_r = slide_w / slide_h;
-
-        if (inner_w < slide_r * inner_h) {
-                slide_w = inner_w;
-                slide_h = inner_w / slide_r;
-        } else {
-                slide_h = inner_h;
-                slide_w = inner_h * slide_r;
+        if (priv->bar) {
+                clutter_actor_destroy (priv->bar);
+                priv->bar = NULL;                
         }
         
-        gfloat x1, y1, x2, y2;
-        x1 = 0.5 * (box->x1 + box->x2 - slide_w);
-        y1 = 0.5 * (box->y1 + box->y2 - slide_h - time_axis_width);
-        x2 = x1 + slide_w;
-        y2 = y1 + slide_h;
+        if (priv->nonius) {
+                clutter_actor_destroy (priv->nonius);
+                priv->nonius = NULL;                
+        }
 
-        /* @begin: 为幻灯片分配空间 */
-        ClutterActorBox *slide_box = clutter_actor_box_new (x1, y1, x2, y2);
-        clutter_actor_allocate (slide, slide_box, f);
-        clutter_actor_box_free (slide_box);
-        /* @end */
-        
-        /* @begin: 记录当前幻灯片的尺寸与位置 */
-        priv->slide_w = slide_w;
-        priv->slide_h = slide_h;
-        priv->slide_x = x1;
-        priv->slide_y = y1;
-        /* @end */
+        if (priv->bar_color) {
+                clutter_color_free (priv->bar_color);
+                priv->bar_color = NULL;
+        }
 
-        /* @begin: 为进度条分配空间 */
-        ClutterActorBox *progress_box = clutter_actor_box_new (priv->slide_x,
-                                                               priv->slide_y + priv->slide_h,
-                                                               priv->slide_x + priv->slide_w,
-                                                               priv->slide_y
-                                                               + priv->slide_h
-                                                               + priv->time_axis_width);
-        
-        clutter_actor_allocate (priv->progress, progress_box, f);
-        clutter_actor_box_free (progress_box);
-        /* @end */
+        if (priv->nonius_color) {
+                clutter_color_free (priv->nonius_color);
+                priv->nonius_color = NULL;
+        }
+                
+        G_OBJECT_CLASS (ckd_view_parent_class)->dispose (o);
 }
 
 static void
-ckd_view_allocate (ClutterActor *a,
-                   const ClutterActorBox *b,
-                   ClutterAllocationFlags f)
-{
-        CkdView *self = CKD_VIEW (a);
-        CkdViewPriv *priv = CKD_VIEW_GET_PRIVATE (self);
-
-        CLUTTER_ACTOR_CLASS (ckd_view_parent_class)->allocate (a, b, f);
-
-        ckd_slides_allocate_slide (self, b, f);
+ckd_view_finalize (GObject *o)
+{      
+        G_OBJECT_CLASS (ckd_view_parent_class)->finalize (o);
 }
 
 static void
-ckd_view_paint (ClutterActor *a)
+ckd_view_class_init (CkdViewClass *c)
 {
-        CkdView *self = CKD_VIEW (a);
-        CkdViewPriv *priv = CKD_VIEW_GET_PRIVATE (self);
+        g_type_class_add_private (c, sizeof (CkdViewPriv));
 
-        clutter_actor_paint (priv->slide);
-        clutter_actor_paint (priv->progress);
-}
-
-static void
-ckd_view_class_init (CkdViewClass *klass)
-{
-        g_type_class_add_private (klass, sizeof (CkdViewPriv));
-
-        ClutterActorClass *actor_class = CLUTTER_ACTOR_CLASS (klass);
-        actor_class->destroy = ckd_view_destroy;
-        actor_class->paint = ckd_view_paint;
-        actor_class->allocate = ckd_view_allocate;
-
-        GObjectClass *base_class = G_OBJECT_CLASS (klass);
+        GObjectClass *base_class = G_OBJECT_CLASS (c);
         base_class->set_property = ckd_view_set_property;
         base_class->get_property = ckd_view_get_property;
-
+        base_class->dispose      = ckd_view_dispose;
+        base_class->finalize     = ckd_view_finalize;
+        
         GParamSpec *props[N_CKD_VIEW_PROPS] = {NULL,};
-        props[PROP_CKD_VIEW_SLIDE] =
-                g_param_spec_pointer ("slide",
-                                      "Slide",
-                                      "Slide",
-                                      G_PARAM_READWRITE);
-        props[PROP_CKD_VIEW_TIME_AXIS_WIDTH] =
-                g_param_spec_float ("time-axis-width",
-                                    "Time Axis Width",
-                                    "Time Axis Width",
-                                    G_MINFLOAT,
-                                    G_MAXFLOAT,
-                                    20.0,
-                                    G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
-        props[PROP_CKD_VIEW_PADDING] =
-                g_param_spec_float ("padding", "Padding", "Padding",
-                                    0.0,
-                                    G_MAXFLOAT,
-                                    10.0,
-                                    G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
-        props[PROP_CKD_VIEW_AM_DURATION_BASE] =
-                g_param_spec_uint ("am-duration-base",
-                                   "Animation Duration Base",
-                                   "Animation Duration Base",
-                                  0,
-                                  G_MAXUINT,
-                                  1000,
-                                  G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
-        props[PROP_CKD_VIEW_SLIDE_IN_EFFECT] =
-                g_param_spec_int ("slide-in-effect",
-                                  "Slide In Effect",
-                                  "Slide In Effect",
-                                  G_MININT,
-                                  G_MAXINT,
-                                  CKD_SLIDE_FADE_ENTER,
-                                  G_PARAM_READWRITE);
-        props[PROP_CKD_VIEW_SLIDE_OUT_EFFECT] =
-                g_param_spec_int ("slide-out-effect",
-                                  "Slide Out Effect",
-                                  "Slide Out Effect",
-                                  G_MININT,
-                                  G_MAXINT,
-                                  CKD_SLIDE_FADE_EXIT,
-                                  G_PARAM_READWRITE);
+        
+        GParamFlags r_flag = G_PARAM_READABLE;
+        GParamFlags w_co_flags = G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY;
+        GParamFlags rw_co_flags = G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY;
+        
+        props[PROP_CKD_VIEW_STAGE] = g_param_spec_pointer ("stage",
+                                                           "Stage",
+                                                           "Stage",
+                                                           rw_co_flags);
+        
+        props[PROP_CKD_VIEW_META_SLIDES] = g_param_spec_pointer ("meta-slides",
+                                                                 "Meta Slides",
+                                                                 "Meta Slides",
+                                                                 rw_co_flags);
+
+        props[PROP_CKD_VIEW_SLIDE] = g_param_spec_pointer ("slide",
+                                                           "Slide",
+                                                           "Slide",
+                                                           r_flag);
+
+        props[PROP_CKD_VIEW_SLIDE_NUMBER] = g_param_spec_int ("slide-number",
+                                                                "Slide Number",
+                                                                "Slide Number",
+                                                                0, G_MAXINT, 0,
+                                                                r_flag);
+        
+        props[PROP_CKD_VIEW_NONIUS] = g_param_spec_pointer ("nonius",
+                                                           "Nonius",
+                                                           "Nonius",
+                                                           r_flag);
+
+        props[PROP_CKD_VIEW_BAR] = g_param_spec_pointer ("bar",
+                                                         "Bar",
+                                                         "Bar",
+                                                         r_flag);
+        
+        props[PROP_CKD_VIEW_PADDING] = g_param_spec_float ("padding",
+                                                           "Padding",
+                                                           "Padding",
+                                                           0.0, G_MAXFLOAT, 10.0,
+                                                           w_co_flags);
+        
+        props[PROP_CKD_VIEW_BAR_COLOR] = g_param_spec_pointer ("bar-color",
+                                                               "Bar Color",
+                                                               "Bar Color",
+                                                               w_co_flags);
+        
+        props[PROP_CKD_VIEW_BAR_VSIZE] = g_param_spec_float ("bar-vsize",
+                                                             "Bar Vertical size",
+                                                             "Bar Vertical size",
+                                                             0.0, G_MAXFLOAT, 20.0,
+                                                             w_co_flags);
+
+        props[PROP_CKD_VIEW_NONIUS_COLOR] = g_param_spec_pointer ("nonius-color",
+                                                                  "Nonius Color",
+                                                                  "Nonius Color",
+                                                                  w_co_flags);
+        
         g_object_class_install_properties (base_class, N_CKD_VIEW_PROPS, props);
 }
 
@@ -259,467 +362,28 @@ ckd_view_init (CkdView *self)
 {
         CkdViewPriv *priv = CKD_VIEW_GET_PRIVATE (self);
 
-        priv->slide = NULL;
-        priv->time_axis_width = 0.0;
-        priv->padding = 0.0;
-
-        priv->slide_in_effect = CKD_SLIDE_FADE_ENTER;
-        priv->slide_out_effect = CKD_SLIDE_FADE_EXIT;
-
-        priv->slide_w = 0.0;
-        priv->slide_h = 0.0;
-        priv->slide_x = 0.0;
-        priv->slide_y = 0.0;
-
-        ClutterColor *bg = clutter_color_new (50, 50, 50, 255);
-        ClutterColor *fg = clutter_color_new (150, 0, 0, 255);
-        priv->progress = g_object_new (CKD_TYPE_PROGRESS,
-                                       "background", bg,
-                                       "foreground", fg,
-                                       NULL);
-        clutter_actor_add_child (CLUTTER_ACTOR(self), priv->progress);
-}
-
-static void
-ckd_view_slide_enter_cb (ClutterAnimation *animation, ClutterActor *actor)
-{
-        ClutterActor *source = clutter_clone_get_source (CLUTTER_CLONE(actor));
-
-        /* 幻灯片退出动画可能会破坏 source，所以要对 source 的父 Actor 的存在性进行检测 */
-        ClutterActor *view = clutter_actor_get_parent (source);
-        if (view) {
-                ClutterActor *stage = clutter_actor_get_parent (view);
-                if (stage) {
-                        /* 让视图居于场景的最上层，盖住仍在进行幻灯片退出动画 */
-                        clutter_actor_show (source);
-                        clutter_actor_set_child_above_sibling (stage, view, NULL);
-                }
-        }
-
-        clutter_actor_destroy (actor);
-}
-
-static void
-ckd_view_slide_exit_cb (ClutterAnimation *animation, ClutterActor *actor)
-{
-        clutter_actor_destroy (actor);
-}
-
-static void
-ckd_view_slide_left_exit (CkdView *self, gpointer data)
-{
-        CkdViewPriv *priv = CKD_VIEW_GET_PRIVATE (self);
-        ClutterActor *slide = data;
-
-        gfloat view_w, view_h;
-        clutter_actor_get_size (CLUTTER_ACTOR(self), &view_w, &view_h);
-
-        /* @begin: 当前幻灯片的移出动画 */
-        clutter_actor_get_size (CLUTTER_ACTOR(self), &view_w, &view_h);
-        clutter_actor_animate (slide,
-                               CLUTTER_EASE_IN_OUT_CUBIC,
-                               priv->am_duration_base,
-                               "x", -view_w,
-                               "opacity", 0,
-                               "signal::completed",
-                               ckd_view_slide_exit_cb,
-                               slide,
-                               NULL);
-        /* @end */
-
-}
-
-static void
-ckd_view_slide_right_exit (CkdView *self, gpointer data)
-{
-        CkdViewPriv *priv = CKD_VIEW_GET_PRIVATE (self);
-        ClutterActor *slide = data;
-
-        gfloat view_w, view_h;
-        clutter_actor_get_size (CLUTTER_ACTOR(self), &view_w, &view_h);
-
-        /* @begin: 当前幻灯片的移出动画 */
-        clutter_actor_get_size (CLUTTER_ACTOR(self), &view_w, &view_h);
-        clutter_actor_animate (slide,
-                               CLUTTER_EASE_IN_OUT_CUBIC,
-                               priv->am_duration_base,
-                               "x", view_w,
-                               "opacity", 0,
-                               "signal::completed",
-                               ckd_view_slide_exit_cb,
-                               slide,
-                               NULL);
-        /* @end */
-
-}
-
-static void
-ckd_view_slide_up_exit (CkdView *self, gpointer data)
-{
-        CkdViewPriv *priv = CKD_VIEW_GET_PRIVATE (self);
-        ClutterActor *slide = data;
-
-        gfloat view_w, view_h;
-        clutter_actor_get_size (CLUTTER_ACTOR(self), &view_w, &view_h);
-
-        /* @begin: 当前幻灯片的移出动画 */
-        clutter_actor_get_size (CLUTTER_ACTOR(self), &view_w, &view_h);
-        clutter_actor_animate (slide,
-                               CLUTTER_EASE_IN_OUT_CUBIC,
-                               priv->am_duration_base,
-                               "y", -view_h,
-                               "opacity", 0,
-                               "signal::completed",
-                               ckd_view_slide_exit_cb,
-                               slide,
-                               NULL);
-        /* @end */
-
-}
-
-static void
-ckd_view_slide_down_exit (CkdView *self, gpointer data)
-{
-        CkdViewPriv *priv = CKD_VIEW_GET_PRIVATE (self);
-        ClutterActor *slide = data;
-
-        gfloat view_w, view_h;
-        clutter_actor_get_size (CLUTTER_ACTOR(self), &view_w, &view_h);
-
-        /* @begin: 当前幻灯片的移出动画 */
-        clutter_actor_get_size (CLUTTER_ACTOR(self), &view_w, &view_h);
-        clutter_actor_animate (slide,
-                               CLUTTER_EASE_IN_OUT_CUBIC,
-                               priv->am_duration_base,
-                               "y", view_h,
-                               "opacity", 0,
-                               "signal::completed",
-                               ckd_view_slide_exit_cb,
-                               slide,
-                               NULL);
-        /* @end */
-}
-
-static void
-ckd_view_slide_scale_exit (CkdView *self, gpointer data)
-{
-        CkdViewPriv *priv = CKD_VIEW_GET_PRIVATE (self);
-        ClutterActorBox view_box;
-        ClutterActor *slide = data;
-
-        clutter_actor_get_allocation_box (CLUTTER_ACTOR(self), &view_box);
-
-        gdouble scale_x, scale_y;
-        clutter_actor_get_scale (slide, &scale_x, &scale_y);
-        clutter_actor_set_scale_full (slide,
-                                      scale_x,
-                                      scale_y,
-                                      0.5 * (view_box.x1 + view_box.x2),
-                                      priv->slide_y + 0.5 * priv->slide_h);
-        clutter_actor_animate (slide, CLUTTER_LINEAR, priv->am_duration_base,
-                               "scale-x", 1.618,
-                               "scale-y", 1.618,
-                               "opacity", 0,
-                               "signal::completed",
-                               ckd_view_slide_exit_cb,
-                               slide,
-                               NULL);
-}
-
-static void
-ckd_view_slide_fade_exit (CkdView *self, gpointer data)
-{
-        CkdViewPriv *priv = CKD_VIEW_GET_PRIVATE (self);
-        ClutterActor *slide = data;
-
-        clutter_actor_set_opacity (slide, 255);
-        clutter_actor_animate (slide, CLUTTER_LINEAR, priv->am_duration_base,
-                               "opacity", 0,
-                               "signal::completed",
-                               ckd_view_slide_exit_cb,
-                               slide,
-                               NULL);
-}
-
-static void
-ckd_view_slide_left_enter (CkdView *self, gpointer data)
-{
-        CkdViewPriv *priv = CKD_VIEW_GET_PRIVATE (self);
-        ClutterActor *slide = data;
-
-        gfloat view_w, view_h;
-        clutter_actor_get_size (CLUTTER_ACTOR(self), &view_w, &view_h);
-
-        gfloat x, y;
-        clutter_actor_get_position (slide, &x, &y);
-
-        /* @begin: 当前幻灯片的进入动画 */
-        clutter_actor_get_size (CLUTTER_ACTOR(self), &view_w, &view_h);
-        clutter_actor_set_position (slide, -view_w, y);
-        clutter_actor_set_opacity (slide, 0);
-        clutter_actor_animate (slide,
-                               CLUTTER_EASE_IN_OUT_CUBIC,
-                               priv->am_duration_base,
-                               "x", x,
-                               "opacity", 255,
-                               "signal::completed",
-                               ckd_view_slide_enter_cb,
-                               slide,
-                               NULL);
-        /* @end */
-}
-
-static void
-ckd_view_slide_right_enter (CkdView *self, gpointer data)
-{
-        CkdViewPriv *priv = CKD_VIEW_GET_PRIVATE (self);
-        ClutterActor *slide = data;
-
-        gfloat view_w, view_h;
-        clutter_actor_get_size (CLUTTER_ACTOR(self), &view_w, &view_h);
-
-        gfloat x, y;
-        clutter_actor_get_position (slide, &x, &y);
-
-        /* @begin: 当前幻灯片的进入动画 */
-        clutter_actor_get_size (CLUTTER_ACTOR(self), &view_w, &view_h);
-        clutter_actor_set_position (slide, view_w, y);
-        clutter_actor_set_opacity (slide, 0);
-        clutter_actor_animate (slide,
-                               CLUTTER_EASE_IN_OUT_CUBIC,
-                               priv->am_duration_base,
-                               "x", x,
-                               "opacity", 255,
-                               "signal::completed",
-                               ckd_view_slide_enter_cb,
-                               slide,
-                               NULL);
-        /* @end */
-}
-
-static void
-ckd_view_slide_up_enter (CkdView *self, gpointer data)
-{
-        CkdViewPriv *priv = CKD_VIEW_GET_PRIVATE (self);
-        ClutterActor *slide = data;
-
-        gfloat view_w, view_h;
-        clutter_actor_get_size (CLUTTER_ACTOR(self), &view_w, &view_h);
-
-        gfloat x, y;
-        clutter_actor_get_position (slide, &x, &y);
-
-        /* @begin: 当前幻灯片的进入动画 */
-        clutter_actor_get_size (CLUTTER_ACTOR(self), &view_w, &view_h);
-        clutter_actor_set_position (slide, x, -view_h);
-        clutter_actor_set_opacity (slide, 0);
-        clutter_actor_animate (slide,
-                               CLUTTER_EASE_IN_OUT_CUBIC,
-                               priv->am_duration_base,
-                               "y", y,
-                               "opacity", 255,
-                               "signal::completed",
-                               ckd_view_slide_enter_cb,
-                               slide,
-                               NULL);
-        /* @end */
-}
-
-static void
-ckd_view_slide_down_enter (CkdView *self, gpointer data)
-{
-        CkdViewPriv *priv = CKD_VIEW_GET_PRIVATE (self);
-        ClutterActor *slide = data;
-
-        gfloat view_w, view_h;
-        clutter_actor_get_size (CLUTTER_ACTOR(self), &view_w, &view_h);
-
-        gfloat x, y;
-        clutter_actor_get_position (slide, &x, &y);
-
-        /* @begin: 当前幻灯片的进入动画 */
-        clutter_actor_get_size (CLUTTER_ACTOR(self), &view_w, &view_h);
-        clutter_actor_set_position (slide, x, view_h);
-        clutter_actor_set_opacity (slide, 0);
-        clutter_actor_animate (slide,
-                               CLUTTER_EASE_IN_OUT_CUBIC,
-                               priv->am_duration_base,
-                               "y", y,
-                               "opacity", 255,
-                               "signal::completed",
-                               ckd_view_slide_enter_cb,
-                               slide,
-                               NULL);
-        /* @end */
-}
-
-static void
-ckd_view_slide_scale_enter (CkdView *self, gpointer data)
-{
-        CkdViewPriv *priv = CKD_VIEW_GET_PRIVATE (self);
-        ClutterActorBox view_box;
-        ClutterActor *slide = data;
-
-        clutter_actor_get_allocation_box (CLUTTER_ACTOR(self), &view_box);
-        clutter_actor_set_scale_full (slide,
-                                      0.618,
-                                      0.618,
-                                      0.5 * (view_box.x1 + view_box.x2),
-                                      priv->slide_y + 0.5 * priv->slide_h);
-        clutter_actor_set_opacity (slide, 0);
-        clutter_actor_animate (slide, CLUTTER_LINEAR, priv->am_duration_base,
-                               "scale-x", 1.0,
-                               "scale-y", 1.0,
-                               "opacity", 255,
-                               "signal::completed",
-                               ckd_view_slide_enter_cb,
-                               slide,
-                               NULL);
-}
-
-static void
-ckd_view_slide_fade_enter (CkdView *self, gpointer data)
-{
-        CkdViewPriv *priv = CKD_VIEW_GET_PRIVATE (self);
-        ClutterActor *slide = data;
-
-        clutter_actor_set_opacity (slide, 0);
-        clutter_actor_animate (slide, CLUTTER_LINEAR, priv->am_duration_base,
-                               "opacity", 255,
-                               "signal::completed",
-                               ckd_view_slide_enter_cb,
-                               slide,
-                               NULL);
-}
-
-static void
-ckd_view_slide_enter (CkdView *self,
-                      CkdViewAnimationFunc ckd_view_animate,
-                      gpointer data)
-{
-        CkdViewPriv *priv = CKD_VIEW_GET_PRIVATE (self);
-        ClutterActorBox view_box;
-        ClutterActor *slide = data;
-
-        g_object_set (self, "slide", slide, NULL);
-
-        /*
-         * @begin: 为当前的幻灯片创建一个可以参与动画过程的分身
-         * 这个分身不受视图的尺寸约束
-         * 在分身参与动画的过程中，当前幻灯片处于隐藏状态
-         * 待分身动画完成后，再将当前幻灯片显示出来
-        */
-        ClutterActor *slide_clone = clutter_clone_new (priv->slide);
-        ClutterActor *stage = clutter_actor_get_parent (CLUTTER_ACTOR(self));
-
-        clutter_actor_add_child (stage, slide_clone);
-        clutter_actor_hide (slide);
-
-        clutter_actor_set_size (slide_clone, priv->slide_w, priv->slide_h);
-        clutter_actor_set_position (slide_clone, priv->slide_x, priv->slide_y);
-        /* @end */
-
-        ckd_view_animate (self,  slide_clone);
-}
-
-static void
-ckd_view_slide_exit (CkdView *self,
-                     CkdViewAnimationFunc ckd_view_animate,
-                     gpointer data)
-{
-        CkdViewPriv *priv = CKD_VIEW_GET_PRIVATE (self);
-        ClutterActor *stage = clutter_actor_get_parent (CLUTTER_ACTOR(self));
-
-        /* @begin:
-         * 让当前幻灯片脱离视图，使之进入场景。
-         * 如果不这样做，那么在幻灯片移动过程中，会被视图框住而动弹不得
-         */
-        ClutterActor *slide = data;
-        g_object_ref (slide);
-        clutter_actor_remove_child (CLUTTER_ACTOR(self), slide);
-
-        clutter_actor_set_size (slide, priv->slide_w, priv->slide_h);
-        clutter_actor_set_position (slide, priv->slide_x, priv->slide_y);
-        clutter_actor_add_child (stage, slide);
-        /* @end */
-
-        ckd_view_animate (self, slide);
-}
-
-void
-ckd_view_transit_slide (CkdView *self, ClutterActor *new_slide, gint i)
-{
-        CkdViewPriv *priv = CKD_VIEW_GET_PRIVATE (self);
-
-        ckd_progress_am (priv->progress, i / 10.0);
+        priv->slide_number = 0;
         
-        switch (priv->slide_out_effect) {
-        case CKD_SLIDE_LEFT_EXIT:
-                ckd_view_slide_exit (self,
-                                     ckd_view_slide_left_exit,
-                                     priv->slide);
-                break;
-        case CKD_SLIDE_RIGHT_EXIT:
-                ckd_view_slide_exit (self,
-                                     ckd_view_slide_right_exit,
-                                     priv->slide);
-                break;
-        case CKD_SLIDE_UP_EXIT:
-                ckd_view_slide_exit (self,
-                                     ckd_view_slide_up_exit,
-                                     priv->slide);
-                break;
-        case CKD_SLIDE_DOWN_EXIT:
-                ckd_view_slide_exit (self,
-                                     ckd_view_slide_down_exit,
-                                     priv->slide);
-                break;
-        case CKD_SLIDE_SCALE_EXIT:
-                ckd_view_slide_exit (self,
-                                     ckd_view_slide_scale_exit,
-                                     priv->slide);
-                break;
-        case CKD_SLIDE_FADE_EXIT:
-                ckd_view_slide_exit (self,
-                                     ckd_view_slide_fade_exit,
-                                     priv->slide);
-                break;
-        default:
-                g_error ("I can not find this slide exit effect!");
+        priv->bar = clutter_actor_new ();
+        clutter_actor_set_reactive (priv->bar, TRUE);
+        
+        priv->nonius = clutter_actor_new ();
+}
+
+ClutterActor *
+ckd_view_load_ith_slide (CkdView *self, gint i)
+{
+        CkdViewPriv *priv = CKD_VIEW_GET_PRIVATE (self);
+        ClutterActor *slide = ckd_meta_slides_get_slide (priv->meta_slides, i);
+        
+        if (slide) {
+                clutter_actor_add_child (priv->stage, slide);
+                clutter_actor_set_child_below_sibling (priv->stage, slide, priv->slide);
+                ckd_view_allocate_slide (self, slide);                
+
+                priv->slide = slide;
+                priv->slide_number = i;
         }
 
-        switch (priv->slide_in_effect) {
-        case CKD_SLIDE_LEFT_ENTER:
-                ckd_view_slide_enter (self,
-                                      ckd_view_slide_left_enter,
-                                      new_slide);
-                break;
-        case CKD_SLIDE_RIGHT_ENTER:
-                ckd_view_slide_enter (self,
-                                      ckd_view_slide_right_enter,
-                                      new_slide);
-                break;
-        case CKD_SLIDE_UP_ENTER:
-                ckd_view_slide_enter (self,
-                                      ckd_view_slide_up_enter,
-                                      new_slide);
-                break;
-        case CKD_SLIDE_DOWN_ENTER:
-                ckd_view_slide_enter (self,
-                                      ckd_view_slide_down_enter,
-                                      new_slide);
-                break;
-        case CKD_SLIDE_SCALE_ENTER:
-                ckd_view_slide_enter (self,
-                                      ckd_view_slide_scale_enter,
-                                      new_slide);
-                break;
-        case CKD_SLIDE_FADE_ENTER:
-                ckd_view_slide_enter (self,
-                                      ckd_view_slide_fade_enter,
-                                      new_slide);
-                break;
-        default:
-                g_error ("I can not find this slide entering effect!");
-        }
+        return slide;
 }

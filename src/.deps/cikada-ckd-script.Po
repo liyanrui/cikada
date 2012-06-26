@@ -1,28 +1,31 @@
-cikada-ckd-player.o: ckd-player.c /usr/include/math.h \
+cikada-ckd-script.o: ckd-script.c /usr/include/stdio.h \
  /usr/include/features.h /usr/include/sys/cdefs.h \
  /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h \
- /usr/include/gnu/stubs-64.h /usr/include/bits/huge_val.h \
- /usr/include/bits/huge_valf.h /usr/include/bits/huge_vall.h \
- /usr/include/bits/inf.h /usr/include/bits/nan.h \
- /usr/include/bits/mathdef.h /usr/include/bits/mathcalls.h \
- /usr/include/bits/mathinline.h ckd-meta-slides.h \
- /usr/include/glib-2.0/glib-object.h \
- /usr/include/glib-2.0/gobject/gbinding.h /usr/include/glib-2.0/glib.h \
- /usr/include/glib-2.0/glib/galloca.h /usr/include/glib-2.0/glib/gtypes.h \
+ /usr/include/gnu/stubs-64.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/stddef.h \
+ /usr/include/bits/types.h /usr/include/bits/typesizes.h \
+ /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/stdarg.h \
+ /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h \
+ /usr/include/bits/stdio.h /usr/include/bits/stdio2.h \
+ /usr/include/string.h /usr/include/bits/string.h \
+ /usr/include/bits/string2.h /usr/include/endian.h \
+ /usr/include/bits/endian.h /usr/include/bits/string3.h \
+ /usr/include/clutter-1.0/clutter/clutter.h \
+ /usr/include/clutter-1.0/clutter/clutter-config.h \
+ /usr/include/glib-2.0/glib.h /usr/include/glib-2.0/glib/galloca.h \
+ /usr/include/glib-2.0/glib/gtypes.h \
  /usr/lib/glib-2.0/include/glibconfig.h \
  /usr/include/glib-2.0/glib/gmacros.h \
- /usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/stddef.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include-fixed/limits.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include-fixed/syslimits.h \
  /usr/include/limits.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/float.h \
  /usr/include/glib-2.0/glib/gversionmacros.h /usr/include/time.h \
- /usr/include/bits/time.h /usr/include/bits/types.h \
- /usr/include/bits/typesizes.h /usr/include/glib-2.0/glib/garray.h \
+ /usr/include/bits/time.h /usr/include/glib-2.0/glib/garray.h \
  /usr/include/glib-2.0/glib/gasyncqueue.h \
  /usr/include/glib-2.0/glib/gthread.h \
  /usr/include/glib-2.0/glib/gatomic.h /usr/include/glib-2.0/glib/gerror.h \
- /usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/stdarg.h \
  /usr/include/glib-2.0/glib/gquark.h \
  /usr/include/glib-2.0/glib/gbacktrace.h /usr/include/signal.h \
  /usr/include/bits/sigset.h /usr/include/bits/signum.h \
@@ -79,9 +82,18 @@ cikada-ckd-player.o: ckd-player.c /usr/include/math.h \
  /usr/include/glib-2.0/glib/deprecated/gmain.h \
  /usr/include/glib-2.0/glib/deprecated/grel.h \
  /usr/include/glib-2.0/glib/deprecated/gthread.h /usr/include/pthread.h \
- /usr/include/endian.h /usr/include/bits/endian.h /usr/include/sched.h \
- /usr/include/bits/sched.h /usr/include/bits/pthreadtypes.h \
- /usr/include/bits/setjmp.h /usr/include/glib-2.0/gobject/gobject.h \
+ /usr/include/sched.h /usr/include/bits/sched.h \
+ /usr/include/bits/pthreadtypes.h /usr/include/bits/setjmp.h \
+ /usr/include/clutter-1.0/clutter/clutter-types.h \
+ /usr/include/cairo/cairo.h /usr/include/cairo/cairo-version.h \
+ /usr/include/cairo/cairo-features.h \
+ /usr/include/cairo/cairo-deprecated.h \
+ /usr/include/clutter-1.0/clutter/clutter-macros.h \
+ /usr/include/clutter-1.0/clutter/clutter-version.h \
+ /usr/include/clutter-1.0/clutter/clutter-enums.h \
+ /usr/include/glib-2.0/glib-object.h \
+ /usr/include/glib-2.0/gobject/gbinding.h \
+ /usr/include/glib-2.0/gobject/gobject.h \
  /usr/include/glib-2.0/gobject/gtype.h \
  /usr/include/glib-2.0/gobject/gvalue.h \
  /usr/include/glib-2.0/gobject/gparam.h \
@@ -97,28 +109,6 @@ cikada-ckd-player.o: ckd-player.c /usr/include/math.h \
  /usr/include/glib-2.0/gobject/gtypeplugin.h \
  /usr/include/glib-2.0/gobject/gvaluearray.h \
  /usr/include/glib-2.0/gobject/gvaluetypes.h \
- /usr/include/poppler/glib/poppler.h \
- /usr/include/poppler/glib/poppler-features.h \
- /usr/include/poppler/glib/poppler-document.h \
- /usr/include/poppler/glib/poppler.h \
- /usr/include/poppler/glib/poppler-page.h /usr/include/cairo/cairo.h \
- /usr/include/cairo/cairo-version.h /usr/include/cairo/cairo-features.h \
- /usr/include/cairo/cairo-deprecated.h \
- /usr/include/poppler/glib/poppler-layer.h \
- /usr/include/poppler/glib/poppler-action.h \
- /usr/include/poppler/glib/poppler-form-field.h \
- /usr/include/poppler/glib/poppler-enums.h \
- /usr/include/poppler/glib/poppler-attachment.h \
- /usr/include/poppler/glib/poppler-annot.h \
- /usr/include/poppler/glib/poppler-date.h \
- /usr/include/poppler/glib/poppler-movie.h \
- /usr/include/poppler/glib/poppler-media.h \
- /usr/include/clutter-1.0/clutter/clutter.h \
- /usr/include/clutter-1.0/clutter/clutter-config.h \
- /usr/include/clutter-1.0/clutter/clutter-types.h \
- /usr/include/clutter-1.0/clutter/clutter-macros.h \
- /usr/include/clutter-1.0/clutter/clutter-version.h \
- /usr/include/clutter-1.0/clutter/clutter-enums.h \
  /usr/include/clutter-1.0/clutter/clutter-action.h \
  /usr/include/clutter-1.0/clutter/clutter-actor-meta.h \
  /usr/include/clutter-1.0/clutter/clutter-types.h \
@@ -146,10 +136,7 @@ cikada-ckd-player.o: ckd-player.c /usr/include/math.h \
  /usr/include/pango-1.0/pango/pango-layout.h \
  /usr/include/pango-1.0/pango/pango-tabs.h \
  /usr/include/pango-1.0/pango/pango-renderer.h \
- /usr/include/pango-1.0/pango/pango-utils.h /usr/include/stdio.h \
- /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h \
- /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h \
- /usr/include/bits/stdio.h /usr/include/bits/stdio2.h \
+ /usr/include/pango-1.0/pango/pango-utils.h \
  /usr/include/atk-1.0/atk/atk.h /usr/include/atk-1.0/atk/atkobject.h \
  /usr/include/atk-1.0/atk/atkstate.h \
  /usr/include/atk-1.0/atk/atkrelationtype.h \
@@ -486,10 +473,9 @@ cikada-ckd-player.o: ckd-player.c /usr/include/math.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-texture.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-timeline.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-timeout-pool.h \
- /usr/include/clutter-1.0/clutter/deprecated/clutter-util.h ckd-script.h \
- ckd-view.h ckd-player.h
+ /usr/include/clutter-1.0/clutter/deprecated/clutter-util.h ckd-script.h
 
-/usr/include/math.h:
+/usr/include/stdio.h:
 
 /usr/include/features.h:
 
@@ -501,27 +487,43 @@ cikada-ckd-player.o: ckd-player.c /usr/include/math.h \
 
 /usr/include/gnu/stubs-64.h:
 
-/usr/include/bits/huge_val.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/stddef.h:
 
-/usr/include/bits/huge_valf.h:
+/usr/include/bits/types.h:
 
-/usr/include/bits/huge_vall.h:
+/usr/include/bits/typesizes.h:
 
-/usr/include/bits/inf.h:
+/usr/include/libio.h:
 
-/usr/include/bits/nan.h:
+/usr/include/_G_config.h:
 
-/usr/include/bits/mathdef.h:
+/usr/include/wchar.h:
 
-/usr/include/bits/mathcalls.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/stdarg.h:
 
-/usr/include/bits/mathinline.h:
+/usr/include/bits/stdio_lim.h:
 
-ckd-meta-slides.h:
+/usr/include/bits/sys_errlist.h:
 
-/usr/include/glib-2.0/glib-object.h:
+/usr/include/bits/stdio.h:
 
-/usr/include/glib-2.0/gobject/gbinding.h:
+/usr/include/bits/stdio2.h:
+
+/usr/include/string.h:
+
+/usr/include/bits/string.h:
+
+/usr/include/bits/string2.h:
+
+/usr/include/endian.h:
+
+/usr/include/bits/endian.h:
+
+/usr/include/bits/string3.h:
+
+/usr/include/clutter-1.0/clutter/clutter.h:
+
+/usr/include/clutter-1.0/clutter/clutter-config.h:
 
 /usr/include/glib-2.0/glib.h:
 
@@ -532,8 +534,6 @@ ckd-meta-slides.h:
 /usr/lib/glib-2.0/include/glibconfig.h:
 
 /usr/include/glib-2.0/glib/gmacros.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/stddef.h:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include-fixed/limits.h:
 
@@ -549,10 +549,6 @@ ckd-meta-slides.h:
 
 /usr/include/bits/time.h:
 
-/usr/include/bits/types.h:
-
-/usr/include/bits/typesizes.h:
-
 /usr/include/glib-2.0/glib/garray.h:
 
 /usr/include/glib-2.0/glib/gasyncqueue.h:
@@ -562,8 +558,6 @@ ckd-meta-slides.h:
 /usr/include/glib-2.0/glib/gatomic.h:
 
 /usr/include/glib-2.0/glib/gerror.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/stdarg.h:
 
 /usr/include/glib-2.0/glib/gquark.h:
 
@@ -703,10 +697,6 @@ ckd-meta-slides.h:
 
 /usr/include/pthread.h:
 
-/usr/include/endian.h:
-
-/usr/include/bits/endian.h:
-
 /usr/include/sched.h:
 
 /usr/include/bits/sched.h:
@@ -714,6 +704,26 @@ ckd-meta-slides.h:
 /usr/include/bits/pthreadtypes.h:
 
 /usr/include/bits/setjmp.h:
+
+/usr/include/clutter-1.0/clutter/clutter-types.h:
+
+/usr/include/cairo/cairo.h:
+
+/usr/include/cairo/cairo-version.h:
+
+/usr/include/cairo/cairo-features.h:
+
+/usr/include/cairo/cairo-deprecated.h:
+
+/usr/include/clutter-1.0/clutter/clutter-macros.h:
+
+/usr/include/clutter-1.0/clutter/clutter-version.h:
+
+/usr/include/clutter-1.0/clutter/clutter-enums.h:
+
+/usr/include/glib-2.0/glib-object.h:
+
+/usr/include/glib-2.0/gobject/gbinding.h:
 
 /usr/include/glib-2.0/gobject/gobject.h:
 
@@ -746,54 +756,6 @@ ckd-meta-slides.h:
 /usr/include/glib-2.0/gobject/gvaluearray.h:
 
 /usr/include/glib-2.0/gobject/gvaluetypes.h:
-
-/usr/include/poppler/glib/poppler.h:
-
-/usr/include/poppler/glib/poppler-features.h:
-
-/usr/include/poppler/glib/poppler-document.h:
-
-/usr/include/poppler/glib/poppler.h:
-
-/usr/include/poppler/glib/poppler-page.h:
-
-/usr/include/cairo/cairo.h:
-
-/usr/include/cairo/cairo-version.h:
-
-/usr/include/cairo/cairo-features.h:
-
-/usr/include/cairo/cairo-deprecated.h:
-
-/usr/include/poppler/glib/poppler-layer.h:
-
-/usr/include/poppler/glib/poppler-action.h:
-
-/usr/include/poppler/glib/poppler-form-field.h:
-
-/usr/include/poppler/glib/poppler-enums.h:
-
-/usr/include/poppler/glib/poppler-attachment.h:
-
-/usr/include/poppler/glib/poppler-annot.h:
-
-/usr/include/poppler/glib/poppler-date.h:
-
-/usr/include/poppler/glib/poppler-movie.h:
-
-/usr/include/poppler/glib/poppler-media.h:
-
-/usr/include/clutter-1.0/clutter/clutter.h:
-
-/usr/include/clutter-1.0/clutter/clutter-config.h:
-
-/usr/include/clutter-1.0/clutter/clutter-types.h:
-
-/usr/include/clutter-1.0/clutter/clutter-macros.h:
-
-/usr/include/clutter-1.0/clutter/clutter-version.h:
-
-/usr/include/clutter-1.0/clutter/clutter-enums.h:
 
 /usr/include/clutter-1.0/clutter/clutter-action.h:
 
@@ -850,22 +812,6 @@ ckd-meta-slides.h:
 /usr/include/pango-1.0/pango/pango-renderer.h:
 
 /usr/include/pango-1.0/pango/pango-utils.h:
-
-/usr/include/stdio.h:
-
-/usr/include/libio.h:
-
-/usr/include/_G_config.h:
-
-/usr/include/wchar.h:
-
-/usr/include/bits/stdio_lim.h:
-
-/usr/include/bits/sys_errlist.h:
-
-/usr/include/bits/stdio.h:
-
-/usr/include/bits/stdio2.h:
 
 /usr/include/atk-1.0/atk/atk.h:
 
@@ -1578,7 +1524,3 @@ ckd-meta-slides.h:
 /usr/include/clutter-1.0/clutter/deprecated/clutter-util.h:
 
 ckd-script.h:
-
-ckd-view.h:
-
-ckd-player.h:

@@ -1,11 +1,15 @@
 \environment env-plain
 
 \starttext
-\title{Cikada 0.0.2 使用指南}
+\title{Cikada 0.5 使用指南}
 
-\placefigure[][]{none}{\externalfigure[cikada][width=.2\textwidth]}
+\placefigure[none]{}{\externalfigure[cikada][width=.125\textwidth]}
 
-\midaligned{李延瑞\\liyanrui.m2@gmail.com\\ \date}
+\startalignment[middle,broad]
+李延瑞
+
+liyanrui.m2@gmail.com
+\stopalignment
 
 \subject{简介}
 
@@ -13,13 +17,15 @@ Cikada 是面向 PDF 文档格式的演示工具，基于 clutter 与 poppler-gl
 
 Cikada 这个名字取自英文单词“Cicada”，其意为“蝉”。之所以将“Cicada”中间的字母“c”改为“k”，是便于网络搜索引擎的查找。取“蝉”为项目之名，寓“居高声自远”之意，并警示演讲者不要过度聒噪而使听众失去耐心，同时表示这个项目创建于一个炎热的夏天午后。 
 
-\subject{功能}
+\subject{功能简介}
+
+Cikada 0.5 版是代码经过完全重写的版本，主要功能如下：
 
 \startitemize
-\item 可由用户设定缓冲 PDF 文档页面数量，防止页面全部载入导致内存过度消耗；
-\item 页面渐入渐出的切换效果；
-\item 全屏模式切换；
-\item 时钟模式的概览视图，用于显示演示进度以及页面跳转。
+\item 提供了幻灯片硬盘缓存模式，可将全部幻灯片转化为图片存储于 /tmp 目录，并对 PDF 文档进行 MD5 校验，避免对同一份 PDF 文档重复进行缓存；
+\item 具有页面平移、缩放、淡入/淡出、卷轴这些常规的幻灯片切换动画效果；
+\item 提供了进度条，不仅可用于追踪演讲进度，还可用于页面跳转；
+\item \TEX\ 风格的配置文件，可以配置幻灯片默认的动画效果、进度条的颜色及尺寸，也可将一组连续的幻灯片组织为“延续体”，用于静态页面所构成的动画演示。
 \stopitemize
 
 \subject{安装}

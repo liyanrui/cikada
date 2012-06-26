@@ -2,7 +2,7 @@ cikada-ckd-meta-slides.o: ckd-meta-slides.c \
  /usr/include/poppler/glib/poppler.h /usr/include/glib-2.0/glib-object.h \
  /usr/include/glib-2.0/gobject/gbinding.h /usr/include/glib-2.0/glib.h \
  /usr/include/glib-2.0/glib/galloca.h /usr/include/glib-2.0/glib/gtypes.h \
- /usr/lib64/glib-2.0/include/glibconfig.h \
+ /usr/lib/glib-2.0/include/glibconfig.h \
  /usr/include/glib-2.0/glib/gmacros.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/stddef.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include-fixed/limits.h \
@@ -111,7 +111,11 @@ cikada-ckd-meta-slides.o: ckd-meta-slides.c \
  /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h \
  /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h \
  /usr/include/bits/stdio.h /usr/include/bits/stdio2.h \
- /usr/include/glib-2.0/gio/gio.h /usr/include/glib-2.0/gio/giotypes.h \
+ /usr/include/glib-2.0/glib/gi18n.h /usr/include/libintl.h \
+ /usr/include/locale.h /usr/include/bits/locale.h /usr/include/string.h \
+ /usr/include/bits/string.h /usr/include/bits/string2.h \
+ /usr/include/bits/string3.h /usr/include/glib-2.0/gio/gio.h \
+ /usr/include/glib-2.0/gio/giotypes.h \
  /usr/include/glib-2.0/gio/gioenums.h /usr/include/glib-2.0/gio/gaction.h \
  /usr/include/glib-2.0/gio/gactiongroup.h \
  /usr/include/glib-2.0/gio/gactiongroupexporter.h \
@@ -481,8 +485,8 @@ cikada-ckd-meta-slides.o: ckd-meta-slides.c \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-texture.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-timeline.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-timeout-pool.h \
- /usr/include/clutter-1.0/clutter/deprecated/clutter-util.h \
- ckd-slide-script.h ckd-slide.h
+ /usr/include/clutter-1.0/clutter/deprecated/clutter-util.h ckd-script.h \
+ ckd-slide.h
 
 /usr/include/poppler/glib/poppler.h:
 
@@ -496,7 +500,7 @@ cikada-ckd-meta-slides.o: ckd-meta-slides.c \
 
 /usr/include/glib-2.0/glib/gtypes.h:
 
-/usr/lib64/glib-2.0/include/glibconfig.h:
+/usr/lib/glib-2.0/include/glibconfig.h:
 
 /usr/include/glib-2.0/glib/gmacros.h:
 
@@ -775,6 +779,22 @@ cikada-ckd-meta-slides.o: ckd-meta-slides.c \
 /usr/include/bits/stdio.h:
 
 /usr/include/bits/stdio2.h:
+
+/usr/include/glib-2.0/glib/gi18n.h:
+
+/usr/include/libintl.h:
+
+/usr/include/locale.h:
+
+/usr/include/bits/locale.h:
+
+/usr/include/string.h:
+
+/usr/include/bits/string.h:
+
+/usr/include/bits/string2.h:
+
+/usr/include/bits/string3.h:
 
 /usr/include/glib-2.0/gio/gio.h:
 
@@ -1556,6 +1576,6 @@ ckd-meta-slides.h:
 
 /usr/include/clutter-1.0/clutter/deprecated/clutter-util.h:
 
-ckd-slide-script.h:
+ckd-script.h:
 
 ckd-slide.h:

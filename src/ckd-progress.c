@@ -8,6 +8,8 @@ G_DEFINE_TYPE (CkdProgress, ckd_progress, CLUTTER_TYPE_ACTOR);
 typedef struct _CkdProgressPriv {
         ClutterActor *bar;
         ClutterActor *nonius;
+        gfloat nonius_w;
+        gfloat nonius_h;
         ClutterColor *bg;
         ClutterColor *fg;
         gfloat tick;
@@ -17,6 +19,8 @@ enum {
         PROP_CKD_PROGRESS_0,
         PROP_CKD_PROGRESS_BG,
         PROP_CKD_PROGRESS_FG,
+        PROP_CKD_PROGRESS_NONIUS_WIDTH,
+        PROP_CKD_PROGRESS_NONIUS_HEIGHT,
         PROP_CKD_PROGRESS_TICK,
         N_CKD_PROGRESS_PROPS
 };
@@ -35,6 +39,14 @@ ckd_progress_set_property (GObject *o, guint prop, const GValue *v, GParamSpec *
         case PROP_CKD_PROGRESS_FG:
                 priv->fg = g_value_get_pointer (v);
                 clutter_actor_set_background_color (priv->nonius, priv->fg);
+                break;
+        case PROP_CKD_PROGRESS_NONIUS_WIDTH:
+                priv->nonius_w = g_value_get_float (v);
+                clutter_actor_set_width (priv->nonius, priv->nonius_w);
+                break;
+        case PROP_CKD_PROGRESS_NONIUS_HEIGHT:
+                priv->nonius_h = g_value_get_float (v);
+                clutter_actor_set_height (priv->nonius, priv->nonius_h);
                 break;
         case PROP_CKD_PROGRESS_TICK:
                 priv->tick = g_value_get_float (v);
@@ -57,6 +69,12 @@ ckd_progress_get_property (GObject *o, guint prop, GValue *v, GParamSpec *p)
                 break;
         case PROP_CKD_PROGRESS_FG:
                 g_value_set_pointer (v, priv->fg);
+                break;
+        case PROP_CKD_PROGRESS_NONIUS_WIDTH:
+                g_value_set_float (v, priv->nonius_w);
+                break;
+        case PROP_CKD_PROGRESS_NONIUS_HEIGHT:
+                g_value_set_float (v, priv->nonius_h);
                 break;
         case PROP_CKD_PROGRESS_TICK:
                 g_value_set_float (v, priv->tick);
@@ -104,19 +122,20 @@ ckd_progress_allocate (ClutterActor *a,
         
         CLUTTER_ACTOR_CLASS (ckd_progress_parent_class)->allocate (a, b, f);
         
-       gfloat w = clutter_actor_box_get_width (b);
-       gfloat h = clutter_actor_box_get_height (b);
-       
-       ClutterActorBox bar_box = { 0, 0, w, h };
-       clutter_actor_allocate (priv->bar, &bar_box, f);
-
-       gfloat x1, y1, x2, y2;
-       x1 = priv->tick * w;
-       y1 = 0;
-       x2 = x1 + 20;
-       y2 = 20;
-       ClutterActorBox nonius_box = {x1, y1, x2, y2};
-       clutter_actor_allocate (priv->nonius, &nonius_box, f);
+        gfloat w = clutter_actor_box_get_width (b);
+        gfloat h = clutter_actor_box_get_height (b);
+        
+        ClutterActorBox bar_box = { 0, 0, w, h };
+        clutter_actor_allocate (priv->bar, &bar_box, f);
+        
+        gfloat x1, y1, x2, y2;
+        x1 = priv->tick * (w - priv->nonius_w);
+        y1 = 0;
+        x2 = x1 + priv->nonius_w;
+        y2 = priv->nonius_h;
+        
+        ClutterActorBox nonius_box = {x1, y1, x2, y2};
+        clutter_actor_allocate (priv->nonius, &nonius_box, f);
 }
 
 static void
@@ -152,6 +171,20 @@ ckd_progress_class_init (CkdProgressClass *klass)
                                                             "Foreground",
                                                             "Foreground",
                                                             G_PARAM_READWRITE);
+        props[PROP_CKD_PROGRESS_NONIUS_WIDTH] = g_param_spec_float ("nonius-width",
+                                                                    "Nonius Width",
+                                                                    "Nonius Width",
+                                                                    0.0,
+                                                                    G_MAXFLOAT,
+                                                                    20.0,
+                                                                    G_PARAM_READWRITE);
+        props[PROP_CKD_PROGRESS_NONIUS_HEIGHT] = g_param_spec_float ("nonius-height",
+                                                                     "Nonius Height",
+                                                                     "Nonius Height",
+                                                                     0.0,
+                                                                     G_MAXFLOAT,
+                                                                     20.0,
+                                                                     G_PARAM_READWRITE);        
         props[PROP_CKD_PROGRESS_TICK] = g_param_spec_float ("tick",
                                                              "Tick",
                                                              "Tick",
@@ -167,54 +200,18 @@ ckd_progress_init (CkdProgress *self)
 {
         CkdProgressPriv *priv = CKD_PROGRESS_GET_PRIVATE (self);
 
+        ClutterLayoutManager *fixed_layout = clutter_fixed_layout_new ();
+        clutter_actor_set_layout_manager (CLUTTER_ACTOR(self), fixed_layout);
+
         priv->bar = clutter_actor_new ();
         clutter_actor_add_child (CLUTTER_ACTOR(self), priv->bar);
 
         priv->nonius = clutter_actor_new ();
-        clutter_actor_set_size (priv->nonius, 20, 20);
         clutter_actor_add_child (CLUTTER_ACTOR(self), priv->nonius);
-        
-        priv->bg = NULL;
-        priv->fg = NULL;
-        priv->tick = 0.0;
-}
-
-static void
-ckd_progress_nonius_am_cb (ClutterAnimation *animation, ClutterActor *actor)
-{
-        ClutterActor *source = clutter_clone_get_source (CLUTTER_CLONE(actor));
-        clutter_actor_show (source);
-        clutter_actor_destroy (actor);
 }
 
 void
-ckd_progress_am (ClutterActor *self, gdouble tick)
+ckd_progress_update (ClutterActor *self)
 {
-        CkdProgressPriv *priv = CKD_PROGRESS_GET_PRIVATE (CKD_PROGRESS(self));
-
-        priv->tick = tick;
-        
-        ClutterActor *nonius_clone = clutter_clone_new (priv->nonius);
-        ClutterActor *stage = clutter_actor_get_stage (CLUTTER_ACTOR(self));
-
-        clutter_actor_add_child (stage, nonius_clone);
-        clutter_actor_set_child_above_sibling (stage, nonius_clone, NULL);
-
-        gfloat x, y, w, h;
-        clutter_actor_get_size (self, &w, &h);
-        clutter_actor_get_position (self, &x, &y);
-
-        clutter_actor_set_position (nonius_clone, x + (tick - 0.1) * w, y);
-
-        clutter_actor_hide (priv->nonius);
         clutter_actor_queue_relayout (self);
-
-        clutter_actor_animate (nonius_clone,
-                               CLUTTER_EASE_IN_OUT_CUBIC,
-                               1000,
-                               "x", x + tick * w,
-                               "signal::completed",
-                               ckd_progress_nonius_am_cb,
-                               nonius_clone,
-                               NULL);
 }

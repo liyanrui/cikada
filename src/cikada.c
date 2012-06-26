@@ -95,18 +95,13 @@ main (int argc, char **argv)
                 progress_bar_color = ckd_script_get_progress_bar_color (script);
                 nonius_color = ckd_script_get_nonius_color (script);
                 progress_bar_vsize = ckd_script_get_progress_bar_vsize (script);
-        } else {
-                progress_bar_color = clutter_color_new (51, 51, 51, 255);
-                nonius_color = clutter_color_new (151, 0, 0, 255);
-                progress_bar_vsize = 20.0;
         }
-        
-        if (!progress_bar_color)
+        if (!script || !progress_bar_color)
                 progress_bar_color = clutter_color_new (51, 51, 51, 255);
-        if (!nonius_color)
+        if (!script || !nonius_color)
                 nonius_color = clutter_color_new (151, 0, 0, 255);
-        if (!progress_bar_vsize)
-                progress_bar_vsize = 20.0;
+        if (!script || progress_bar_vsize < 0.0)
+                progress_bar_vsize = 16.0;
         
         CkdView *view = g_object_new (CKD_TYPE_VIEW,
                                       "stage", stage,

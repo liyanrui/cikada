@@ -48,15 +48,16 @@ Cikada 无图形交互界面，需在终端（命令行）中运行。命令格�
 $ cikada [选项...] filename.pdf
 
 选项:
-  -f, --fullscreen           程序启动时进入全屏模式
-  -q, --quality=NUMBER       设置图像质量，NUMBER 取值范围 [0, 1]，默认值为 0.5
-  -c, --cache                启用硬盘缓存全部幻灯片模式
+  -f, --fullscreen          程序启动时进入全屏模式
+  -q, --quality=NUMBER      设置图像质量，NUMBER 取值范围为 [0, 1]，
+                           默认值为 0.5，图像质量与该值成正比
+  -c, --cache               启用硬盘缓存全部幻灯片模式
 \stoptyping
 
-例如使用 Cikada 启用硬盘缓存并且全屏放映文件名为 foo.pdf 的演示文档：
+例如启用硬盘缓存、设置图像质量为 0.8，以全屏模式放映文件名为 foo.pdf 的演示文档：
 
 \starttyping
-$ cikada -f -c foo.pdf
+$ cikada -c -q 0.8 -f foo.pdf
 \stoptyping
 
 如果在运行 Cikada 时未指定“\type{-f}”选项，那么在 Cikada 窗口开启后，可使用“\type{F11}”键进行全屏模式切换。

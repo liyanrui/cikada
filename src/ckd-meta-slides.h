@@ -7,7 +7,7 @@
 #include "ckd-script.h"
 
 #define CKD_META_SLIDES_QUALITY_MIN 0.1
-#define CKD_META_SLIDES_QUALITY_MAX 2.1
+#define CKD_META_SLIDES_QUALITY_MAX 4.1
 #define CKD_META_SLIDES_QUALITY_DELTA (CKD_META_SLIDES_QUALITY_MAX \
                                        - CKD_META_SLIDES_QUALITY_MIN)
 

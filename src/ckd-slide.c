@@ -82,9 +82,32 @@ ckd_slide_class_init (CkdSlideClass *klass)
         actor_class->allocate = ckd_slide_allocate;
 }
 
+ClutterActor *
+ckd_slide_new_for_image (GFile *file)
+{
+        CkdSlide *self = g_object_new (CKD_TYPE_SLIDE, NULL);
+        CkdSlidePriv *priv = CKD_SLIDE_GET_PRIVATE (self);
+
+        gchar *image_path = g_file_get_path (file);
+        priv->content = clutter_texture_new_from_file (image_path, NULL);
+        g_free (image_path);
+        
+        clutter_texture_set_keep_aspect_ratio (CLUTTER_TEXTURE (priv->content), TRUE);
+        clutter_actor_add_child (CLUTTER_ACTOR(self), priv->content);
+        
+        return (ClutterActor *)self;
+}
+
+struct CkdDrawData {
+        PopplerPage *page;
+        gdouble scale;
+};
+
 static gboolean
 draw_page (ClutterCanvas *canvas, cairo_t *cr, int width, int height, gpointer data)
 {
+        struct CkdDrawData *draw_data = data;
+        
         cairo_save (cr);
         cairo_set_operator (cr, CAIRO_OPERATOR_CLEAR);
         cairo_paint (cr);
@@ -97,9 +120,12 @@ draw_page (ClutterCanvas *canvas, cairo_t *cr, int width, int height, gpointer d
         cairo_fill (cr);
         /* @end */
 
-        poppler_page_render (POPPLER_PAGE(data), cr);
+        cairo_scale (cr, draw_data->scale, draw_data->scale);
+        poppler_page_render (POPPLER_PAGE(draw_data->page), cr);
         return TRUE;
 }
+
+
 
 ClutterActor *
 ckd_slide_new_for_poppler_page (PopplerPage *page, gdouble scale)
@@ -113,36 +139,22 @@ ckd_slide_new_for_poppler_page (PopplerPage *page, gdouble scale)
         canvas = clutter_canvas_new ();
 
         poppler_page_get_size (page, &w, &h);
-
-        clutter_canvas_set_size (CLUTTER_CANVAS(canvas), w, h);
+        
+        clutter_canvas_set_size (CLUTTER_CANVAS(canvas), w * scale, h * scale);
         clutter_actor_set_content (priv->content, canvas);
         clutter_actor_set_content_scaling_filters (priv->content,
                                                    CLUTTER_SCALING_FILTER_TRILINEAR,
                                                    CLUTTER_SCALING_FILTER_LINEAR);
         g_object_unref (canvas);
 
-        clutter_actor_set_size (priv->content, w, h);
+        clutter_actor_set_size (priv->content, w * scale, h * scale);
         clutter_actor_add_child (CLUTTER_ACTOR(self), priv->content);
+
+        struct CkdDrawData data = {page, scale};
+        g_signal_connect (canvas, "draw", G_CALLBACK (draw_page), &data);
         
-        g_signal_connect (canvas, "draw", G_CALLBACK (draw_page), page);
         clutter_content_invalidate (canvas);
 
-        
-        return (ClutterActor *)self;
-}
-
-ClutterActor *
-ckd_slide_new_for_image (GFile *file)
-{
-        CkdSlide *self = g_object_new (CKD_TYPE_SLIDE, NULL);
-        CkdSlidePriv *priv = CKD_SLIDE_GET_PRIVATE (self);
-
-        gchar *image_path = g_file_get_path (file);
-        priv->content = clutter_texture_new_from_file (image_path, NULL);
-        g_free (image_path);
-        
-        clutter_texture_set_keep_aspect_ratio (CLUTTER_TEXTURE (priv->content), TRUE);
-        clutter_actor_add_child (CLUTTER_ACTOR(self), priv->content);
         
         return (ClutterActor *)self;
 }

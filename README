@@ -8,7 +8,6 @@ It is licensed in GPLv3.
 = REQUIREMENTS =
 
  * clutter (>= 1.8)
-
  * poppler (>= 0.18 with GLib binding)
 
 
@@ -31,18 +30,6 @@ $ sudo make install
  # If you want to enter fullscreen directly, you can do:
  $ cikada -f your-pdf-file
 
- # If you do not want to save some memory, you can do:
- $ cikada -s 9999 your-pdf-file    # It can load all the pages once unless the page number over 9999.
-
 The key "F11" can toggle on/off the fullscreen mode.
 
-== OVERVIEW MODE ==
-
-If you want to enter the overview mode, you need press the key "O" or "o". 
-
-The ring in overview mode is a pages index. With the pointer device such as mouse clicking the location 
-close to ring in the inner area of ring, you can get the corresponding page in the page preview area in
-theright side.
-
-The overview mode can be quitted When pressing the key "O" or "o" again.
 

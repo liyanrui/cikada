@@ -49,8 +49,7 @@ $ cikada [选项...] filename.pdf
 
 选项:
   -f, --fullscreen          程序启动时进入全屏模式
-  -q, --quality=NUMBER      设置图像质量，NUMBER 取值范围为 [0, 1]，
-                           默认值为 0.5，图像质量与该值成正比
+  -q, --quality=NUMBER      设置图像质量，NUMBER 取值范围为 [0.0, 1.0]
   -c, --cache               启用硬盘缓存全部幻灯片模式
 \stoptyping
 
@@ -59,6 +58,8 @@ $ cikada [选项...] filename.pdf
 \starttyping
 $ cikada -c -q 0.8 -f foo.pdf
 \stoptyping
+
+如果未设定图像质量，那么图像质量默认值是 0.5，它表示将原始 PDF 页面转换而成的图像放大二倍。如果图像质量设为 1.0，则表示图像放大了 4 倍。
 
 如果在运行 Cikada 时未指定“\type{-f}”选项，那么在 Cikada 窗口开启后，可使用“\type{F11}”键进行全屏模式切换。
 

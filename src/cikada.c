@@ -10,7 +10,7 @@
 #define CKD_STAGE_HEIGHT 480
 
 static gboolean _ckd_fullscreen = FALSE;
-static gdouble _ckd_quality = 0.25;
+static gdouble _ckd_quality = 0.5;
 static gboolean _ckd_cache = FALSE;
 
 static GOptionEntry _ckd_entries[] =

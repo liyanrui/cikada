@@ -11,7 +11,7 @@
 
 static gboolean _ckd_fullscreen = FALSE;
 static gdouble _ckd_quality = 0.5;
-static gboolean _ckd_cache = TRUE;
+static gboolean _ckd_cache = FALSE;
 
 static GOptionEntry _ckd_entries[] =
 {

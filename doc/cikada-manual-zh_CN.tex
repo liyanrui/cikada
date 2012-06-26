@@ -23,7 +23,7 @@ Cikada 0.5 版是代码经过完全重写的版本，主要功能如下：
 
 \startitemize
 \item 提供了幻灯片硬盘缓存模式，可将全部幻灯片转化为图片存储于 /tmp 目录，并对 PDF 文档进行 MD5 校验，避免对同一份 PDF 文档重复进行缓存；
-\item 具有页面平移、缩放、淡入/淡出、卷轴这些常规的幻灯片切换动画效果；
+\item 具有页面平移、缩放、淡入/淡出这些常规的幻灯片切换动画效果；
 \item 提供了进度条，不仅可用于追踪演讲进度，还可用于页面跳转；
 \item \TEX\ 风格的配置文件，可以配置幻灯片默认的动画效果、进度条的颜色及尺寸，也可将一组连续的幻灯片组织为“延续体”，用于静态页面所构成的动画演示。
 \stopitemize
@@ -49,22 +49,17 @@ $ cikada [选项...] filename.pdf
 
 选项:
   -f, --fullscreen           程序启动时进入全屏模式
-  -s, --segment-length=N     设置 PDF 文档页面缓冲数量
+  -q, --quality=NUMBER       设置图像质量，NUMBER 取值范围 [0, 1]
+  -c, --cache                启用硬盘缓存全部幻灯片模式
 \stoptyping
 
-例如使用 Cikada 放映文件名为 foo.pdf 的演示文档：
+例如使用 Cikada 启用硬盘缓存并且全屏放映文件名为 foo.pdf 的演示文档：
 
 \starttyping
-$ cikada -f -s 5 foo.pdf
+$ cikada -f -c foo.pdf
 \stoptyping
 
 如果在运行 Cikada 时未指定“\type{-f}”选项，那么在 Cikada 窗口开启后，可使用“\type{F11}”键进行全屏模式切换。
-
-选项“\type{-s}”的作用是设定 Cikada 单次载入的 PDF 文档页面数量。若在运行 Cikada 时未设定“\type{-s}”选项，那么 Cikada 默认的单次载入的 PDF 文档页面数量为 3。之所以提供这一选项，是因为一次性载入 PDF 文档全部页面容易导致内存负担过重。如果你确定一次性载入 PDF 文档的全部页面不会出现内存不足问题，那么可在“\type{-s}”之后放置一个大于页面总数的整数值便可一次载入全部页面，例如：
-
-\starttyping
-$ cikada -s 9999 foo.pdf
-\stoptyping
 
 \subject{页面切换}
 
@@ -72,23 +67,61 @@ $ cikada -s 9999 foo.pdf
 
 使用键盘上的“${\blue\leftarrow}$”（或“$\blue\uparrow$”）与“$\blue\rightarrow$”（或“$\blue{\downarrow}$”）按键也可完成向前与向后翻页。
 
-页面切换仅有渐入/渐出这一种效果，并且无继续开发其他页面切换效果的打算。主要是鉴于页面的飞入、飞出、百叶窗、放大和缩小等效果已经在 MS PowerPoint 之类的工具中滥用的令人起腻，而且在演讲中企图用较多的页面切换效果吸引听众的注意力，并非好主意。
+\subject{进度条}
 
-\subject{概览视图}
+Cikada 自 0.5 版增加了进度条功能，可在幻灯片底部显示当前的演讲进度，如图 1 所示。
 
-概览视图的主要功能是查看演示进度，也可进行页面跳转。使用按键“O”或“o”可以打开/关闭 Cikada 的概览视图。
+演讲进度是以幻灯片页面为单位进行划分的，因此每张幻灯片所对应的进度值都是相等的。如果有一组幻灯片所表达的内容是紧密延续的，其功能相当于一张幻灯片，这种情况下可以通过配置“延续体”来减小这组幻灯片的进度值，详见“配置文件”一节。
 
-Cikada 的概览视图分为索引区与页面预览区，如图 \in[cikada-overview] 所示，左侧为类似钟表形式的索引区，右侧为页面预览区并负责显示当前页面的页码。
+\placefigure{进度条}{\externalfigure[progress-bar][width=.75\textwidth]}
 
-\placefigure[][cikada-overview]{Cikada 概览视图}{\externalfigure[ckd-overview.png][width=.8\textwidth]}
+进度条也可用于幻灯片快速跳转。在进度条区域，用鼠标单击目标幻灯片大致所对应的进度位置，这样便完成了页面跳转，然后再通过前后翻页精确切换到目标幻灯片。
 
-圆环顶部内侧的浅红色的点表示演示文档的起始页。在圆环的顺时针方向上，PDF 文档各页的页码被均匀映射到圆环的相应位置。在索引区靠近圆环内侧的区域内，鼠标左键单击行为可产生页面跳转事件，主要表现为：
+\subject{配置文件}
+
+Cikada 自 0.5 版增加了配置文件支持。配置文件需要与演示文档居于同一目录，并与演示文档同名，其扩展名为 \type{.ckd}。
+
+例如在 \type{~/Documents} 目录有演示文档 \type{foo.pdf}，那么它对应的配置文件 \type{foo.ckd} 也必须位于 \type{~/Document}。当使用
+
+\starttyping
+$ cikada ~/Documents/foo.pdf
+\stoptyping
+
+\noindent 读取 \type{foo.pdf} 时，Cikada 会自动加载 \type{foo.ckd} 文件。
+
+配置文件采用了类似 \CONTEXT\ 命令格式的语法，下面是一份完整的示例：
+
+\starttyping[option=TEX]
+\setupreport[style=fade,
+             progress-bar-vsize=16,
+             progress-bar-color={51, 51, 51, 255},
+             nonius-color={151, 0, 0, 255}]
+
+\slide[1][enlargement]
+\slide[2][shrink]
+\slide[3][enlargement]
+
+\continuation[4-6]
+
+\slide[7][left]
+\slide[9][top]
+\stoptyping
+
+配置文件目前一共三个命令：
 
 \startitemize
-\item 索引区的指针指向鼠标左键单击位置。由于页码在圆环上的并非连续映射，所以指针实际上只是被定位到鼠标左键单击位置的附近区域。
-\item 页面预览区显示索引区指针所指位置对应页面及页码。
+\item \type{\setupreport}：用于设定幻灯片的默认切换动画效果（style）、进度条竖向尺寸（progress-bar-vsize）、进度条颜色（progress-bar-color）以及滑块颜色（nonius-color），其中进度条与滑块的颜色采用的是 \type{{red, green, blue, alpha}} 格式。
+\item \type{\slide}：根据幻灯片编号设定单张幻灯片切换动画效果，它的第一个选项是幻灯片编号（从 1 开始），第二个选项是幻灯片切换动画效果。目前 Cikada 所具备的幻灯片切换动画效果如下：
+\startitemize
+\item fade：幻灯片淡入/淡出
+\item shrink：幻灯片缩小进入/退出；
+\item enlargement：幻灯片放大进入/退出；
+\item left：幻灯片从左侧进入/退出；
+\item right：幻灯片从右侧进入/退出；
+\item top：幻灯片从顶部进入/退出；
+\item bottom：幻灯片从底部进入/退出。
 \stopitemize
-
-如果 Cikada 处于概览视图模式，当 Cikada 窗口尺寸发生变化时，那么概览视图会自动退出，Cikada 便会回转到演讲视图模式。与其说这是特性，不如说是 Bug。主要是因为窗口尺寸发生变化时，维护索引区与页面预览区的布局管理的实现会非常繁琐。
+\item \type{\continuation}：根据幻灯片编号定义延续体，例如“\type{4-6}”表示第 4、5、6 张幻灯片是一个延续体，它们的功能相当于一张幻灯片，这样它们对应的进度值便会小于那些非延续体幻灯片。另外，凡是被延续体囊括的幻灯片的切换动画只能是淡入/淡出。
+\stopitemize
 
 \stoptext

@@ -7,7 +7,7 @@ It is licensed in GPLv3.
 
 = REQUIREMENTS =
 
- * clutter (>= 1.8)
+ * clutter (>= 1.10)
  * poppler (>= 0.18 with GLib binding)
 
 

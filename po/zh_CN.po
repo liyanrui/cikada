@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cikada 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-06-26 08:34+0800\n"
-"PO-Revision-Date: 2012-06-26 08:41+0800\n"
+"POT-Creation-Date: 2012-06-26 19:40+0800\n"
+"PO-Revision-Date: 2012-06-26 19:43+0800\n"
 "Last-Translator: garfileo <liyanrui.m2@gmail.com>\n"
 "Language-Team: Chinese (simplified)\n"
 "Language: zh_CN\n"
@@ -21,14 +21,14 @@ msgid "Set fullscreen mode"
 msgstr "启用全屏"
 
 #: src/cikada.c:21
-msgid "Set image quality with the given factors"
-msgstr "设置图像质量因子"
+msgid "Scales slides with the given factors"
+msgstr "设置图像缩放比例"
 
 #: src/cikada.c:23
 msgid "Set slides cache mode."
 msgstr "启用幻灯片缓冲模式"
 
-#: src/cikada.c:39
+#: src/cikada.c:62
 msgid ""
 "filename.pdf\n"
 "\n"
@@ -40,7 +40,7 @@ msgstr ""
 "简介：\n"
 " Cikada 是一款 PDF 文档演示工具"
 
-#: src/cikada.c:46
+#: src/cikada.c:69
 msgid "You should input PDF file name!\n"
 msgstr "你应当输入 PDF 文件名！\n"
 

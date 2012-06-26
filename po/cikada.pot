@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cikada 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-06-26 08:34+0800\n"
+"POT-Creation-Date: 2012-06-26 19:40+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,14 +22,14 @@ msgid "Set fullscreen mode"
 msgstr ""
 
 #: src/cikada.c:21
-msgid "Set image quality with the given factors"
+msgid "Scales slides with the given factors"
 msgstr ""
 
 #: src/cikada.c:23
 msgid "Set slides cache mode."
 msgstr ""
 
-#: src/cikada.c:39
+#: src/cikada.c:62
 msgid ""
 "filename.pdf\n"
 "\n"
@@ -37,7 +37,7 @@ msgid ""
 "Cikada is a presentation tool for PDF slides"
 msgstr ""
 
-#: src/cikada.c:46
+#: src/cikada.c:69
 msgid "You should input PDF file name!\n"
 msgstr ""
 

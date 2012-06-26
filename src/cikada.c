@@ -10,19 +10,42 @@
 #define CKD_STAGE_HEIGHT 480
 
 static gboolean _ckd_fullscreen = FALSE;
-static gdouble _ckd_quality = 0.5;
-static gboolean _ckd_cache = FALSE;
+static gdouble _ckd_scale = 1.0;
+static gchar  *_ckd_cache = "on";
 
 static GOptionEntry _ckd_entries[] =
 {
         {"fullscreen", 'f', 0, G_OPTION_ARG_NONE, &_ckd_fullscreen,
          N_("Set fullscreen mode"), NULL},
-        {"quality=NUMBER", 'q', 0, G_OPTION_ARG_DOUBLE, &_ckd_quality,
-         N_("Set image quality with the given factors"), NULL},
-        {"cache", 'c', 0, G_OPTION_ARG_NONE, &_ckd_cache,
+        {"scale=NUMBER", 's', 0, G_OPTION_ARG_DOUBLE, &_ckd_scale,
+         N_("Scales slides with the given factors"), NULL},
+        {"cache", 'c', 0, G_OPTION_ARG_STRING, &_ckd_cache,
          N_("Set slides cache mode."), NULL},
         {NULL}
 };
+
+static gdouble
+ckd_get_slides_scale (PopplerDocument *pdf_doc)
+{
+        gdouble scale = 1.0;
+        
+        gint n_of_pages = poppler_document_get_n_pages (pdf_doc);
+        gdouble aw = G_MAXDOUBLE, w;
+        PopplerPage *page;
+        for (gint i = 0; i < n_of_pages; i++) {
+                page = poppler_document_get_page (pdf_doc, i);
+                poppler_page_get_size (page, &w, NULL);
+                if (aw > w)
+                        aw = w;
+                g_object_unref (page);
+        }
+        
+        if (aw > 0.0 && aw < CKD_META_SLIDES_LOWEST_RESOLUTION) {
+                scale = CKD_META_SLIDES_LOWEST_RESOLUTION / aw;
+        }
+
+        return scale;
+}
 
 int
 main (int argc, char **argv)
@@ -59,7 +82,7 @@ main (int argc, char **argv)
         }
         /* \end */
 
-        /* \begin 获取 pdf 文档 */
+        /* \begin 获取 pdf 文档并确定页面默认缩放比例基准 */
         GFile *source = g_file_new_for_path (argv[1]);
         gchar *pdf_uri = g_file_get_uri (source);
         PopplerDocument *pdf_doc = poppler_document_new_from_file (pdf_uri, NULL, NULL);
@@ -68,10 +91,11 @@ main (int argc, char **argv)
 
         /* \begin 创建幻灯片元集及其缓存 */
         CkdMetaSlidesCacheMode cache_mode;
-        if (_ckd_cache)
-                cache_mode = CKD_META_SLIDES_DISK_CACHE;
-        else
+        if (g_str_equal (_ckd_cache, "off"))
                 cache_mode = CKD_META_SLIDES_NO_CACHE;
+        else
+                cache_mode = CKD_META_SLIDES_DISK_CACHE;
+
         CkdMetaSlides *meta_slides = g_object_new (CKD_TYPE_META_SLIDES,
                                                    "source",
                                                    source,
@@ -80,7 +104,7 @@ main (int argc, char **argv)
                                                    "cache-mode",
                                                    cache_mode,
                                                    "scale",
-                                                   _ckd_quality * CKD_META_SLIDES_QUALITY_DELTA,
+                                                   _ckd_scale * ckd_get_slides_scale (pdf_doc),
                                                    NULL);
         ckd_meta_slides_create_cache (meta_slides);
         /* \end */

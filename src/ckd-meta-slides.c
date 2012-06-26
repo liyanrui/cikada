@@ -243,8 +243,8 @@ ckd_meta_slides_class_init (CkdMetaSlidesClass *klass)
                                       G_PARAM_READABLE);
         props[PROP_CKD_META_SLIDES_SCALE] =
                 g_param_spec_double ("scale", "Scale", "Scale",
-                                     CKD_META_SLIDES_QUALITY_MIN,
-                                     CKD_META_SLIDES_QUALITY_MAX,
+                                     G_MINDOUBLE,
+                                     G_MAXDOUBLE,
                                      1.0,
                                      G_PARAM_READWRITE
                                      | G_PARAM_CONSTRUCT_ONLY);

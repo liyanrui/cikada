@@ -376,6 +376,30 @@ _slide_enter_from_fade (CkdPlayer *self, ClutterActor *slide)
 }
 
 static void
+_slide_enter_from_curl (CkdPlayer *self, ClutterActor *slide)
+{
+        CkdPlayerPriv *priv = CKD_PLAYER_GET_PRIVATE (self);
+
+        ClutterActor *stage = clutter_actor_get_stage (slide);
+        gfloat h = clutter_actor_get_height (stage);
+        ClutterEffect *effect = clutter_page_turn_effect_new (1.0,
+                                                              45.0,
+                                                              0.15 * h);
+        
+        clutter_deform_effect_set_n_tiles (CLUTTER_DEFORM_EFFECT(effect),
+                                           128,
+                                           128);
+        
+        clutter_actor_add_effect_with_name (slide, "curl", effect);
+        
+        clutter_actor_animate (slide,
+                               CLUTTER_EASE_OUT_QUAD,
+                               2 * priv->am_time,
+                                "@effects.curl.period", 0.0,
+                                NULL);
+}
+
+static void
 ckd_player_slide_enter (CkdPlayer *self, ClutterActor *slide, CkdMetaEntry *e)
 {
         switch (e->am) {
@@ -399,6 +423,9 @@ ckd_player_slide_enter (CkdPlayer *self, ClutterActor *slide, CkdMetaEntry *e)
                 break;
         case CKD_SLIDE_AM_FADE:
                 _slide_enter_from_fade (self, slide);
+                break;
+        case CKD_SLIDE_AM_CURL:
+                _slide_enter_from_curl (self, slide);
                 break;
         default:
                 break;
@@ -521,7 +548,7 @@ _slide_exit_from_enlargement (CkdPlayer *self, ClutterActor *slide)
                                "scale-x", 1.618,
                                "scale-y", 1.618,
                                "opacity", 0,
-                               "signal::completed",
+                               "signal-after::completed",
                                _slide_exit_cb,
                                slide,
                                NULL);
@@ -542,11 +569,12 @@ _slide_exit_from_shrink (CkdPlayer *self, ClutterActor *slide)
                                       scale_y,
                                       0.5 * (box.x1 + box.x2),
                                       0.5 * (box.y1 + box.y2));
+
         clutter_actor_animate (slide, CLUTTER_LINEAR, priv->am_time,
                                "scale-x", 0.618,
                                "scale-y", 0.618,
                                "opacity", 0,
-                               "signal::completed",
+                               "signal-after::completed",
                                _slide_exit_cb,
                                slide,
                                NULL);
@@ -563,7 +591,33 @@ _slide_exit_from_fade (CkdPlayer *self, ClutterActor *slide)
                                priv->am_time,
                                "opacity",
                                0,
-                               "signal::completed",
+                               "signal-after::completed",
+                               _slide_exit_cb,
+                               slide,
+                               NULL);
+}
+
+static void
+_slide_exit_from_curl (CkdPlayer *self, ClutterActor *slide)
+{
+        CkdPlayerPriv *priv = CKD_PLAYER_GET_PRIVATE (self);
+
+        ClutterActor *stage = clutter_actor_get_stage (slide);
+        gfloat h = clutter_actor_get_height (stage);
+        ClutterEffect *effect = clutter_page_turn_effect_new (0.0,
+                                                              45.0,
+                                                              0.15 * h);
+        
+        clutter_deform_effect_set_n_tiles (CLUTTER_DEFORM_EFFECT(effect),
+                                           128,
+                                           128);
+        
+        clutter_actor_add_effect_with_name (slide, "curl", effect);
+        clutter_actor_animate (slide,
+                               CLUTTER_EASE_IN_QUAD,
+                               2 * priv->am_time,
+                               "@effects.curl.period", 1.0,
+                               "signal-after::completed",
                                _slide_exit_cb,
                                slide,
                                NULL);
@@ -595,6 +649,9 @@ ckd_player_slide_exit (CkdPlayer *self, ClutterActor *slide, CkdMetaEntry *e)
                 break;
         case CKD_SLIDE_AM_FADE:
                 _slide_exit_from_fade (self, slide);
+                break;
+        case CKD_SLIDE_AM_CURL:
+                _slide_exit_from_curl (self, slide);
                 break;
         default:
                 break;

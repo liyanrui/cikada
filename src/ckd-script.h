@@ -11,7 +11,8 @@ typedef enum {
         CKD_SLIDE_AM_BOTTOM,
         CKD_SLIDE_AM_ENLARGEMENT,
         CKD_SLIDE_AM_SHRINK,
-        CKD_SLIDE_AM_FADE
+        CKD_SLIDE_AM_FADE,
+        CKD_SLIDE_AM_CURL
 } CkdSlideAM;
 
 typedef struct _CkdMetaEntry CkdMetaEntry;

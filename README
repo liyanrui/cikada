@@ -1,17 +1,17 @@
-= INTRODUCTION =
+## INTRODUCTION
 
 Cikada is a presentation tool for PDF documents.
 
 It is licensed in GPLv3.
 
 
-= REQUIREMENTS =
+## REQUIREMENTS =
 
  * clutter (>= 1.10)
  * poppler (>= 0.18 with GLib binding)
 
 
-= INSTALLATION =
+## INSTALLATION
 
 $ autoreconf -i
 $ mkdir build ; cd build
@@ -19,10 +19,7 @@ $ ../configure
 $ make
 $ sudo make install
 
-
-= USAGE =
-
-== BASIC == 
+## BASIC
 
  # The simplest way:
  $ cikada your-pdf-file

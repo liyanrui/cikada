@@ -10,7 +10,7 @@
 #define CKD_STAGE_HEIGHT 480
 
 static gboolean _ckd_fullscreen = FALSE;
-static gdouble _ckd_scale = 1.0;
+static gdouble _ckd_scale = 1.5;
 static gchar  *_ckd_cache = "on";
 
 static GOptionEntry _ckd_entries[] =
@@ -30,20 +30,25 @@ ckd_get_slides_scale (PopplerDocument *pdf_doc)
         gdouble scale = 1.0;
         
         gint n_of_pages = poppler_document_get_n_pages (pdf_doc);
-        gdouble aw = G_MAXDOUBLE, w;
+        gdouble min_size = G_MAXDOUBLE, w, h, size;
         PopplerPage *page;
         for (gint i = 0; i < n_of_pages; i++) {
                 page = poppler_document_get_page (pdf_doc, i);
-                poppler_page_get_size (page, &w, NULL);
-                if (aw > w)
-                        aw = w;
+                poppler_page_get_size (page, &w, &h);
+                if (w > h)
+                        size = w;
+                else
+                        size = h;
+                
+                if (min_size > size)
+                        min_size = size;
                 g_object_unref (page);
         }
         
-        if (aw > 0.0 && aw < CKD_META_SLIDES_LOWEST_RESOLUTION) {
-                scale = CKD_META_SLIDES_LOWEST_RESOLUTION / aw;
+        if (min_size > 0.0 && min_size < CKD_META_SLIDES_LOWEST_RESOLUTION) {
+                scale = CKD_META_SLIDES_LOWEST_RESOLUTION / min_size;
         }
-
+        
         return scale;
 }
 

@@ -19,14 +19,8 @@ $ ../configure
 $ make
 $ sudo make install
 
-## BASIC
+## DEMO VIDEO
 
- # The simplest way:
- $ cikada your-pdf-file
+Youtube: http://youtu.be/KiHT0XfmmCA
 
- # If you want to enter fullscreen directly, you can do:
- $ cikada -f your-pdf-file
-
-The key "F11" can toggle on/off the fullscreen mode.
-
-
+For Chinese User: http://www.tudou.com/programs/view/o7TQMc0TBiY/

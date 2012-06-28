@@ -1,4 +1,4 @@
-\environment env-plain
+\environment env-plain-en
 
 \starttext
 \title{Cikada 0.5 Manual}
@@ -13,22 +13,22 @@ liyanrui.m2@gmail.com
 
 \subject{Introduction}
 
-Cikada is a presentation tool for PDF documents based on clutter and poppler-glib. This means Cikada is developed mainly for Linux desktop users who have hardware 3D acceleration.
+Cikada is a presentation tool for PDF documents based on clutter and poppler-glib. This means Cikada is developed mainly for those linux desktop users who have hardware 3D acceleration.
 
-The name of "Cikada" is come from an english word "Cicada". In order to be convenient for web searching, I changed the second character `c' to `k'. The reason of using "Cikada" is that it can represent this project is created in an afternoon in hottie summer. Furthermore Cikada can warn us don't make noise like it in the progress of presentation.
+The name of \quotation{Cikada} comes from an english word \quotation{Cicada}. In order to be convenient for web searching, I changed the second character \quote{c} to \quote{k}. The reason of using \quotation{Cikada} is that it can represent this project is created in an afternoon in hottie summer. Furthermore Cikada can warn us don't make noise like a cicade in the progress of presentation.
 
-Cikada version 0.5 is rewritten totally. Its main features as follows:
+Cikada version 0.5 is rewritten totally. Its main features:
 
 \startitemize
-\item 提供了幻灯片硬盘缓存模式，可将全部幻灯片转化为图片存储于 /tmp 目录，并对 PDF 文档进行 MD5 校验，避免对同一份 PDF 文档重复进行缓存；
-\item 具有页面平移、缩放、淡入/淡出、卷轴这些常规的幻灯片切换动画效果；
-\item 提供了进度条，不仅可用于追踪演讲进度，还可用于页面跳转；
-\item \TEX\ 风格的配置文件，可以配置幻灯片默认的动画效果、进度条的颜色及尺寸，也可将一组连续的幻灯片组织为“延续体”，用于静态页面所构成的动画演示。
+\item Supporting hard disk cache. With this mode Cikada can convert all PDF pages to images and put them in \type{/tmp/cikada/(MD5 code)}.
+\item Supporting the regular animation effects, such as move, scale, fade-in/out, curl etc.
+\item Providing progress bar. It can trace the progress of presention and can be used to go to some slide quickly.
+\item Supporting \CONTEXT-like format configuration file. In configuration we can set the animation effect of slides and the color of progress bar. Furthermore we can combine some sequences of slides with \quotation{Continuation}. Each sequence is amount to one slide.
 \stopitemize
 
-\subject{安装}
+\subject{Installation}
 
-目前 Cikada 尚无面向 Linux 发行版的二进制包，所以需要编译安装。可从 Cikada 项目仓库中迁出 Cikada 最新的源代码并进行编译，可参考以下命令：
+At present we need get the source code of Cikada from github and compile it for installation.
 
 \starttyping
 $ git clone git://github.com/liyanrui/cikada.git
@@ -38,58 +38,53 @@ $ ./configure && make
 $ sudo make install
 \stoptyping
 
-\subject{运行 Cikada}
+\subject{Running Cikada}
 
-Cikada 无图形交互界面，需在终端（命令行）中运行。命令格式如下：
+Cikada is a command line program. Its command format is:
 
 \starttyping
-$ cikada [选项...] filename.pdf
+$ cikada [Options] filename.pdf
 
-选项:
-  -f, --fullscreen          程序启动时进入全屏模式
-  -s, --scale=NUMBER        设置图像缩放系数
-  -c, --cache=STRING        启用硬盘缓存全部幻灯片模式，默认启用
+Options:
+  -f, --fullscreen          Set fullscreen mode
+  -s, --scale=NUMBER        Scales slides with the given factors
+  -c, --cache=STRING        Set slides cache mode (turning on 
+                            defaultly)
 \stoptyping
 
-例如关闭硬盘缓存、设置图像缩放比例为 1.5，以全屏模式放映文件名为 foo.pdf 的演示文档：
+For example, if we want to close hard disk cache, set image scale 1.5 and enter full screen directly when playing foo.pdf:
 
 \starttyping
 $ cikada -c off -s 1.5 -f foo.pdf
 \stoptyping
 
-如果未设定图像质量，那么图像质量默认值是 1.0，它表示原始 PDF 页面转换而成的图像的宽度是 1024 像素。如果图像质量设为 1.5，则表示图像的宽度是 1024 * 1.5，而图像的高度则由图像原始宽高比例自动确定。之所以选择图像宽度作为基准，是因为绝大部分幻灯片都是宽度大于高度。
+The default value of image scale is 1.0 if you don't set the image scale.
 
-如果在运行 Cikada 时未指定“\type{-f}”选项，那么在 Cikada 窗口开启后，可使用“\type{F11}”键进行全屏模式切换。
+If you don't use \type{-f} when running Cikada, you can use \quotation{F11} key to switch to full screen.
 
-\subject{页面切换}
+\subject{Switching slides}
 
-借助鼠标的左键与右键的单击行为可进行页面切换，其中左键单击是向后翻页，右键单击是向前翻页。
+You can switch slides with the left or right button of mouse. The left button can switch from the current slide to the next slide. The right button can switch from the current to the previous slide.
 
-使用键盘上的“${\blue\leftarrow}$”（或“$\blue\uparrow$”）与“$\blue\rightarrow$”（或“$\blue{\downarrow}$”）按键也可完成向前与向后翻页。
+You can also use ${\blue\leftarrow}$ (or $\blue\uparrow$) and $\blue\rightarrow$ ( or $\blue{\downarrow}$) keys to switch slides.
 
-\subject{进度条}
+\subject{Progress Bar}
 
-Cikada 自 0.5 版增加了进度条功能，可在幻灯片底部显示当前的演讲进度，如图 1 所示。
+Cikada has provided progress bar since 0.5 version. The progress bar is situated under the slide, see Figure \in[progress-bar].
 
-演讲进度是以幻灯片页面为单位进行划分的，因此每张幻灯片所对应的进度值都是相等的。如果有一组幻灯片所表达的内容是紧密延续的，其功能相当于一张幻灯片，这种情况下可以通过配置“延续体”来减小这组幻灯片的进度值，详见“配置文件”一节。
+The progress of presentation is dived into each slide, so all the progress values of each slide are equal. However if there is a sequence slides which represent steps and amount to one slide, we can set them as \quotation{continuation} to reduce their progress values. Please see \about[configuration].
 
-\placefigure{进度条}{\externalfigure[progress-bar][width=.75\textwidth]}
+\placefigure[][progress-bar]{Cikada's Progress Bar}{\externalfigure[progress-bar][width=.75\textwidth]}
 
-进度条也可用于幻灯片快速跳转。在进度条区域，用鼠标单击目标幻灯片大致所对应的进度位置，这样便完成了页面跳转，然后再通过前后翻页精确切换到目标幻灯片。
+The progress bar can also be applied to swtich to some slide with a single clicking on mouse button.
 
-\subject{配置文件}
+\subject[configuration]{Configuration File}
 
-Cikada 自 0.5 版增加了配置文件支持。配置文件需要与演示文档居于同一目录，并与演示文档同名，其扩展名为 \type{.ckd}。
+Cikada has supported configuation file since 0.5 version. Configuration file need lies in the same directory and ownes the same name with the presentation document. The extension name of configuration file is \quotation{\type{.ckd}}. 
 
-例如在 \type{~/Documents} 目录有演示文档 \type{foo.pdf}，那么它对应的配置文件 \type{foo.ckd} 也必须位于 \type{~/Document}。当使用
+For example, the configuration file of \type{~/Documents/foo.pdf} \crlf should be \type{~/Documents/foo.ckd}. When Cikada plays \type{foo.pdf}, it can load \type{foo.ckd} automatically.
 
-\starttyping
-$ cikada ~/Documents/foo.pdf
-\stoptyping
-
-\noindent 读取 \type{foo.pdf} 时，Cikada 会自动加载 \type{foo.ckd} 文件。
-
-配置文件采用了类似 \CONTEXT\ 命令格式的语法，下面是一份完整的示例：
+The syntax of configuration looks like \CONTEXT. This is an example:
 
 \starttyping[option=TEX]
 \setupreport[style=fade,
@@ -107,22 +102,22 @@ $ cikada ~/Documents/foo.pdf
 \slide[9][top]
 \stoptyping
 
-配置文件目前一共三个命令：
+There are three commands totally in configuation file.
 
 \startitemize
-\item \type{\setupreport}：用于设定幻灯片的默认切换动画效果（style）、进度条竖向尺寸（progress-bar-vsize）、进度条颜色（progress-bar-color）以及滑块颜色（nonius-color），其中进度条与滑块的颜色采用的是 \type{{red, green, blue, alpha}} 格式。
-\item \type{\slide}：根据幻灯片编号设定单张幻灯片切换动画效果，它的第一个选项是幻灯片编号（从 1 开始），第二个选项是幻灯片切换动画效果。目前 Cikada 所具备的幻灯片切换动画效果如下：
+\item \type{\setupreport}：set the slides default animation effect (style)、progress bar vertical size(progress-bar-vsize), progress bar color (progress-bar-color) and nonius color (nonius-color); the color format is \type{{red, green, blue, alpha}}。
+\item \type{\slide}：according slide number (begin from 1) set specified slide default animation effect; At present there are these animation effects:
 \startitemize
-\item curl：卷轴进入/退出；
-\item fade：幻灯片淡入/淡出；
-\item shrink：幻灯片缩小进入/退出；
-\item enlargement：幻灯片放大进入/退出；
-\item left：幻灯片从左侧进入/退出；
-\item right：幻灯片从右侧进入/退出；
-\item top：幻灯片从顶部进入/退出；
-\item bottom：幻灯片从底部进入/退出。
+\item curl：curl-in/out
+\item fade：fade-in/out
+\item shrink：zoom-in/out
+\item enlargement： the other zoom-in/out
+\item left：entering or exit from left
+\item right：entering or exit from right
+\item top：entering or exit from top
+\item bottom：entering or exit from bottom
 \stopitemize
-\item \type{\continuation}：根据幻灯片编号定义延续体，例如“\type{4-6}”表示第 4、5、6 张幻灯片是一个延续体，它们的功能相当于一张幻灯片，这样它们对应的进度值便会小于那些非延续体幻灯片。另外，凡是被延续体囊括的幻灯片的切换动画只能是淡入/淡出。
+\item \type{\continuation}：define continuation according slide numbers. For example \type{4-6} represents the fourth, the fifth and the sixth slides combine one continuation and their animation effect are merely fade-in/out.
 \stopitemize
 
 \stoptext

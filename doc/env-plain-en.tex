@@ -1,0 +1,25 @@
+\startenvironment env-plain
+
+\usetypescript[palatino]
+\setupbodyfont[palatino,12pt]
+
+\setupinteraction[state=start, focus=stardard]
+
+\setuppapersize[A4]
+\setuplayout[backspace=3cm, width=15cm]
+
+\setupwhitespace[1em]
+
+\setuppagenumbering[location={footer, middle}]
+
+\setuphead[title][style=\bfc, align={middle,broad}]
+\setuphead[subject][style=\bfa,indentnext=yes]
+
+\setupitemize[paragraph, packed, broad]
+
+\setuptyping[escape=yes,before={\blank[2mm]},after={\blank[2mm]}]
+
+\setupcaptions[style=small,headstyle=normal]
+\setupcaption[figure][align={middle,broad}]
+
+\stopenvironment

@@ -1,0 +1,406 @@
+-- version: 1.19
+-- file: cikada-manual-en
+-- format: cont-en
+-- stamp: 2012.06.26 10:59
+-- escape: [===[ ... ]===]
+
+local utilitydata = { }
+
+utilitydata = utilitydata or { }
+utilitydata.job = utilitydata.job or { }
+utilitydata.job.variables = utilitydata.job.variables or { }
+utilitydata.job.variables.checksums = utilitydata.job.variables.checksums or { }
+utilitydata.job.variables.checksums={
+ ["new"]="22AF645D1859CB5CA6DA0C484F1F37EA",
+ ["old"]="149603E6C03516362A8DA23F624DB945",
+}
+utilitydata = utilitydata or { }
+utilitydata.job = utilitydata.job or { }
+utilitydata.job.variables = utilitydata.job.variables or { }
+utilitydata.job.variables.collected = utilitydata.job.variables.collected or { }
+utilitydata.job.variables.collected={
+ ["randomseed"]=0.67301052746969,
+}
+utilitydata = utilitydata or { }
+utilitydata.job = utilitydata.job or { }
+utilitydata.job.passes = utilitydata.job.passes or { }
+utilitydata.job.passes.collected = utilitydata.job.passes.collected or { }
+utilitydata.job.passes.collected={
+ ["itemgroup"]={
+  { 4, "0" },
+  { 8, "0" },
+  { 3, "0" },
+ },
+}
+utilitydata = utilitydata or { }
+utilitydata.job = utilitydata.job or { }
+utilitydata.job.datasets = utilitydata.job.datasets or { }
+utilitydata.job.datasets.collected = utilitydata.job.datasets.collected or { }
+utilitydata.job.datasets.collected={
+}
+utilitydata = utilitydata or { }
+utilitydata.job = utilitydata.job or { }
+utilitydata.job.pagestates = utilitydata.job.pagestates or { }
+utilitydata.job.pagestates.collected = utilitydata.job.pagestates.collected or { }
+utilitydata.job.pagestates.collected={
+ ["float"]={ 1, 3 },
+}
+utilitydata = utilitydata or { }
+utilitydata.job = utilitydata.job or { }
+utilitydata.job.structure = utilitydata.job.structure or { }
+utilitydata.job.structure.collected = utilitydata.job.structure.collected or { }
+utilitydata.job.structure.collected={
+ ["branches"]={
+  {
+   ["branches"]={},
+   ["name"]="env-plain",
+   ["type"]="environment",
+  },
+ },
+ ["name"]="cikada-manual-en",
+ ["type"]="text",
+}
+utilitydata = utilitydata or { }
+utilitydata.structures = utilitydata.structures or { }
+utilitydata.structures.specials = utilitydata.structures.specials or { }
+utilitydata.structures.specials.collected = utilitydata.structures.specials.collected or { }
+utilitydata.structures.specials.collected={
+}
+utilitydata = utilitydata or { }
+utilitydata.structures = utilitydata.structures or { }
+utilitydata.structures.counters = utilitydata.structures.counters or { }
+utilitydata.structures.counters.collected = utilitydata.structures.counters.collected or { }
+utilitydata.structures.counters.collected={
+ ["endnote"]={
+  { 0 },
+ },
+ ["figure"]={
+  { 0, 0, 1 },
+ },
+ ["footnote"]={
+  { 0 },
+ },
+ ["formula"]={
+  { 0, 0 },
+ },
+ ["graphic"]={
+  { 0, 0 },
+ },
+ ["intermezzo"]={
+  { 0, 0 },
+ },
+ ["itemgroup:itemize"]={
+  { 0, 0, 4, 3 },
+  { 0, 8, 0 },
+ },
+ ["paragraph"]={
+  { 0, 0 },
+ },
+ ["realpage"]={
+  { 5 },
+ },
+ ["subpage"]={
+  { 0 },
+ },
+ ["table"]={
+  { 0, 0 },
+ },
+ ["userpage"]={
+  { 5 },
+ },
+}
+utilitydata = utilitydata or { }
+utilitydata.structures = utilitydata.structures or { }
+utilitydata.structures.lists = utilitydata.structures.lists or { }
+utilitydata.structures.lists.collected = utilitydata.structures.lists.collected or { }
+utilitydata.structures.lists.collected={
+ {
+  ["metadata"]=3,
+  ["numberdata"]=2,
+  ["references"]={
+   ["block"]="bodypart",
+   ["internal"]=1,
+   ["realpage"]=1,
+   ["section"]=0,
+   ["tag"]="?",
+  },
+  ["titledata"]={
+   ["label"]="chapter",
+   ["title"]="Cikada 0.5 Manual",
+  },
+ },
+ {
+  ["metadata"]=6,
+  ["numberdata"]=5,
+  ["references"]={
+   ["block"]="bodypart",
+   ["internal"]=2,
+   ["realpage"]=1,
+   ["section"]=0,
+   ["tag"]="?",
+  },
+  ["titledata"]={
+   ["label"]="section",
+   ["title"]="Introduction",
+  },
+ },
+ {
+  ["metadata"]=6,
+  ["numberdata"]=5,
+  ["references"]={
+   ["block"]="bodypart",
+   ["internal"]=3,
+   ["realpage"]=1,
+   ["section"]=0,
+   ["tag"]="?",
+  },
+  ["titledata"]={
+   ["label"]="section",
+   ["title"]="功能简介",
+  },
+ },
+ {
+  ["metadata"]=6,
+  ["numberdata"]=5,
+  ["references"]={
+   ["block"]="bodypart",
+   ["internal"]=4,
+   ["realpage"]=2,
+   ["section"]=0,
+   ["tag"]="?",
+  },
+  ["titledata"]={
+   ["label"]="section",
+   ["title"]="安装",
+  },
+ },
+ {
+  ["metadata"]=6,
+  ["numberdata"]=5,
+  ["references"]={
+   ["block"]="bodypart",
+   ["internal"]=5,
+   ["realpage"]=2,
+   ["section"]=0,
+   ["tag"]="?",
+  },
+  ["titledata"]={
+   ["label"]="section",
+   ["title"]="运行 Cikada",
+  },
+ },
+ {
+  ["metadata"]=6,
+  ["numberdata"]=5,
+  ["references"]={
+   ["block"]="bodypart",
+   ["internal"]=6,
+   ["realpage"]=2,
+   ["section"]=0,
+   ["tag"]="?",
+  },
+  ["titledata"]={
+   ["label"]="section",
+   ["title"]="页面切换",
+  },
+ },
+ {
+  ["metadata"]=6,
+  ["numberdata"]=5,
+  ["references"]={
+   ["block"]="bodypart",
+   ["internal"]=7,
+   ["realpage"]=3,
+   ["section"]=0,
+   ["tag"]="?",
+  },
+  ["titledata"]={
+   ["label"]="section",
+   ["title"]="进度条",
+  },
+ },
+ {
+  ["metadata"]=10,
+  ["numberdata"]=9,
+  ["prefixdata"]=7,
+  ["references"]={
+   ["block"]="bodypart",
+   ["internal"]=8,
+   ["realpage"]=3,
+   ["section"]=0,
+  },
+  ["titledata"]={
+   ["title"]="进度条",
+  },
+ },
+ {
+  ["metadata"]=6,
+  ["numberdata"]=5,
+  ["references"]={
+   ["block"]="bodypart",
+   ["internal"]=9,
+   ["realpage"]=3,
+   ["section"]=0,
+   ["tag"]="?",
+  },
+  ["titledata"]={
+   ["label"]="section",
+   ["title"]="配置文件",
+  },
+ },
+}
+utilitydata = utilitydata or { }
+utilitydata.structures = utilitydata.structures or { }
+utilitydata.structures.pages = utilitydata.structures.pages or { }
+utilitydata.structures.pages.collected = utilitydata.structures.pages.collected or { }
+utilitydata.structures.pages.collected={
+ {
+  ["block"]="bodypart",
+  ["number"]=1,
+  ["numberdata"]=11,
+  ["prefixdata"]=12,
+ },
+ {
+  ["block"]="bodypart",
+  ["number"]=2,
+  ["numberdata"]=11,
+  ["prefixdata"]=12,
+ },
+ {
+  ["block"]="bodypart",
+  ["number"]=3,
+  ["numberdata"]=11,
+  ["prefixdata"]=12,
+ },
+ {
+  ["block"]="bodypart",
+  ["number"]=4,
+  ["numberdata"]=11,
+  ["prefixdata"]=12,
+ },
+ {
+  ["block"]="bodypart",
+  ["number"]=5,
+  ["numberdata"]=11,
+  ["prefixdata"]=12,
+ },
+}
+utilitydata = utilitydata or { }
+utilitydata.structures = utilitydata.structures or { }
+utilitydata.structures.references = utilitydata.structures.references or { }
+utilitydata.structures.references.collected = utilitydata.structures.references.collected or { }
+utilitydata.structures.references.collected={
+}
+utilitydata = utilitydata or { }
+utilitydata.structures = utilitydata.structures or { }
+utilitydata.structures.references = utilitydata.structures.references or { }
+utilitydata.structures.references.referred = utilitydata.structures.references.referred or { }
+utilitydata.structures.references.referred={
+}
+utilitydata = utilitydata or { }
+utilitydata.structures = utilitydata.structures or { }
+utilitydata.structures.registers = utilitydata.structures.registers or { }
+utilitydata.structures.registers.collected = utilitydata.structures.registers.collected or { }
+utilitydata.structures.registers.collected={
+}
+utilitydata = utilitydata or { }
+utilitydata.job = utilitydata.job or { }
+utilitydata.job.positions = utilitydata.job.positions or { }
+utilitydata.job.positions.collected = utilitydata.job.positions.collected or { }
+utilitydata.job.positions.collected={
+}
+utilitydata = utilitydata or { }
+utilitydata.job = utilitydata.job or { }
+utilitydata.job.objects = utilitydata.job.objects or { }
+utilitydata.job.objects.collected = utilitydata.job.objects.collected or { }
+utilitydata.job.objects.collected={
+}
+utilitydata = utilitydata or { }
+utilitydata.structures = utilitydata.structures or { }
+utilitydata.structures.synonyms = utilitydata.structures.synonyms or { }
+utilitydata.structures.synonyms.collected = utilitydata.structures.synonyms.collected or { }
+utilitydata.structures.synonyms.collected={
+}
+utilitydata = utilitydata or { }
+utilitydata.structures = utilitydata.structures or { }
+utilitydata.structures.blocks = utilitydata.structures.blocks or { }
+utilitydata.structures.blocks.collected = utilitydata.structures.blocks.collected or { }
+utilitydata.structures.blocks.collected={
+}
+utilitydata = utilitydata or { }
+utilitydata.job = utilitydata.job or { }
+utilitydata.job.files = utilitydata.job.files or { }
+utilitydata.job.files.collected = utilitydata.job.files.collected or { }
+utilitydata.job.files.collected={
+}
+utilitydata.job.packed={
+ ["index"]={
+  { 0, 0 },
+  {
+   ["block"]="bodypart",
+   ["hidenumber"]=true,
+   ["numbers"]=1,
+   ["set"]="all",
+  },
+  {
+   ["catcodes"]=8,
+   ["coding"]="tex",
+   ["kind"]="section",
+   ["name"]="title",
+   ["nolist"]=true,
+  },
+  { 0, 0, 0 },
+  {
+   ["block"]="bodypart",
+   ["hidenumber"]=true,
+   ["numbers"]=4,
+   ["set"]="all",
+  },
+  {
+   ["catcodes"]=8,
+   ["coding"]="tex",
+   ["kind"]="section",
+   ["name"]="subject",
+   ["nolist"]=true,
+  },
+  {
+   ["connector"]=".",
+   ["prefix"]="yes",
+   ["segments"]="2:2",
+  },
+  { 1 },
+  {
+   ["numbers"]=8,
+  },
+  {
+   ["catcodes"]=8,
+   ["coding"]="tex",
+   ["kind"]="float",
+   ["level"]=3,
+   ["name"]="figure",
+  },
+  {
+   ["conversionset"]="pagenumber",
+  },
+  {
+   ["connector"]="–",
+   ["prefix"]="no",
+   ["set"]="part",
+  },
+ },
+ ["keys"]={
+  ["directives"]=true,
+  ["metadata"]=true,
+  ["numberdata"]=true,
+  ["numbers"]=true,
+  ["pagedata"]=true,
+  ["prefixdata"]=true,
+  ["processors"]=true,
+  ["sectiondata"]=true,
+  ["specification"]=true,
+ },
+ ["version"]=1.01,
+}
+
+return utilitydata
+

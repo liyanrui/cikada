@@ -598,32 +598,6 @@ _slide_exit_from_fade (CkdPlayer *self, ClutterActor *slide)
 }
 
 static void
-_slide_exit_from_curl (CkdPlayer *self, ClutterActor *slide)
-{
-        CkdPlayerPriv *priv = CKD_PLAYER_GET_PRIVATE (self);
-
-        ClutterActor *stage = clutter_actor_get_stage (slide);
-        gfloat h = clutter_actor_get_height (stage);
-        ClutterEffect *effect = clutter_page_turn_effect_new (0.0,
-                                                              45.0,
-                                                              0.15 * h);
-        
-        clutter_deform_effect_set_n_tiles (CLUTTER_DEFORM_EFFECT(effect),
-                                           128,
-                                           128);
-        
-        clutter_actor_add_effect_with_name (slide, "curl", effect);
-        clutter_actor_animate (slide,
-                               CLUTTER_EASE_IN_QUAD,
-                               2 * priv->am_time,
-                               "@effects.curl.period", 1.0,
-                               "signal-after::completed",
-                               _slide_exit_cb,
-                               slide,
-                               NULL);
-}
-
-static void
 ckd_player_slide_exit (CkdPlayer *self, ClutterActor *slide, CkdMetaEntry *e)
 {
         CkdPlayerPriv *priv = CKD_PLAYER_GET_PRIVATE (self);
@@ -650,15 +624,66 @@ ckd_player_slide_exit (CkdPlayer *self, ClutterActor *slide, CkdMetaEntry *e)
         case CKD_SLIDE_AM_FADE:
                 _slide_exit_from_fade (self, slide);
                 break;
-        case CKD_SLIDE_AM_CURL:
-                _slide_exit_from_curl (self, slide);
-                break;
         default:
                 break;
         }
 
         ckd_player_update_progress (self, e);
 }
+
+/* \begin 如果当前幻灯片是卷轴退出，那么下一张幻灯片的动画必须放在当前幻灯片动画结束后进行 */
+struct CkdSlideAmCurlData {
+        CkdPlayer *player;
+        ClutterActor *current_slide;
+        
+        ClutterActor *next_slide;
+        CkdMetaEntry *next_meta_entry;
+};
+
+static void
+_slide_exit_from_curl_cb (ClutterAnimation *am, gpointer data)
+{
+        struct CkdSlideAmCurlData *curl_data = data;
+        
+        clutter_actor_destroy (curl_data->current_slide);
+
+        clutter_actor_show (curl_data->next_slide);
+        ckd_player_slide_enter (curl_data->player,
+                                curl_data->next_slide,
+                                curl_data->next_meta_entry);
+
+        g_slice_free (struct CkdSlideAmCurlData, curl_data);
+}
+
+
+static void
+_slide_exit_from_curl (struct CkdSlideAmCurlData *data)
+{
+        CkdPlayerPriv *priv = CKD_PLAYER_GET_PRIVATE (data->player);
+
+        clutter_actor_hide (data->next_slide);
+        
+        ClutterActor *stage = clutter_actor_get_stage (data->current_slide);
+        gfloat h = clutter_actor_get_height (stage);
+        ClutterEffect *effect = clutter_page_turn_effect_new (0.0,
+                                                              45.0,
+                                                              0.15 * h);
+        
+        clutter_deform_effect_set_n_tiles (CLUTTER_DEFORM_EFFECT(effect),
+                                           128,
+                                           128);
+        
+        clutter_actor_add_effect_with_name (data->current_slide, "curl", effect);
+        clutter_actor_animate (data->current_slide,
+                               CLUTTER_EASE_IN_QUAD,
+                               2 * priv->am_time,
+                               "@effects.curl.period", 1.0,
+                               "signal-after::completed",
+                               _slide_exit_from_curl_cb,
+                               data,
+                               NULL);
+}
+/* \end */
 
 void
 ckd_player_step (CkdPlayer *self, gint step)
@@ -688,7 +713,20 @@ ckd_player_step (CkdPlayer *self, gint step)
                                                           current_slide_number + step);
 
         if (next_slide && next_meta_entry) {
-                ckd_player_slide_exit (self, current_slide, current_meta_entry);
-                ckd_player_slide_enter (self, next_slide, next_meta_entry);
+                /* 当前幻灯片如果是卷轴动画效果，需要将下一张幻灯片动画置于当前幻灯片动画结束后进行 */
+                if (current_meta_entry->am == CKD_SLIDE_AM_CURL) {
+                        struct CkdSlideAmCurlData *data =
+                                g_slice_alloc (sizeof(struct CkdSlideAmCurlData));
+                        data->player = self;
+                        data->current_slide = current_slide;
+                        data->next_slide = next_slide;
+                        data->next_meta_entry = next_meta_entry;
+                        
+                        _slide_exit_from_curl (data);
+                        
+                } else {
+                        ckd_player_slide_exit (self, current_slide, current_meta_entry);
+                        ckd_player_slide_enter (self, next_slide, next_meta_entry);
+                }
         }
 }

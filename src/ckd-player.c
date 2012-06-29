@@ -667,8 +667,8 @@ _slide_enter_from_curl (CkdPlayer *self, ClutterActor *slide)
         clutter_actor_add_effect_with_name (slide, "curl", effect);
         
         clutter_actor_animate (slide,
-                               CLUTTER_EASE_OUT_QUAD,
-                               2 * priv->am_time,
+                               CLUTTER_LINEAR,
+                               1.5 * priv->am_time,
                                 "@effects.curl.period", 0.0,
                                 NULL);
 }
@@ -949,8 +949,8 @@ _slide_exit_from_curl (struct CkdSlideAmCurlData *data)
         
         clutter_actor_add_effect_with_name (data->current_slide, "curl", effect);
         clutter_actor_animate (data->current_slide,
-                               CLUTTER_EASE_IN_QUAD,
-                               2 * priv->am_time,
+                               CLUTTER_LINEAR,
+                               1.5 * priv->am_time,
                                "@effects.curl.period", 1.0,
                                "signal-after::completed",
                                _slide_exit_from_curl_cb,

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 #include <clutter/clutter.h>
 #include "ckd-script.h"
 
@@ -22,6 +23,9 @@ struct _CkdScriptReportSetup {
         ClutterColor *progress_bar_color;
         ClutterColor *nonius_color;
         gfloat progress_bar_vsize;
+
+        /* 输出元幻灯片表时用于确定列表长度 */
+        gint n_of_slides;
 };
 
 typedef struct _CkdScriptContinuation CkdScriptContinuation;
@@ -286,15 +290,8 @@ get_color (gchar *text)
 }
 
 static CkdScriptReportSetup *
-parse_report_setup (gchar *text)
+parse_report_setup (CkdScriptReportSetup *rs, gchar *text)
 {
-        CkdScriptReportSetup *report_setup = g_slice_alloc (sizeof(CkdScriptReportSetup));
-
-        report_setup->default_am = CKD_SLIDE_AM_NULL;
-        report_setup->progress_bar_color = NULL;
-        report_setup->nonius_color = NULL;
-        report_setup->progress_bar_vsize = 20.0;
-        
         GMatchInfo *info;
                 
         /* \begin 解析幻灯片默认动画 */
@@ -304,7 +301,7 @@ parse_report_setup (gchar *text)
         if (g_match_info_matches (info)) {
                 gchar *s = g_match_info_fetch (info, 0);
                 gchar **splitted_text = g_strsplit (s, "=", 0);
-                report_setup->default_am = get_slide_am (g_strstrip (splitted_text[1]));
+                rs->default_am = get_slide_am (g_strstrip (splitted_text[1]));
                 g_free (am_text);
                 g_strfreev (splitted_text);
                 g_free (s);
@@ -324,7 +321,7 @@ parse_report_setup (gchar *text)
         g_regex_match (progress_bar_color_re, text,  0, &info);
         if (g_match_info_matches (info)) {
                 gchar *s = g_match_info_fetch (info, 0);
-                report_setup->progress_bar_color = get_color (s);
+                rs->progress_bar_color = get_color (s);
                 g_free (s);
         }
         g_match_info_free (info);
@@ -342,7 +339,7 @@ parse_report_setup (gchar *text)
         g_regex_match (nonius_color_re, text,  0, &info);
         if (g_match_info_matches (info)) {
                 gchar *s = g_match_info_fetch (info, 0);
-                report_setup->nonius_color = get_color (s);
+                rs->nonius_color = get_color (s);
                 g_free (s);
         }
         g_match_info_free (info);
@@ -358,21 +355,18 @@ parse_report_setup (gchar *text)
         if (g_match_info_matches (info)) {
                 gchar *s = g_match_info_fetch (info, 0);
                 gchar **splitted_text = g_strsplit (s, "=", 0);
-                report_setup->progress_bar_vsize = g_ascii_strtod (splitted_text[1], NULL);
+                rs->progress_bar_vsize = g_ascii_strtod (splitted_text[1], NULL);
                 g_strfreev (splitted_text);
                 g_free (s);
         }
         g_match_info_free (info);
         g_regex_unref (am_re);
         /* \end */
-        
-        return report_setup;
 }
 
-static CkdScriptContinuation *
-parse_continuation (gchar *text)
+static void
+parse_continuation (CkdScriptContinuation *cont, gchar *text)
 {
-        CkdScriptContinuation *cont = g_slice_alloc (sizeof(CkdScriptContinuation));
         GMatchInfo *info;
         
         /* \begin 解析幻灯片编号范围 */
@@ -395,14 +389,11 @@ parse_continuation (gchar *text)
         g_match_info_free (info);
         g_regex_unref (id_re);
         /* \end */
-
-        return cont;
 }
 
-static CkdScriptSlide *
-parse_slide (gchar *text)
+static void
+parse_slide (CkdScriptSlide *slide, gchar *text)
 {
-        CkdScriptSlide *slide = g_slice_alloc (sizeof(CkdScriptSlide));
         GMatchInfo *info;
 
         /* \begin 解析 id */
@@ -435,9 +426,7 @@ parse_slide (gchar *text)
         /* \end */
 
         /* 现在还不具备解析 slide 文本的功能 */
-        slide->text = NULL;      
-        
-        return slide;
+        slide->text = NULL;
 }
 
 static void
@@ -447,26 +436,34 @@ parse_cmd (gpointer data, gpointer user_data)
         GNode *script = user_data;
         GNode *node = NULL;
         CkdScriptNode *script_node = NULL;
+
+        CkdScriptReportSetup *rs = NULL;
+        CkdScriptContinuation *cont = NULL;
+        CkdScriptSlide *slide = NULL;
         
         switch (cmd->domain) {
         case CKD_REPORT_SETUP:
-                script_node = g_slice_alloc (sizeof(CkdScriptNode));
-                script_node->data = parse_report_setup (cmd->text->str);
-                script_node->domain = CKD_REPORT_SETUP;
-                
                 node = g_node_get_root (script);
-                node->data = script_node;
+                script_node = node->data;
+                parse_report_setup (script_node->data, cmd->text->str);
+                script_node->domain = CKD_REPORT_SETUP;
                 break;
         case CKD_CONTINUATION:
+                cont = g_slice_alloc (sizeof(CkdScriptContinuation));
+                parse_continuation (cont, cmd->text->str);
+                
                 script_node = g_slice_alloc (sizeof(CkdScriptNode));
-                script_node->data = parse_continuation (cmd->text->str);
+                script_node->data = cont;
                 script_node->domain = CKD_CONTINUATION;
 
                 g_node_append_data (script, script_node);
                 break;
         case CKD_SLIDE:
+                slide = g_slice_alloc (sizeof(CkdScriptSlide));
+                parse_slide (slide, cmd->text->str);
+
                 script_node = g_slice_alloc (sizeof(CkdScriptNode));
-                script_node->data = parse_slide (cmd->text->str);
+                script_node->data = slide;
                 script_node->domain = CKD_SLIDE;
                 
                 g_node_append_data (script, script_node);
@@ -476,14 +473,10 @@ parse_cmd (gpointer data, gpointer user_data)
         }
 }
 
-static GNode *
-ckd_script_parse (GList *cmd_list)
+static void
+ckd_script_parse (GNode *script, GList *cmd_list)
 {
-        GNode *script = g_node_new (NULL);
-
         g_list_foreach (cmd_list, parse_cmd, script);
-
-        return script;
 }
 
 static void
@@ -494,7 +487,7 @@ cmd_free (gpointer data)
 }
 
 GNode *
-ckd_script_new (gchar *filename)
+ckd_script_new (gchar *filename, gint n_of_slides)
 {
         GIOChannel *channel = g_io_channel_new_file (filename, "r", NULL);
         if (!channel) {
@@ -509,7 +502,19 @@ ckd_script_new (gchar *filename)
 
         ckd_script_validate_cmd_list (cmd_list);
 
-        GNode *script = ckd_script_parse (cmd_list);
+        
+        CkdScriptReportSetup *rs = g_slice_alloc (sizeof(CkdScriptReportSetup));
+        rs->n_of_slides = n_of_slides;
+        rs->default_am = CKD_SLIDE_AM_NULL;
+        rs->progress_bar_color = NULL;
+        rs->nonius_color = NULL;
+        rs->progress_bar_vsize = 16.0;
+
+        CkdScriptNode *root_data = g_slice_alloc (sizeof(CkdScriptNode));
+        root_data->data = rs;
+        
+        GNode *script = g_node_new (root_data);
+        ckd_script_parse (script, cmd_list);
 
         g_list_free_full (cmd_list, cmd_free);
 
@@ -517,7 +522,7 @@ ckd_script_new (gchar *filename)
 }
 
 static gboolean
-slide_free (GNode *node, gpointer data)
+script_free_cb (GNode *node, gpointer data)
 {
         CkdScriptNode *script_node = node->data;
         CkdScriptSlide *slide = NULL;
@@ -554,8 +559,10 @@ ckd_script_free (GNode *script)
                          G_LEVEL_ORDER,
                          G_TRAVERSE_LEAVES,
                          -1,
-                         slide_free,
+                         script_free_cb,
                          NULL);
+        
+        g_node_destroy (script);
 }
 
 static gboolean
@@ -656,8 +663,14 @@ ckd_script_continuation_query (GNode *script, gint slide_id)
 }
 
 static void
-ckd_script_update_slide_ticks (GNode *script, GList *list, gint n_of_slides)
+ckd_script_update_slide_ticks (GNode *script, GList *list)
 {
+        GNode *root = g_node_get_root (script);
+        CkdScriptNode *rs_node = root->data;
+        CkdScriptReportSetup *rs = rs_node->data;
+
+        gint n_of_slides = rs->n_of_slides;
+        
         /* \begin 统计连续体的个数 */
         gint n_of_conts = 0;
         g_node_traverse (script,
@@ -694,7 +707,7 @@ ckd_script_update_slide_ticks (GNode *script, GList *list, gint n_of_slides)
                 IN_CONT,
                 NOT_IN_CONT
         } state = INIT;
-        
+
         for (gint i = 0; i < n_of_slides; i++) {
                 e = iter->data;
 
@@ -767,28 +780,23 @@ ckd_script_update_slide_ticks (GNode *script, GList *list, gint n_of_slides)
 }
 
 GList *
-ckd_script_out_meta_entry_list (GNode *script, gint n_of_slides)
+ckd_script_output_meta_entry_list (GNode *script)
 {
         GList *meta_entry_list = NULL;
         GNode *root = g_node_get_root (script);
         CkdMetaEntry *entry = NULL;
 
-        CkdScriptNode *report_setup_node;
-        CkdScriptReportSetup *report_setup;
+        CkdScriptNode *rs_node = root->data;
+        CkdScriptReportSetup *rs = rs_node->data;     
         
         /* \begin 初始化幻灯片元信息表 */
-        for (gint i = 0; i < n_of_slides; i++) {
+        for (gint i = 0; i < rs->n_of_slides; i++) {
                 entry = g_slice_alloc (sizeof(CkdMetaEntry));
-                if (root->data) {
-                        report_setup_node = root->data;
-                        report_setup = report_setup_node->data;
-                        entry->am = report_setup->default_am;
-                } else if (ckd_script_continuation_query (script, i)) {
+                if (ckd_script_continuation_query (script, i)) {
                         /* 延续体中的幻灯片的动画效果必须为 fade */
                         entry->am = CKD_SLIDE_AM_FADE;
-                } else {
-                        entry->am  = CKD_SLIDE_AM_FADE;
-                }
+                } else
+                       entry->am = rs->default_am;   
                 entry->text = NULL;
                 meta_entry_list = g_list_append (meta_entry_list, entry);
         }
@@ -803,7 +811,7 @@ ckd_script_out_meta_entry_list (GNode *script, gint n_of_slides)
                          meta_entry_list);
         /* \end */
         
-        ckd_script_update_slide_ticks (script, meta_entry_list, n_of_slides);
+        ckd_script_update_slide_ticks (script, meta_entry_list);
         
         return meta_entry_list;
 }
@@ -844,5 +852,79 @@ ckd_script_get_progress_bar_vsize (GNode *script)
         if (report_setup) {
                 return report_setup->progress_bar_vsize;
         } else
-                return 0.0;
+                return -1.0;
+}
+
+static gboolean
+ckd_meta_entry_equal (CkdMetaEntry *a, CkdMetaEntry *b)
+{
+        if (a->am != b->am)
+                return FALSE;
+        if (a->tick != b->tick)
+                return FALSE;
+        
+        /* \begin 幻灯片备注文本尚未实现，所以在此未作比较 */
+        /* todo */
+        /* \end */
+
+        return TRUE;
+}
+
+gboolean
+ckd_script_equal (GNode *a, GNode *b)
+{
+        /* \begin 比较根结点 */
+        GNode *root_a = g_node_get_root (a);
+        CkdScriptNode *rs_node_a = root_a->data;
+        
+        GNode *root_b = g_node_get_root (b);
+        CkdScriptNode *rs_node_b = root_b->data;
+        
+        if (rs_node_a && rs_node_b) {
+                CkdScriptReportSetup *rs_a = rs_node_a->data;
+                CkdScriptReportSetup *rs_b = rs_node_b->data;
+
+                if (rs_a->default_am != rs_b->default_am)
+                        return FALSE;
+
+                if (rs_a->progress_bar_color != rs_b->progress_bar_color) {
+                        if (!rs_a->progress_bar_color)
+                                return FALSE;
+                        else if (rs_b->progress_bar_color) {
+                                if (!clutter_color_equal (rs_a->progress_bar_color,
+                                                          rs_b->progress_bar_color))
+                                        return FALSE;
+                        }
+                }
+                if (rs_a->nonius_color != rs_b->nonius_color) {
+                        if (!rs_a->nonius_color)
+                                return FALSE;
+                        else if (rs_b->nonius_color) {
+                                if (!clutter_color_equal (rs_a->nonius_color, rs_b->nonius_color))
+                                        return FALSE;
+                        }
+                }
+                if (G_MINFLOAT < fabsf (rs_a->progress_bar_vsize - rs_b->progress_bar_vsize))
+                        return FALSE;
+        }
+        /* \end */
+
+        /* \begin 比较各个幻灯片的设置 */
+        GList *list_a = ckd_script_output_meta_entry_list (a);
+        GList *list_b = ckd_script_output_meta_entry_list (b);
+        GList *iter_a = g_list_first (list_a);
+        GList *iter_b = g_list_first (list_b);
+        while (iter_a && iter_b) {
+                CkdMetaEntry *e_a = iter_a->data;
+                CkdMetaEntry *e_b = iter_b->data;
+                if (!ckd_meta_entry_equal (e_a, e_b)) {
+                        return FALSE;
+                }
+
+                iter_a = g_list_next (iter_a);
+                iter_b = g_list_next (iter_b);
+        }
+        /* \end */
+
+        return TRUE;
 }

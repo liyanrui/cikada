@@ -23,14 +23,16 @@ struct _CkdMetaEntry {
         GString *text;
 };
 
-GNode *ckd_script_new (gchar *filename);
-
-GList *ckd_script_out_meta_entry_list (GNode *script, gint n_of_slides);
+GNode *ckd_script_new (gchar *filename, gint n_of_slides);
 
 void ckd_script_free (GNode *scripts);
+
+GList *ckd_script_output_meta_entry_list (GNode *script);
 
 ClutterColor *ckd_script_get_progress_bar_color (GNode *script);
 ClutterColor *ckd_script_get_nonius_color (GNode *script);
 gfloat ckd_script_get_progress_bar_vsize (GNode *script);
+
+gboolean ckd_script_equal (GNode *a, GNode *b);
 
 #endif

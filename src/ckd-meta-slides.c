@@ -25,9 +25,6 @@ struct _CkdMetaSlidesPriv {
 
         /* 在硬盘缓存模式中用于记录缓存线程的进度 */
         gint next_cached_slide_id;
-        
-        /* 配置 */
-        GNode *script;
 };
 
 enum {
@@ -38,7 +35,6 @@ enum {
         PROP_CKD_META_SLIDES_CACHE,
         PROP_CKD_META_SLIDES_SCALE,
         PROP_CKD_META_SLIDES_N_OF_SLIDES,
-        PROP_CKD_META_SLIDES_SCRIPT,
         N_CKD_META_SLIDES_PROPS
 };
 
@@ -69,19 +65,6 @@ ckd_meta_slides_set_property (GObject *obj,
                                                                       contents,
                                                                       length);
                         g_free (contents);
-                }
-                /* 读取配置文件 */
-                {
-                        gchar *path = g_file_get_path (priv->source);
-                        gchar **splitted = g_strsplit (path, ".", 0);
-                        GString *script_path = g_string_new (splitted[0]);
-                        g_string_append (script_path, ".ckd");
-                        GFile *script_file = g_file_new_for_path (script_path->str);
-                        if (g_file_query_exists (script_file, NULL))
-                                priv->script = ckd_script_new (script_path->str);
-                        g_strfreev (splitted);
-                        g_string_free (script_path, TRUE);
-                        g_free (path);
                 }
                 break;
         case PROP_CKD_META_SLIDES_PDF_DOC:
@@ -136,6 +119,9 @@ ckd_meta_slides_get_property (GObject *obj,
         CkdMetaSlidesPriv *priv = CKD_META_SLIDES_GET_PRIVATE (self);
 
         switch (property_id) {
+        case PROP_CKD_META_SLIDES_SOURCE:
+                g_value_set_pointer (value, priv->source);
+                break;
         case PROP_CKD_META_SLIDES_PDF_DOC:
                 g_value_set_pointer (value, priv->pdf_doc);
                 break;
@@ -150,9 +136,6 @@ ckd_meta_slides_get_property (GObject *obj,
                 break;
         case PROP_CKD_META_SLIDES_N_OF_SLIDES:
                 g_value_set_int (value, priv->n_of_slides);
-                break;
-        case PROP_CKD_META_SLIDES_SCRIPT:
-                g_value_set_pointer (value, priv->script);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, property_id, pspec);
@@ -196,11 +179,6 @@ ckd_meta_slides_dispose (GObject *obj)
                 priv->cache = NULL;
         }
 
-        if (priv->script) {
-                ckd_script_free (priv->script);
-                priv->script = NULL;
-        }
-
         G_OBJECT_CLASS (ckd_meta_slides_parent_class)->dispose (obj);
 }
 
@@ -224,7 +202,7 @@ ckd_meta_slides_class_init (CkdMetaSlidesClass *klass)
         GParamSpec *props[N_CKD_META_SLIDES_PROPS] = {NULL,};
         props[PROP_CKD_META_SLIDES_SOURCE] =
                 g_param_spec_pointer ("source", "Source", "PDF Source File",
-                                      G_PARAM_WRITABLE
+                                      G_PARAM_READWRITE
                                       | G_PARAM_CONSTRUCT_ONLY);
         props[PROP_CKD_META_SLIDES_PDF_DOC] =
                 g_param_spec_pointer ("pdf-doc", "PDF Document", "PDF Document",
@@ -256,11 +234,7 @@ ckd_meta_slides_class_init (CkdMetaSlidesClass *klass)
                                   G_MAXINT,
                                   0,
                                   G_PARAM_READABLE);
-        props[PROP_CKD_META_SLIDES_SCRIPT] =
-                g_param_spec_pointer ("script",
-                                      "Script",
-                                      "Script",
-                                      G_PARAM_READABLE);
+
         g_object_class_install_properties (base_class,
                                            N_CKD_META_SLIDES_PROPS,
                                            props);
@@ -280,7 +254,6 @@ ckd_meta_slides_init (CkdMetaSlides *self)
         priv->scale      = 1.0;
         priv->n_of_slides = 0;
         priv->next_cached_slide_id = 0;
-        priv->script = NULL;
 }
 
 static gboolean
@@ -411,24 +384,6 @@ ckd_meta_slides_create_cache (CkdMetaSlides *self)
 {
         CkdMetaSlidesPriv *priv = CKD_META_SLIDES_GET_PRIVATE (self);
         CkdMetaEntry *entry;
-
-        if (priv->script) {
-                /* 幻灯片备注还未实现 */
-                GList *list = ckd_script_out_meta_entry_list (priv->script,
-                                                              priv->n_of_slides);
-                gint i = 0;
-                CkdMetaEntry *e1, *e2;
-                GList *iter;
-                for (iter = g_list_first (list);
-                     iter != NULL;
-                     iter = g_list_next (iter), i++) {
-                        e1 = iter->data;
-                        e2 = g_array_index (priv->cache, CkdMetaEntry *, i);
-                        if (e1->am != CKD_SLIDE_AM_NULL)
-                                e2->am = e1->am;
-                        e2->tick = e1->tick;
-                }
-        }
 
         if (priv->cache_mode == CKD_META_SLIDES_NO_CACHE) {
                 for (gint i = 0; i < priv->n_of_slides; i++) {

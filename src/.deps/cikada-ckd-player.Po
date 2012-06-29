@@ -5,10 +5,9 @@ cikada-ckd-player.o: ckd-player.c /usr/include/math.h \
  /usr/include/bits/huge_valf.h /usr/include/bits/huge_vall.h \
  /usr/include/bits/inf.h /usr/include/bits/nan.h \
  /usr/include/bits/mathdef.h /usr/include/bits/mathcalls.h \
- /usr/include/bits/mathinline.h ckd-meta-slides.h \
- /usr/include/glib-2.0/glib-object.h \
- /usr/include/glib-2.0/gobject/gbinding.h /usr/include/glib-2.0/glib.h \
- /usr/include/glib-2.0/glib/galloca.h /usr/include/glib-2.0/glib/gtypes.h \
+ /usr/include/bits/mathinline.h /usr/include/glib-2.0/glib/gprintf.h \
+ /usr/include/glib-2.0/glib.h /usr/include/glib-2.0/glib/galloca.h \
+ /usr/include/glib-2.0/glib/gtypes.h \
  /usr/lib64/glib-2.0/include/glibconfig.h \
  /usr/include/glib-2.0/glib/gmacros.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/stddef.h \
@@ -81,7 +80,13 @@ cikada-ckd-player.o: ckd-player.c /usr/include/math.h \
  /usr/include/glib-2.0/glib/deprecated/gthread.h /usr/include/pthread.h \
  /usr/include/endian.h /usr/include/bits/endian.h /usr/include/sched.h \
  /usr/include/bits/sched.h /usr/include/bits/pthreadtypes.h \
- /usr/include/bits/setjmp.h /usr/include/glib-2.0/gobject/gobject.h \
+ /usr/include/bits/setjmp.h /usr/include/stdio.h /usr/include/libio.h \
+ /usr/include/_G_config.h /usr/include/wchar.h \
+ /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h \
+ /usr/include/bits/stdio.h /usr/include/bits/stdio2.h ckd-meta-slides.h \
+ /usr/include/glib-2.0/glib-object.h \
+ /usr/include/glib-2.0/gobject/gbinding.h \
+ /usr/include/glib-2.0/gobject/gobject.h \
  /usr/include/glib-2.0/gobject/gtype.h \
  /usr/include/glib-2.0/gobject/gvalue.h \
  /usr/include/glib-2.0/gobject/gparam.h \
@@ -146,10 +151,7 @@ cikada-ckd-player.o: ckd-player.c /usr/include/math.h \
  /usr/include/pango-1.0/pango/pango-layout.h \
  /usr/include/pango-1.0/pango/pango-tabs.h \
  /usr/include/pango-1.0/pango/pango-renderer.h \
- /usr/include/pango-1.0/pango/pango-utils.h /usr/include/stdio.h \
- /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h \
- /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h \
- /usr/include/bits/stdio.h /usr/include/bits/stdio2.h \
+ /usr/include/pango-1.0/pango/pango-utils.h \
  /usr/include/atk-1.0/atk/atk.h /usr/include/atk-1.0/atk/atkobject.h \
  /usr/include/atk-1.0/atk/atkstate.h \
  /usr/include/atk-1.0/atk/atkrelationtype.h \
@@ -517,11 +519,7 @@ cikada-ckd-player.o: ckd-player.c /usr/include/math.h \
 
 /usr/include/bits/mathinline.h:
 
-ckd-meta-slides.h:
-
-/usr/include/glib-2.0/glib-object.h:
-
-/usr/include/glib-2.0/gobject/gbinding.h:
+/usr/include/glib-2.0/glib/gprintf.h:
 
 /usr/include/glib-2.0/glib.h:
 
@@ -715,6 +713,28 @@ ckd-meta-slides.h:
 
 /usr/include/bits/setjmp.h:
 
+/usr/include/stdio.h:
+
+/usr/include/libio.h:
+
+/usr/include/_G_config.h:
+
+/usr/include/wchar.h:
+
+/usr/include/bits/stdio_lim.h:
+
+/usr/include/bits/sys_errlist.h:
+
+/usr/include/bits/stdio.h:
+
+/usr/include/bits/stdio2.h:
+
+ckd-meta-slides.h:
+
+/usr/include/glib-2.0/glib-object.h:
+
+/usr/include/glib-2.0/gobject/gbinding.h:
+
 /usr/include/glib-2.0/gobject/gobject.h:
 
 /usr/include/glib-2.0/gobject/gtype.h:
@@ -850,22 +870,6 @@ ckd-meta-slides.h:
 /usr/include/pango-1.0/pango/pango-renderer.h:
 
 /usr/include/pango-1.0/pango/pango-utils.h:
-
-/usr/include/stdio.h:
-
-/usr/include/libio.h:
-
-/usr/include/_G_config.h:
-
-/usr/include/wchar.h:
-
-/usr/include/bits/stdio_lim.h:
-
-/usr/include/bits/sys_errlist.h:
-
-/usr/include/bits/stdio.h:
-
-/usr/include/bits/stdio2.h:
 
 /usr/include/atk-1.0/atk/atk.h:
 

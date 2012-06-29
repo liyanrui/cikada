@@ -250,21 +250,6 @@ ckd_view_dispose (GObject *o)
                 priv->meta_slides = NULL;
         }
 
-        if (priv->slide) {
-                clutter_actor_destroy (priv->slide);
-                priv->slide = NULL;
-        }
-
-        if (priv->bar) {
-                clutter_actor_destroy (priv->bar);
-                priv->bar = NULL;                
-        }
-        
-        if (priv->nonius) {
-                clutter_actor_destroy (priv->nonius);
-                priv->nonius = NULL;                
-        }
-
         if (priv->bar_color) {
                 clutter_color_free (priv->bar_color);
                 priv->bar_color = NULL;
@@ -300,6 +285,7 @@ ckd_view_class_init (CkdViewClass *c)
         GParamFlags r_flag = G_PARAM_READABLE;
         GParamFlags w_co_flags = G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY;
         GParamFlags rw_co_flags = G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY;
+        GParamFlags rw_flags = G_PARAM_READWRITE;
         
         props[PROP_CKD_VIEW_STAGE] = g_param_spec_pointer ("stage",
                                                            "Stage",
@@ -341,18 +327,18 @@ ckd_view_class_init (CkdViewClass *c)
         props[PROP_CKD_VIEW_BAR_COLOR] = g_param_spec_pointer ("bar-color",
                                                                "Bar Color",
                                                                "Bar Color",
-                                                               w_co_flags);
+                                                               rw_flags);
         
         props[PROP_CKD_VIEW_BAR_VSIZE] = g_param_spec_float ("bar-vsize",
                                                              "Bar Vertical size",
                                                              "Bar Vertical size",
                                                              0.0, G_MAXFLOAT, 20.0,
-                                                             w_co_flags);
+                                                             rw_flags);
 
         props[PROP_CKD_VIEW_NONIUS_COLOR] = g_param_spec_pointer ("nonius-color",
                                                                   "Nonius Color",
                                                                   "Nonius Color",
-                                                                  w_co_flags);
+                                                                  rw_flags);
         
         g_object_class_install_properties (base_class, N_CKD_VIEW_PROPS, props);
 }

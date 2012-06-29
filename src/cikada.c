@@ -115,22 +115,9 @@ main (int argc, char **argv)
         /* \end */
         
         /* \begin 创建幻灯片视图 */
-        GNode *script = NULL;
-        g_object_get (meta_slides, "script", &script, NULL);
-        
-        ClutterColor *progress_bar_color, *nonius_color;
-        gfloat progress_bar_vsize;
-        if (script) {
-                progress_bar_color = ckd_script_get_progress_bar_color (script);
-                nonius_color = ckd_script_get_nonius_color (script);
-                progress_bar_vsize = ckd_script_get_progress_bar_vsize (script);
-        }
-        if (!script || !progress_bar_color)
-                progress_bar_color = clutter_color_new (51, 51, 51, 255);
-        if (!script || !nonius_color)
-                nonius_color = clutter_color_new (151, 0, 0, 255);
-        if (!script || progress_bar_vsize < 0.0)
-                progress_bar_vsize = 16.0;
+        ClutterColor *progress_bar_color = clutter_color_new (51, 51, 51, 255);
+        ClutterColor *nonius_color = clutter_color_new (151, 0, 0, 255);
+        gdouble progress_bar_vsize = 16.0;
         
         CkdView *view = g_object_new (CKD_TYPE_VIEW,
                                       "stage", stage,
@@ -150,11 +137,10 @@ main (int argc, char **argv)
         
         g_signal_connect (stage, "destroy", G_CALLBACK(clutter_main_quit), NULL);
 
-        clutter_actor_show_all (stage);
-
+        clutter_actor_show (stage);
         clutter_main ();
 
-        g_object_unref (view);
+        g_object_unref (player);
 
         return 0;
 }

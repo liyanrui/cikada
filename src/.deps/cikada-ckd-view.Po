@@ -1,6 +1,6 @@
 cikada-ckd-view.o: ckd-view.c /usr/include/math.h /usr/include/features.h \
  /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h \
- /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h \
+ /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h \
  /usr/include/bits/huge_val.h /usr/include/bits/huge_valf.h \
  /usr/include/bits/huge_vall.h /usr/include/bits/inf.h \
  /usr/include/bits/nan.h /usr/include/bits/mathdef.h \
@@ -9,20 +9,20 @@ cikada-ckd-view.o: ckd-view.c /usr/include/math.h /usr/include/features.h \
  /usr/include/clutter-1.0/clutter/clutter-config.h \
  /usr/include/glib-2.0/glib.h /usr/include/glib-2.0/glib/galloca.h \
  /usr/include/glib-2.0/glib/gtypes.h \
- /usr/lib64/glib-2.0/include/glibconfig.h \
+ /usr/lib/glib-2.0/include/glibconfig.h \
  /usr/include/glib-2.0/glib/gmacros.h \
- /usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/stddef.h \
- /usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include-fixed/limits.h \
- /usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include-fixed/syslimits.h \
+ /usr/lib/gcc/i686-pc-linux-gnu/4.6.3/include/stddef.h \
+ /usr/lib/gcc/i686-pc-linux-gnu/4.6.3/include-fixed/limits.h \
+ /usr/lib/gcc/i686-pc-linux-gnu/4.6.3/include-fixed/syslimits.h \
  /usr/include/limits.h \
- /usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/float.h \
+ /usr/lib/gcc/i686-pc-linux-gnu/4.6.3/include/float.h \
  /usr/include/glib-2.0/glib/gversionmacros.h /usr/include/time.h \
  /usr/include/bits/time.h /usr/include/bits/types.h \
  /usr/include/bits/typesizes.h /usr/include/glib-2.0/glib/garray.h \
  /usr/include/glib-2.0/glib/gasyncqueue.h \
  /usr/include/glib-2.0/glib/gthread.h \
  /usr/include/glib-2.0/glib/gatomic.h /usr/include/glib-2.0/glib/gerror.h \
- /usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/stdarg.h \
+ /usr/lib/gcc/i686-pc-linux-gnu/4.6.3/include/stdarg.h \
  /usr/include/glib-2.0/glib/gquark.h \
  /usr/include/glib-2.0/glib/gbacktrace.h /usr/include/signal.h \
  /usr/include/bits/sigset.h /usr/include/bits/signum.h \
@@ -40,7 +40,7 @@ cikada-ckd-view.o: ckd-view.c /usr/include/math.h /usr/include/features.h \
  /usr/include/glib-2.0/glib/gfileutils.h \
  /usr/include/glib-2.0/glib/ggettext.h /usr/include/glib-2.0/glib/ghash.h \
  /usr/include/glib-2.0/glib/glist.h /usr/include/glib-2.0/glib/gmem.h \
- /usr/include/glib-2.0/glib/ghmac.h \
+ /usr/include/glib-2.0/glib/gnode.h /usr/include/glib-2.0/glib/ghmac.h \
  /usr/include/glib-2.0/glib/gchecksum.h \
  /usr/include/glib-2.0/glib/ghook.h \
  /usr/include/glib-2.0/glib/ghostutils.h \
@@ -53,7 +53,7 @@ cikada-ckd-view.o: ckd-view.c /usr/include/math.h /usr/include/features.h \
  /usr/include/glib-2.0/glib/gmappedfile.h \
  /usr/include/glib-2.0/glib/gmarkup.h \
  /usr/include/glib-2.0/glib/gmessages.h \
- /usr/include/glib-2.0/glib/gnode.h /usr/include/glib-2.0/glib/goption.h \
+ /usr/include/glib-2.0/glib/goption.h \
  /usr/include/glib-2.0/glib/gpattern.h \
  /usr/include/glib-2.0/glib/gprimes.h /usr/include/glib-2.0/glib/gqsort.h \
  /usr/include/glib-2.0/glib/gqueue.h /usr/include/glib-2.0/glib/grand.h \
@@ -85,11 +85,14 @@ cikada-ckd-view.o: ckd-view.c /usr/include/math.h /usr/include/features.h \
  /usr/include/clutter-1.0/clutter/clutter-types.h \
  /usr/include/cairo/cairo.h /usr/include/cairo/cairo-version.h \
  /usr/include/cairo/cairo-features.h \
- /usr/include/cairo/cairo-deprecated.h \
- /usr/include/clutter-1.0/clutter/clutter-macros.h \
- /usr/include/clutter-1.0/clutter/clutter-version.h \
- /usr/include/clutter-1.0/clutter/clutter-enums.h \
- /usr/include/glib-2.0/glib-object.h \
+ /usr/include/cairo/cairo-deprecated.h /usr/include/cogl/cogl/cogl.h \
+ /usr/include/cogl/cogl/cogl-defines.h /usr/include/GL/gl.h \
+ /usr/include/GL/glext.h /usr/include/inttypes.h \
+ /usr/lib/gcc/i686-pc-linux-gnu/4.6.3/include/stdint.h \
+ /usr/include/stdint.h /usr/include/bits/wchar.h \
+ /usr/include/cogl/cogl/cogl-object.h \
+ /usr/include/cogl/cogl/cogl1-context.h \
+ /usr/include/cogl/cogl/cogl-types.h /usr/include/glib-2.0/glib-object.h \
  /usr/include/glib-2.0/gobject/gbinding.h \
  /usr/include/glib-2.0/gobject/gobject.h \
  /usr/include/glib-2.0/gobject/gtype.h \
@@ -107,6 +110,40 @@ cikada-ckd-view.o: ckd-view.c /usr/include/math.h /usr/include/features.h \
  /usr/include/glib-2.0/gobject/gtypeplugin.h \
  /usr/include/glib-2.0/gobject/gvaluearray.h \
  /usr/include/glib-2.0/gobject/gvaluetypes.h \
+ /usr/include/cogl/cogl/cogl-texture.h \
+ /usr/include/cogl/cogl/cogl-bitmap.h \
+ /usr/include/cogl/cogl/cogl-buffer.h \
+ /usr/include/cogl/cogl/cogl-context.h \
+ /usr/include/cogl/cogl/cogl-display.h \
+ /usr/include/cogl/cogl/cogl-renderer.h \
+ /usr/include/cogl/cogl/cogl-onscreen-template.h \
+ /usr/include/cogl/cogl/cogl-swap-chain.h \
+ /usr/include/cogl/cogl/cogl-primitive.h \
+ /usr/include/cogl/cogl/cogl-vertex-buffer.h \
+ /usr/include/cogl/cogl/cogl-attribute.h \
+ /usr/include/cogl/cogl/cogl-attribute-buffer.h \
+ /usr/include/cogl/cogl/cogl-indices.h \
+ /usr/include/cogl/cogl/cogl-index-buffer.h \
+ /usr/include/cogl/cogl/cogl-pixel-buffer.h \
+ /usr/include/cogl/cogl/cogl-framebuffer.h \
+ /usr/include/cogl/cogl/cogl-path.h \
+ /usr/include/cogl/cogl/cogl-path-functions.h \
+ /usr/include/cogl/cogl/cogl-pipeline.h \
+ /usr/include/cogl/cogl/cogl-snippet.h \
+ /usr/include/cogl/cogl/cogl-color.h /usr/include/cogl/cogl/cogl-matrix.h \
+ /usr/include/cogl/cogl/cogl-types.h \
+ /usr/include/cogl/cogl/cogl-offscreen.h \
+ /usr/include/cogl/cogl/cogl-primitives.h \
+ /usr/include/cogl/cogl/cogl-clip-state.h \
+ /usr/include/cogl/cogl/cogl-enum-types.h \
+ /usr/include/cogl/cogl/cogl-fixed.h \
+ /usr/include/cogl/cogl/cogl-material-compat.h \
+ /usr/include/cogl/cogl/cogl-depth-state.h \
+ /usr/include/cogl/cogl/cogl-shader.h \
+ /usr/include/cogl/cogl/cogl-deprecated.h \
+ /usr/include/clutter-1.0/clutter/clutter-macros.h \
+ /usr/include/clutter-1.0/clutter/clutter-version.h \
+ /usr/include/clutter-1.0/clutter/clutter-enums.h \
  /usr/include/clutter-1.0/clutter/clutter-action.h \
  /usr/include/clutter-1.0/clutter/clutter-actor-meta.h \
  /usr/include/clutter-1.0/clutter/clutter-types.h \
@@ -166,82 +203,36 @@ cikada-ckd-view.o: ckd-view.c /usr/include/math.h /usr/include/features.h \
  /usr/include/atk-1.0/atk/atkstreamablecontent.h \
  /usr/include/atk-1.0/atk/atktable.h /usr/include/atk-1.0/atk/atkmisc.h \
  /usr/include/atk-1.0/atk/atkvalue.h /usr/include/atk-1.0/atk/atkwindow.h \
- /usr/include/cogl/cogl/cogl.h /usr/include/cogl/cogl/cogl-defines.h \
- /usr/include/GL/gl.h /usr/include/GL/glext.h /usr/include/inttypes.h \
- /usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/stdint.h \
- /usr/include/stdint.h /usr/include/bits/wchar.h \
- /usr/include/cogl/cogl/cogl-object.h \
- /usr/include/cogl/cogl/cogl1-context.h \
- /usr/include/cogl/cogl/cogl-types.h \
- /usr/include/cogl/cogl/cogl-texture.h \
- /usr/include/cogl/cogl/cogl-bitmap.h \
- /usr/include/cogl/cogl/cogl-buffer.h \
- /usr/include/cogl/cogl/cogl-context.h \
- /usr/include/cogl/cogl/cogl-display.h \
- /usr/include/cogl/cogl/cogl-renderer.h \
- /usr/include/cogl/cogl/cogl-onscreen-template.h \
- /usr/include/cogl/cogl/cogl-swap-chain.h \
- /usr/include/cogl/cogl/cogl-primitive.h \
- /usr/include/cogl/cogl/cogl-vertex-buffer.h \
- /usr/include/cogl/cogl/cogl-attribute.h \
- /usr/include/cogl/cogl/cogl-attribute-buffer.h \
- /usr/include/cogl/cogl/cogl-indices.h \
- /usr/include/cogl/cogl/cogl-index-buffer.h \
- /usr/include/cogl/cogl/cogl-pixel-buffer.h \
- /usr/include/cogl/cogl/cogl-framebuffer.h \
- /usr/include/cogl/cogl/cogl-path.h \
- /usr/include/cogl/cogl/cogl-path-functions.h \
- /usr/include/cogl/cogl/cogl-pipeline.h \
- /usr/include/cogl/cogl/cogl-snippet.h \
- /usr/include/cogl/cogl/cogl-color.h /usr/include/cogl/cogl/cogl-matrix.h \
- /usr/include/cogl/cogl/cogl-types.h \
- /usr/include/cogl/cogl/cogl-offscreen.h \
- /usr/include/cogl/cogl/cogl-primitives.h \
- /usr/include/cogl/cogl/cogl-clip-state.h \
- /usr/include/cogl/cogl/cogl-enum-types.h \
- /usr/include/cogl/cogl/cogl-fixed.h \
- /usr/include/cogl/cogl/cogl-material-compat.h \
- /usr/include/cogl/cogl/cogl-depth-state.h \
- /usr/include/cogl/cogl/cogl-shader.h \
- /usr/include/cogl/cogl/cogl-deprecated.h \
  /usr/include/clutter-1.0/clutter/clutter-event.h \
  /usr/include/clutter-1.0/clutter/clutter-input-device.h \
  /usr/include/clutter-1.0/clutter/clutter-actor-meta.h \
  /usr/include/clutter-1.0/clutter/clutter-align-constraint.h \
  /usr/include/clutter-1.0/clutter/clutter-constraint.h \
- /usr/include/clutter-1.0/clutter/clutter-alpha.h \
- /usr/include/clutter-1.0/clutter/clutter-timeline.h \
  /usr/include/clutter-1.0/clutter/clutter-animatable.h \
- /usr/include/clutter-1.0/clutter/clutter-animation.h \
- /usr/include/clutter-1.0/clutter/clutter-animation.h \
- /usr/include/clutter-1.0/clutter/clutter-animator.h \
  /usr/include/clutter-1.0/clutter/clutter-backend.h \
  /usr/include/clutter-1.0/clutter/clutter-config.h \
  /usr/include/clutter-1.0/clutter/clutter-bind-constraint.h \
  /usr/include/clutter-1.0/clutter/clutter-binding-pool.h \
  /usr/include/clutter-1.0/clutter/clutter-bin-layout.h \
  /usr/include/clutter-1.0/clutter/clutter-layout-manager.h \
- /usr/include/clutter-1.0/clutter/clutter-actor.h \
- /usr/include/clutter-1.0/clutter/clutter-alpha.h \
- /usr/include/clutter-1.0/clutter/clutter-container.h \
- /usr/include/clutter-1.0/clutter/clutter-child-meta.h \
  /usr/include/clutter-1.0/clutter/clutter-blur-effect.h \
  /usr/include/clutter-1.0/clutter/clutter-effect.h \
  /usr/include/clutter-1.0/clutter/clutter-box-layout.h \
  /usr/include/clutter-1.0/clutter/clutter-brightness-contrast-effect.h \
  /usr/include/clutter-1.0/clutter/clutter-color.h \
- /usr/include/clutter-1.0/clutter/clutter-cairo-texture.h \
- /usr/include/clutter-1.0/clutter/clutter-texture.h \
+ /usr/include/clutter-1.0/clutter/clutter-cairo.h \
  /usr/include/clutter-1.0/clutter/clutter-canvas.h \
  /usr/include/clutter-1.0/clutter/clutter-child-meta.h \
  /usr/include/clutter-1.0/clutter/clutter-click-action.h \
  /usr/include/clutter-1.0/clutter/clutter-action.h \
  /usr/include/clutter-1.0/clutter/clutter-clone.h \
+ /usr/include/clutter-1.0/clutter/clutter-actor.h \
  /usr/include/clutter-1.0/clutter/clutter-color.h \
  /usr/include/clutter-1.0/clutter/clutter-color-static.h \
  /usr/include/clutter-1.0/clutter/clutter-colorize-effect.h \
  /usr/include/clutter-1.0/clutter/clutter-constraint.h \
  /usr/include/clutter-1.0/clutter/clutter-container.h \
+ /usr/include/clutter-1.0/clutter/clutter-child-meta.h \
  /usr/include/clutter-1.0/clutter/clutter-content.h \
  /usr/include/clutter-1.0/clutter/clutter-deform-effect.h \
  /usr/include/clutter-1.0/clutter/clutter-offscreen-effect.h \
@@ -259,10 +250,15 @@ cikada-ckd-view.o: ckd-view.c /usr/include/math.h /usr/include/features.h \
  /usr/include/clutter-1.0/clutter/clutter-fixed-layout.h \
  /usr/include/clutter-1.0/clutter/clutter-flow-layout.h \
  /usr/include/clutter-1.0/clutter/clutter-gesture-action.h \
+ /usr/include/clutter-1.0/clutter/clutter-grid-layout.h \
  /usr/include/clutter-1.0/clutter/clutter-group.h \
  /usr/include/clutter-1.0/clutter/clutter-image.h \
  /usr/include/clutter-1.0/clutter/clutter-input-device.h \
  /usr/include/clutter-1.0/clutter/clutter-interval.h \
+ /usr/include/clutter-1.0/clutter/clutter-keyframe-transition.h \
+ /usr/include/clutter-1.0/clutter/clutter-property-transition.h \
+ /usr/include/clutter-1.0/clutter/clutter-transition.h \
+ /usr/include/clutter-1.0/clutter/clutter-timeline.h \
  /usr/include/clutter-1.0/clutter/clutter-keysyms.h \
  /usr/include/clutter-1.0/clutter/clutter-layout-manager.h \
  /usr/include/clutter-1.0/clutter/clutter-layout-meta.h \
@@ -270,18 +266,19 @@ cikada-ckd-view.o: ckd-view.c /usr/include/math.h /usr/include/features.h \
  /usr/include/clutter-1.0/clutter/clutter-model.h \
  /usr/include/clutter-1.0/clutter/clutter-macros.h \
  /usr/include/clutter-1.0/clutter/clutter-main.h \
- /usr/include/clutter-1.0/clutter/clutter-media.h \
  /usr/include/clutter-1.0/clutter/clutter-model.h \
  /usr/include/clutter-1.0/clutter/clutter-offscreen-effect.h \
  /usr/include/clutter-1.0/clutter/clutter-page-turn-effect.h \
  /usr/include/clutter-1.0/clutter/clutter-deform-effect.h \
  /usr/include/clutter-1.0/clutter/clutter-paint-nodes.h \
  /usr/include/clutter-1.0/clutter/clutter-paint-node.h \
+ /usr/include/clutter-1.0/clutter/clutter-pan-action.h \
+ /usr/include/clutter-1.0/clutter/clutter-gesture-action.h \
  /usr/include/clutter-1.0/clutter/clutter-path-constraint.h \
  /usr/include/clutter-1.0/clutter/clutter-path.h \
  /usr/include/clutter-1.0/clutter/clutter-path.h \
  /usr/include/clutter-1.0/clutter/clutter-property-transition.h \
- /usr/include/clutter-1.0/clutter/clutter-transition.h \
+ /usr/include/clutter-1.0/clutter/clutter-rotate-action.h \
  /usr/include/clutter-1.0/clutter/clutter-scriptable.h \
  /usr/include/json-glib-1.0/json-glib/json-glib.h \
  /usr/include/json-glib-1.0/json-glib/json-types.h \
@@ -361,6 +358,7 @@ cikada-ckd-view.o: ckd-view.c /usr/include/math.h /usr/include/features.h \
  /usr/include/glib-2.0/gio/gpermission.h \
  /usr/include/glib-2.0/gio/gpollableinputstream.h \
  /usr/include/glib-2.0/gio/gpollableoutputstream.h \
+ /usr/include/glib-2.0/gio/gpollableutils.h \
  /usr/include/glib-2.0/gio/gproxy.h \
  /usr/include/glib-2.0/gio/gproxyaddress.h \
  /usr/include/glib-2.0/gio/gproxyaddressenumerator.h \
@@ -387,6 +385,7 @@ cikada-ckd-view.o: ckd-view.c /usr/include/math.h /usr/include/features.h \
  /usr/include/glib-2.0/gio/gsrvtarget.h \
  /usr/include/glib-2.0/gio/gtcpconnection.h \
  /usr/include/glib-2.0/gio/gtcpwrapperconnection.h \
+ /usr/include/glib-2.0/gio/gtestdbus.h \
  /usr/include/glib-2.0/gio/gthemedicon.h \
  /usr/include/glib-2.0/gio/gthreadedsocketservice.h \
  /usr/include/glib-2.0/gio/gtlsbackend.h \
@@ -424,29 +423,32 @@ cikada-ckd-view.o: ckd-view.c /usr/include/math.h /usr/include/features.h \
  /usr/include/json-glib-1.0/json-glib/json-gvariant.h \
  /usr/include/clutter-1.0/clutter/clutter-script.h \
  /usr/include/clutter-1.0/clutter/clutter-script.h \
+ /usr/include/clutter-1.0/clutter/clutter-scroll-actor.h \
  /usr/include/clutter-1.0/clutter/clutter-settings.h \
  /usr/include/clutter-1.0/clutter/clutter-shader-effect.h \
  /usr/include/clutter-1.0/clutter/clutter-shader-types.h \
  /usr/include/clutter-1.0/clutter/clutter-swipe-action.h \
- /usr/include/clutter-1.0/clutter/clutter-gesture-action.h \
  /usr/include/clutter-1.0/clutter/clutter-snap-constraint.h \
  /usr/include/clutter-1.0/clutter/clutter-stage.h \
  /usr/include/clutter-1.0/clutter/clutter-stage-manager.h \
- /usr/include/clutter-1.0/clutter/clutter-state.h \
  /usr/include/clutter-1.0/clutter/clutter-table-layout.h \
  /usr/include/clutter-1.0/clutter/clutter-texture.h \
  /usr/include/clutter-1.0/clutter/clutter-text.h \
  /usr/include/clutter-1.0/clutter/clutter-text-buffer.h \
  /usr/include/clutter-1.0/clutter/clutter-timeline.h \
+ /usr/include/clutter-1.0/clutter/clutter-transition-group.h \
  /usr/include/clutter-1.0/clutter/clutter-transition.h \
  /usr/include/clutter-1.0/clutter/clutter-units.h \
  /usr/include/clutter-1.0/clutter/clutter-version.h \
+ /usr/include/clutter-1.0/clutter/clutter-zoom-action.h \
  /usr/include/clutter-1.0/clutter/clutter-enum-types.h \
  /usr/include/clutter-1.0/clutter/clutter-deprecated.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-actor.h \
+ /usr/include/clutter-1.0/clutter/deprecated/clutter-alpha.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-animatable.h \
  /usr/include/clutter-1.0/clutter/clutter-animatable.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-animation.h \
+ /usr/include/clutter-1.0/clutter/deprecated/clutter-animator.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-backend.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-behaviour.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-behaviour-depth.h \
@@ -455,15 +457,20 @@ cikada-ckd-view.o: ckd-view.c /usr/include/math.h /usr/include/features.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-behaviour-path.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-behaviour-rotate.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-behaviour-scale.h \
+ /usr/include/clutter-1.0/clutter/deprecated/clutter-bin-layout.h \
+ /usr/include/clutter-1.0/clutter/clutter-bin-layout.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-box.h \
+ /usr/include/clutter-1.0/clutter/clutter-container.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-cairo-texture.h \
- /usr/include/clutter-1.0/clutter/clutter-cairo-texture.h \
+ /usr/include/clutter-1.0/clutter/clutter-texture.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-container.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-fixed.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-frame-source.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-group.h \
+ /usr/include/clutter-1.0/clutter/deprecated/clutter-input-device.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-keysyms.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-main.h \
+ /usr/include/clutter-1.0/clutter/deprecated/clutter-media.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-rectangle.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-score.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-shader.h \
@@ -471,6 +478,7 @@ cikada-ckd-view.o: ckd-view.c /usr/include/math.h /usr/include/features.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-stage-manager.h \
  /usr/include/clutter-1.0/clutter/clutter-stage-manager.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-stage.h \
+ /usr/include/clutter-1.0/clutter/deprecated/clutter-state.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-texture.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-timeline.h \
  /usr/include/clutter-1.0/clutter/deprecated/clutter-timeout-pool.h \
@@ -500,7 +508,7 @@ cikada-ckd-view.o: ckd-view.c /usr/include/math.h /usr/include/features.h \
 
 /usr/include/gnu/stubs.h:
 
-/usr/include/gnu/stubs-64.h:
+/usr/include/gnu/stubs-32.h:
 
 /usr/include/bits/huge_val.h:
 
@@ -530,19 +538,19 @@ ckd-view.h:
 
 /usr/include/glib-2.0/glib/gtypes.h:
 
-/usr/lib64/glib-2.0/include/glibconfig.h:
+/usr/lib/glib-2.0/include/glibconfig.h:
 
 /usr/include/glib-2.0/glib/gmacros.h:
 
-/usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/stddef.h:
+/usr/lib/gcc/i686-pc-linux-gnu/4.6.3/include/stddef.h:
 
-/usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include-fixed/limits.h:
+/usr/lib/gcc/i686-pc-linux-gnu/4.6.3/include-fixed/limits.h:
 
-/usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include-fixed/syslimits.h:
+/usr/lib/gcc/i686-pc-linux-gnu/4.6.3/include-fixed/syslimits.h:
 
 /usr/include/limits.h:
 
-/usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/float.h:
+/usr/lib/gcc/i686-pc-linux-gnu/4.6.3/include/float.h:
 
 /usr/include/glib-2.0/glib/gversionmacros.h:
 
@@ -564,7 +572,7 @@ ckd-view.h:
 
 /usr/include/glib-2.0/glib/gerror.h:
 
-/usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/stdarg.h:
+/usr/lib/gcc/i686-pc-linux-gnu/4.6.3/include/stdarg.h:
 
 /usr/include/glib-2.0/glib/gquark.h:
 
@@ -612,6 +620,8 @@ ckd-view.h:
 
 /usr/include/glib-2.0/glib/gmem.h:
 
+/usr/include/glib-2.0/glib/gnode.h:
+
 /usr/include/glib-2.0/glib/ghmac.h:
 
 /usr/include/glib-2.0/glib/gchecksum.h:
@@ -641,8 +651,6 @@ ckd-view.h:
 /usr/include/glib-2.0/glib/gmarkup.h:
 
 /usr/include/glib-2.0/glib/gmessages.h:
-
-/usr/include/glib-2.0/glib/gnode.h:
 
 /usr/include/glib-2.0/glib/goption.h:
 
@@ -726,11 +734,27 @@ ckd-view.h:
 
 /usr/include/cairo/cairo-deprecated.h:
 
-/usr/include/clutter-1.0/clutter/clutter-macros.h:
+/usr/include/cogl/cogl/cogl.h:
 
-/usr/include/clutter-1.0/clutter/clutter-version.h:
+/usr/include/cogl/cogl/cogl-defines.h:
 
-/usr/include/clutter-1.0/clutter/clutter-enums.h:
+/usr/include/GL/gl.h:
+
+/usr/include/GL/glext.h:
+
+/usr/include/inttypes.h:
+
+/usr/lib/gcc/i686-pc-linux-gnu/4.6.3/include/stdint.h:
+
+/usr/include/stdint.h:
+
+/usr/include/bits/wchar.h:
+
+/usr/include/cogl/cogl/cogl-object.h:
+
+/usr/include/cogl/cogl/cogl1-context.h:
+
+/usr/include/cogl/cogl/cogl-types.h:
 
 /usr/include/glib-2.0/glib-object.h:
 
@@ -767,6 +791,76 @@ ckd-view.h:
 /usr/include/glib-2.0/gobject/gvaluearray.h:
 
 /usr/include/glib-2.0/gobject/gvaluetypes.h:
+
+/usr/include/cogl/cogl/cogl-texture.h:
+
+/usr/include/cogl/cogl/cogl-bitmap.h:
+
+/usr/include/cogl/cogl/cogl-buffer.h:
+
+/usr/include/cogl/cogl/cogl-context.h:
+
+/usr/include/cogl/cogl/cogl-display.h:
+
+/usr/include/cogl/cogl/cogl-renderer.h:
+
+/usr/include/cogl/cogl/cogl-onscreen-template.h:
+
+/usr/include/cogl/cogl/cogl-swap-chain.h:
+
+/usr/include/cogl/cogl/cogl-primitive.h:
+
+/usr/include/cogl/cogl/cogl-vertex-buffer.h:
+
+/usr/include/cogl/cogl/cogl-attribute.h:
+
+/usr/include/cogl/cogl/cogl-attribute-buffer.h:
+
+/usr/include/cogl/cogl/cogl-indices.h:
+
+/usr/include/cogl/cogl/cogl-index-buffer.h:
+
+/usr/include/cogl/cogl/cogl-pixel-buffer.h:
+
+/usr/include/cogl/cogl/cogl-framebuffer.h:
+
+/usr/include/cogl/cogl/cogl-path.h:
+
+/usr/include/cogl/cogl/cogl-path-functions.h:
+
+/usr/include/cogl/cogl/cogl-pipeline.h:
+
+/usr/include/cogl/cogl/cogl-snippet.h:
+
+/usr/include/cogl/cogl/cogl-color.h:
+
+/usr/include/cogl/cogl/cogl-matrix.h:
+
+/usr/include/cogl/cogl/cogl-types.h:
+
+/usr/include/cogl/cogl/cogl-offscreen.h:
+
+/usr/include/cogl/cogl/cogl-primitives.h:
+
+/usr/include/cogl/cogl/cogl-clip-state.h:
+
+/usr/include/cogl/cogl/cogl-enum-types.h:
+
+/usr/include/cogl/cogl/cogl-fixed.h:
+
+/usr/include/cogl/cogl/cogl-material-compat.h:
+
+/usr/include/cogl/cogl/cogl-depth-state.h:
+
+/usr/include/cogl/cogl/cogl-shader.h:
+
+/usr/include/cogl/cogl/cogl-deprecated.h:
+
+/usr/include/clutter-1.0/clutter/clutter-macros.h:
+
+/usr/include/clutter-1.0/clutter/clutter-version.h:
+
+/usr/include/clutter-1.0/clutter/clutter-enums.h:
 
 /usr/include/clutter-1.0/clutter/clutter-action.h:
 
@@ -902,92 +996,6 @@ ckd-view.h:
 
 /usr/include/atk-1.0/atk/atkwindow.h:
 
-/usr/include/cogl/cogl/cogl.h:
-
-/usr/include/cogl/cogl/cogl-defines.h:
-
-/usr/include/GL/gl.h:
-
-/usr/include/GL/glext.h:
-
-/usr/include/inttypes.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/stdint.h:
-
-/usr/include/stdint.h:
-
-/usr/include/bits/wchar.h:
-
-/usr/include/cogl/cogl/cogl-object.h:
-
-/usr/include/cogl/cogl/cogl1-context.h:
-
-/usr/include/cogl/cogl/cogl-types.h:
-
-/usr/include/cogl/cogl/cogl-texture.h:
-
-/usr/include/cogl/cogl/cogl-bitmap.h:
-
-/usr/include/cogl/cogl/cogl-buffer.h:
-
-/usr/include/cogl/cogl/cogl-context.h:
-
-/usr/include/cogl/cogl/cogl-display.h:
-
-/usr/include/cogl/cogl/cogl-renderer.h:
-
-/usr/include/cogl/cogl/cogl-onscreen-template.h:
-
-/usr/include/cogl/cogl/cogl-swap-chain.h:
-
-/usr/include/cogl/cogl/cogl-primitive.h:
-
-/usr/include/cogl/cogl/cogl-vertex-buffer.h:
-
-/usr/include/cogl/cogl/cogl-attribute.h:
-
-/usr/include/cogl/cogl/cogl-attribute-buffer.h:
-
-/usr/include/cogl/cogl/cogl-indices.h:
-
-/usr/include/cogl/cogl/cogl-index-buffer.h:
-
-/usr/include/cogl/cogl/cogl-pixel-buffer.h:
-
-/usr/include/cogl/cogl/cogl-framebuffer.h:
-
-/usr/include/cogl/cogl/cogl-path.h:
-
-/usr/include/cogl/cogl/cogl-path-functions.h:
-
-/usr/include/cogl/cogl/cogl-pipeline.h:
-
-/usr/include/cogl/cogl/cogl-snippet.h:
-
-/usr/include/cogl/cogl/cogl-color.h:
-
-/usr/include/cogl/cogl/cogl-matrix.h:
-
-/usr/include/cogl/cogl/cogl-types.h:
-
-/usr/include/cogl/cogl/cogl-offscreen.h:
-
-/usr/include/cogl/cogl/cogl-primitives.h:
-
-/usr/include/cogl/cogl/cogl-clip-state.h:
-
-/usr/include/cogl/cogl/cogl-enum-types.h:
-
-/usr/include/cogl/cogl/cogl-fixed.h:
-
-/usr/include/cogl/cogl/cogl-material-compat.h:
-
-/usr/include/cogl/cogl/cogl-depth-state.h:
-
-/usr/include/cogl/cogl/cogl-shader.h:
-
-/usr/include/cogl/cogl/cogl-deprecated.h:
-
 /usr/include/clutter-1.0/clutter/clutter-event.h:
 
 /usr/include/clutter-1.0/clutter/clutter-input-device.h:
@@ -998,17 +1006,7 @@ ckd-view.h:
 
 /usr/include/clutter-1.0/clutter/clutter-constraint.h:
 
-/usr/include/clutter-1.0/clutter/clutter-alpha.h:
-
-/usr/include/clutter-1.0/clutter/clutter-timeline.h:
-
 /usr/include/clutter-1.0/clutter/clutter-animatable.h:
-
-/usr/include/clutter-1.0/clutter/clutter-animation.h:
-
-/usr/include/clutter-1.0/clutter/clutter-animation.h:
-
-/usr/include/clutter-1.0/clutter/clutter-animator.h:
 
 /usr/include/clutter-1.0/clutter/clutter-backend.h:
 
@@ -1022,14 +1020,6 @@ ckd-view.h:
 
 /usr/include/clutter-1.0/clutter/clutter-layout-manager.h:
 
-/usr/include/clutter-1.0/clutter/clutter-actor.h:
-
-/usr/include/clutter-1.0/clutter/clutter-alpha.h:
-
-/usr/include/clutter-1.0/clutter/clutter-container.h:
-
-/usr/include/clutter-1.0/clutter/clutter-child-meta.h:
-
 /usr/include/clutter-1.0/clutter/clutter-blur-effect.h:
 
 /usr/include/clutter-1.0/clutter/clutter-effect.h:
@@ -1040,9 +1030,7 @@ ckd-view.h:
 
 /usr/include/clutter-1.0/clutter/clutter-color.h:
 
-/usr/include/clutter-1.0/clutter/clutter-cairo-texture.h:
-
-/usr/include/clutter-1.0/clutter/clutter-texture.h:
+/usr/include/clutter-1.0/clutter/clutter-cairo.h:
 
 /usr/include/clutter-1.0/clutter/clutter-canvas.h:
 
@@ -1054,6 +1042,8 @@ ckd-view.h:
 
 /usr/include/clutter-1.0/clutter/clutter-clone.h:
 
+/usr/include/clutter-1.0/clutter/clutter-actor.h:
+
 /usr/include/clutter-1.0/clutter/clutter-color.h:
 
 /usr/include/clutter-1.0/clutter/clutter-color-static.h:
@@ -1063,6 +1053,8 @@ ckd-view.h:
 /usr/include/clutter-1.0/clutter/clutter-constraint.h:
 
 /usr/include/clutter-1.0/clutter/clutter-container.h:
+
+/usr/include/clutter-1.0/clutter/clutter-child-meta.h:
 
 /usr/include/clutter-1.0/clutter/clutter-content.h:
 
@@ -1098,6 +1090,8 @@ ckd-view.h:
 
 /usr/include/clutter-1.0/clutter/clutter-gesture-action.h:
 
+/usr/include/clutter-1.0/clutter/clutter-grid-layout.h:
+
 /usr/include/clutter-1.0/clutter/clutter-group.h:
 
 /usr/include/clutter-1.0/clutter/clutter-image.h:
@@ -1105,6 +1099,14 @@ ckd-view.h:
 /usr/include/clutter-1.0/clutter/clutter-input-device.h:
 
 /usr/include/clutter-1.0/clutter/clutter-interval.h:
+
+/usr/include/clutter-1.0/clutter/clutter-keyframe-transition.h:
+
+/usr/include/clutter-1.0/clutter/clutter-property-transition.h:
+
+/usr/include/clutter-1.0/clutter/clutter-transition.h:
+
+/usr/include/clutter-1.0/clutter/clutter-timeline.h:
 
 /usr/include/clutter-1.0/clutter/clutter-keysyms.h:
 
@@ -1120,8 +1122,6 @@ ckd-view.h:
 
 /usr/include/clutter-1.0/clutter/clutter-main.h:
 
-/usr/include/clutter-1.0/clutter/clutter-media.h:
-
 /usr/include/clutter-1.0/clutter/clutter-model.h:
 
 /usr/include/clutter-1.0/clutter/clutter-offscreen-effect.h:
@@ -1134,6 +1134,10 @@ ckd-view.h:
 
 /usr/include/clutter-1.0/clutter/clutter-paint-node.h:
 
+/usr/include/clutter-1.0/clutter/clutter-pan-action.h:
+
+/usr/include/clutter-1.0/clutter/clutter-gesture-action.h:
+
 /usr/include/clutter-1.0/clutter/clutter-path-constraint.h:
 
 /usr/include/clutter-1.0/clutter/clutter-path.h:
@@ -1142,7 +1146,7 @@ ckd-view.h:
 
 /usr/include/clutter-1.0/clutter/clutter-property-transition.h:
 
-/usr/include/clutter-1.0/clutter/clutter-transition.h:
+/usr/include/clutter-1.0/clutter/clutter-rotate-action.h:
 
 /usr/include/clutter-1.0/clutter/clutter-scriptable.h:
 
@@ -1318,6 +1322,8 @@ ckd-view.h:
 
 /usr/include/glib-2.0/gio/gpollableoutputstream.h:
 
+/usr/include/glib-2.0/gio/gpollableutils.h:
+
 /usr/include/glib-2.0/gio/gproxy.h:
 
 /usr/include/glib-2.0/gio/gproxyaddress.h:
@@ -1369,6 +1375,8 @@ ckd-view.h:
 /usr/include/glib-2.0/gio/gtcpconnection.h:
 
 /usr/include/glib-2.0/gio/gtcpwrapperconnection.h:
+
+/usr/include/glib-2.0/gio/gtestdbus.h:
 
 /usr/include/glib-2.0/gio/gthemedicon.h:
 
@@ -1448,6 +1456,8 @@ ckd-view.h:
 
 /usr/include/clutter-1.0/clutter/clutter-script.h:
 
+/usr/include/clutter-1.0/clutter/clutter-scroll-actor.h:
+
 /usr/include/clutter-1.0/clutter/clutter-settings.h:
 
 /usr/include/clutter-1.0/clutter/clutter-shader-effect.h:
@@ -1456,15 +1466,11 @@ ckd-view.h:
 
 /usr/include/clutter-1.0/clutter/clutter-swipe-action.h:
 
-/usr/include/clutter-1.0/clutter/clutter-gesture-action.h:
-
 /usr/include/clutter-1.0/clutter/clutter-snap-constraint.h:
 
 /usr/include/clutter-1.0/clutter/clutter-stage.h:
 
 /usr/include/clutter-1.0/clutter/clutter-stage-manager.h:
-
-/usr/include/clutter-1.0/clutter/clutter-state.h:
 
 /usr/include/clutter-1.0/clutter/clutter-table-layout.h:
 
@@ -1476,11 +1482,15 @@ ckd-view.h:
 
 /usr/include/clutter-1.0/clutter/clutter-timeline.h:
 
+/usr/include/clutter-1.0/clutter/clutter-transition-group.h:
+
 /usr/include/clutter-1.0/clutter/clutter-transition.h:
 
 /usr/include/clutter-1.0/clutter/clutter-units.h:
 
 /usr/include/clutter-1.0/clutter/clutter-version.h:
+
+/usr/include/clutter-1.0/clutter/clutter-zoom-action.h:
 
 /usr/include/clutter-1.0/clutter/clutter-enum-types.h:
 
@@ -1488,11 +1498,15 @@ ckd-view.h:
 
 /usr/include/clutter-1.0/clutter/deprecated/clutter-actor.h:
 
+/usr/include/clutter-1.0/clutter/deprecated/clutter-alpha.h:
+
 /usr/include/clutter-1.0/clutter/deprecated/clutter-animatable.h:
 
 /usr/include/clutter-1.0/clutter/clutter-animatable.h:
 
 /usr/include/clutter-1.0/clutter/deprecated/clutter-animation.h:
+
+/usr/include/clutter-1.0/clutter/deprecated/clutter-animator.h:
 
 /usr/include/clutter-1.0/clutter/deprecated/clutter-backend.h:
 
@@ -1510,11 +1524,17 @@ ckd-view.h:
 
 /usr/include/clutter-1.0/clutter/deprecated/clutter-behaviour-scale.h:
 
+/usr/include/clutter-1.0/clutter/deprecated/clutter-bin-layout.h:
+
+/usr/include/clutter-1.0/clutter/clutter-bin-layout.h:
+
 /usr/include/clutter-1.0/clutter/deprecated/clutter-box.h:
+
+/usr/include/clutter-1.0/clutter/clutter-container.h:
 
 /usr/include/clutter-1.0/clutter/deprecated/clutter-cairo-texture.h:
 
-/usr/include/clutter-1.0/clutter/clutter-cairo-texture.h:
+/usr/include/clutter-1.0/clutter/clutter-texture.h:
 
 /usr/include/clutter-1.0/clutter/deprecated/clutter-container.h:
 
@@ -1524,9 +1544,13 @@ ckd-view.h:
 
 /usr/include/clutter-1.0/clutter/deprecated/clutter-group.h:
 
+/usr/include/clutter-1.0/clutter/deprecated/clutter-input-device.h:
+
 /usr/include/clutter-1.0/clutter/deprecated/clutter-keysyms.h:
 
 /usr/include/clutter-1.0/clutter/deprecated/clutter-main.h:
+
+/usr/include/clutter-1.0/clutter/deprecated/clutter-media.h:
 
 /usr/include/clutter-1.0/clutter/deprecated/clutter-rectangle.h:
 
@@ -1541,6 +1565,8 @@ ckd-view.h:
 /usr/include/clutter-1.0/clutter/clutter-stage-manager.h:
 
 /usr/include/clutter-1.0/clutter/deprecated/clutter-stage.h:
+
+/usr/include/clutter-1.0/clutter/deprecated/clutter-state.h:
 
 /usr/include/clutter-1.0/clutter/deprecated/clutter-texture.h:
 

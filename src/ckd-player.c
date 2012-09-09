@@ -497,12 +497,11 @@ ckd_player_update_progress (CkdPlayer *self, CkdMetaEntry *e)
         gfloat x, y;
         ckd_view_get_nonius_position (priv->view, &x, &y);
 
-        clutter_actor_animate (nonius,
-                               CLUTTER_EASE_IN_OUT_CUBIC,
-                               priv->am_time,
-                               "x",
-                               x,
-                               NULL);
+        clutter_actor_save_easing_state (nonius);
+        clutter_actor_set_easing_mode (nonius, CLUTTER_EASE_IN_OUT_CUBIC);
+        clutter_actor_set_easing_duration (nonius, priv->am_time);
+        clutter_actor_set_position (nonius, x, y);
+        clutter_actor_restore_easing_state (nonius);
 }
 
 static void
@@ -517,14 +516,13 @@ _slide_enter_from_left (CkdPlayer *self, ClutterActor *slide)
 
         gfloat x, y;
         clutter_actor_get_position (slide, &x, &y);
-        clutter_actor_set_position (slide, - stage_w, y);
-        
-        clutter_actor_animate (slide,
-                               CLUTTER_EASE_IN_OUT_CUBIC,
-                               priv->am_time,
-                               "x",
-                               x,
-                               NULL);
+        clutter_actor_set_position (slide, - stage_w, y);        
+
+        clutter_actor_save_easing_state (slide);
+        clutter_actor_set_easing_mode (slide, CLUTTER_EASE_IN_OUT_CUBIC);
+        clutter_actor_set_easing_duration (slide, priv->am_time);
+        clutter_actor_set_position (slide, x, y);
+        clutter_actor_restore_easing_state (slide);
 }
 
  static void
@@ -541,12 +539,11 @@ _slide_enter_from_right (CkdPlayer *self, ClutterActor *slide)
         clutter_actor_get_position (slide, &x, &y);
         clutter_actor_set_position (slide, stage_w, y);
         
-        clutter_actor_animate (slide,
-                               CLUTTER_EASE_IN_OUT_CUBIC,
-                               priv->am_time,
-                               "x",
-                               x,
-                               NULL);
+        clutter_actor_save_easing_state (slide);
+        clutter_actor_set_easing_mode (slide, CLUTTER_EASE_IN_OUT_CUBIC);
+        clutter_actor_set_easing_duration (slide, priv->am_time);
+        clutter_actor_set_position (slide, x, y);
+        clutter_actor_restore_easing_state (slide);
 }
 
  static void
@@ -563,12 +560,11 @@ _slide_enter_from_top (CkdPlayer *self, ClutterActor *slide)
         clutter_actor_get_position (slide, &x, &y);
         clutter_actor_set_position (slide, x, - stage_h);
         
-        clutter_actor_animate (slide,
-                               CLUTTER_EASE_IN_OUT_CUBIC,
-                               priv->am_time,
-                               "y",
-                               y,
-                               NULL);
+        clutter_actor_save_easing_state (slide);
+        clutter_actor_set_easing_mode (slide, CLUTTER_EASE_IN_OUT_CUBIC);
+        clutter_actor_set_easing_duration (slide, priv->am_time);
+        clutter_actor_set_position (slide, x, y);
+        clutter_actor_restore_easing_state (slide);
 }
 
  static void
@@ -585,12 +581,11 @@ _slide_enter_from_bottom (CkdPlayer *self, ClutterActor *slide)
         clutter_actor_get_position (slide, &x, &y);
         clutter_actor_set_position (slide, x, stage_h);
         
-        clutter_actor_animate (slide,
-                               CLUTTER_EASE_IN_OUT_CUBIC,
-                               priv->am_time,
-                               "y",
-                               y,
-                               NULL);
+        clutter_actor_save_easing_state (slide);
+        clutter_actor_set_easing_mode (slide, CLUTTER_EASE_IN_OUT_CUBIC);
+        clutter_actor_set_easing_duration (slide, priv->am_time);
+        clutter_actor_set_position (slide, x, y);
+        clutter_actor_restore_easing_state (slide);
 }
 
 static void
@@ -598,20 +593,16 @@ _slide_enter_from_enlargement (CkdPlayer *self, ClutterActor *slide)
 {
         CkdPlayerPriv *priv = CKD_PLAYER_GET_PRIVATE (self);
 
-        ClutterActorBox box;
-        clutter_actor_get_allocation_box (slide, &box);
-        
-        clutter_actor_set_scale_full (slide,
-                                      1.618,
-                                      1.618,
-                                      0.5 * (box.x1 + box.x2),
-                                      0.5 * (box.y1 + box.y2));
+        clutter_actor_set_scale (slide, 1.618, 1.618);
+        clutter_actor_set_pivot_point (slide, 0.5, 0.5);
         clutter_actor_set_opacity (slide, 100);
-        clutter_actor_animate (slide, CLUTTER_LINEAR, priv->am_time,
-                               "scale-x", 1.0,
-                               "scale-y", 1.0,
-                               "opacity", 255,
-                               NULL);
+        
+        clutter_actor_save_easing_state (slide);
+        clutter_actor_set_easing_mode (slide, CLUTTER_LINEAR);
+        clutter_actor_set_easing_duration (slide, priv->am_time);
+        clutter_actor_set_scale (slide, 1.0, 1.0);
+        clutter_actor_set_opacity (slide, 255);
+        clutter_actor_restore_easing_state (slide);
 }
 
 static void
@@ -622,17 +613,16 @@ _slide_enter_from_shrink (CkdPlayer *self, ClutterActor *slide)
         ClutterActorBox box;
         clutter_actor_get_allocation_box (slide, &box);
         
-        clutter_actor_set_scale_full (slide,
-                                      0.618,
-                                      0.618,
-                                      0.5 * (box.x1 + box.x2),
-                                      0.5 * (box.y1 + box.y2));
+        clutter_actor_set_scale (slide, 0.618, 0.618);
+        clutter_actor_set_pivot_point (slide, 0.5, 0.5);
         clutter_actor_set_opacity (slide, 100);
-        clutter_actor_animate (slide, CLUTTER_LINEAR, priv->am_time,
-                               "scale-x", 1.0,
-                               "scale-y", 1.0,
-                               "opacity", 255,
-                               NULL);
+
+        clutter_actor_save_easing_state (slide);
+        clutter_actor_set_easing_mode (slide, CLUTTER_LINEAR);
+        clutter_actor_set_easing_duration (slide, priv->am_time);
+        clutter_actor_set_scale (slide, 1.0, 1.0);
+        clutter_actor_set_opacity (slide, 255);
+        clutter_actor_restore_easing_state (slide);        
 }
 
 static void
@@ -641,12 +631,12 @@ _slide_enter_from_fade (CkdPlayer *self, ClutterActor *slide)
         CkdPlayerPriv *priv = CKD_PLAYER_GET_PRIVATE (self);
 
         clutter_actor_set_opacity (slide, 0);
-        clutter_actor_animate (slide,
-                               CLUTTER_LINEAR,
-                               priv->am_time,
-                               "opacity",
-                               255,
-                               NULL);
+
+        clutter_actor_save_easing_state (slide);
+        clutter_actor_set_easing_mode (slide, CLUTTER_LINEAR);
+        clutter_actor_set_easing_duration (slide, priv->am_time);
+        clutter_actor_set_opacity (slide, 255);
+        clutter_actor_restore_easing_state (slide);        
 }
 
 static void
@@ -656,21 +646,24 @@ _slide_enter_from_curl (CkdPlayer *self, ClutterActor *slide)
 
         ClutterActor *stage = clutter_actor_get_stage (slide);
         gfloat h = clutter_actor_get_height (stage);
+        
         ClutterEffect *effect = clutter_page_turn_effect_new (1.0,
                                                               45.0,
                                                               0.15 * h);
-        
         clutter_deform_effect_set_n_tiles (CLUTTER_DEFORM_EFFECT(effect),
                                            128,
                                            128);
-        
         clutter_actor_add_effect_with_name (slide, "curl", effect);
+
+        ClutterTransition *t = clutter_property_transition_new ("@effects.curl.period");
+
+        clutter_timeline_set_duration (CLUTTER_TIMELINE (t), 1.5 * priv->am_time);
+        clutter_actor_add_transition (slide, "curl", t);
         
-        clutter_actor_animate (slide,
-                               CLUTTER_LINEAR,
-                               1.5 * priv->am_time,
-                                "@effects.curl.period", 0.0,
-                                NULL);
+        clutter_transition_set_from (t, G_TYPE_DOUBLE, 1.0);
+        clutter_transition_set_to (t, G_TYPE_DOUBLE, 0.0);
+        clutter_timeline_rewind (CLUTTER_TIMELINE (t));
+        clutter_timeline_start (CLUTTER_TIMELINE (t));
 }
 
 static void
@@ -723,18 +716,18 @@ _slide_exit_from_left (CkdPlayer *self, ClutterActor *slide)
         ClutterActor *stage;
         guint am_time;
         g_object_get (priv->view, "stage", &stage, NULL);
-
-        gfloat stage_w = clutter_actor_get_width (stage);
         
-        clutter_actor_animate (slide,
-                               CLUTTER_EASE_IN_OUT_CUBIC,
-                               priv->am_time,
-                               "x",
-                               - stage_w,
-                               "signal-after::completed",
-                               _slide_exit_cb,
-                               slide,
-                               NULL);
+        gfloat stage_w = clutter_actor_get_width (stage);
+
+        clutter_actor_save_easing_state (slide);
+        clutter_actor_set_easing_mode (slide, CLUTTER_EASE_IN_OUT_CUBIC);
+        clutter_actor_set_easing_duration (slide, priv->am_time);
+        clutter_actor_set_translation (slide, - stage_w, 0.0, 0.0);
+        clutter_actor_restore_easing_state (slide);
+
+        /* 销毁幻灯片 */
+        ClutterTransition *transition = clutter_actor_get_transition (slide, "translation-x");
+        g_signal_connect (transition, "completed", G_CALLBACK (_slide_exit_cb), slide);
 }
 
 static void
@@ -747,16 +740,16 @@ _slide_exit_from_right (CkdPlayer *self, ClutterActor *slide)
         g_object_get (priv->view, "stage", &stage, NULL);
 
         gfloat stage_w = clutter_actor_get_width (stage);
-        
-        clutter_actor_animate (slide,
-                               CLUTTER_EASE_IN_OUT_CUBIC,
-                               priv->am_time,
-                               "x",
-                               stage_w,
-                               "signal-after::completed",
-                               _slide_exit_cb,
-                               slide,
-                               NULL);
+
+        clutter_actor_save_easing_state (slide);
+        clutter_actor_set_easing_mode (slide, CLUTTER_EASE_IN_OUT_CUBIC);
+        clutter_actor_set_easing_duration (slide, priv->am_time);
+        clutter_actor_set_translation (slide, stage_w, 0.0, 0.0);
+        clutter_actor_restore_easing_state (slide);
+
+        /* 销毁幻灯片 */
+        ClutterTransition *transition = clutter_actor_get_transition (slide, "translation-x");
+        g_signal_connect (transition, "completed", G_CALLBACK (_slide_exit_cb), slide);        
 }
 
 static void
@@ -769,16 +762,16 @@ _slide_exit_from_top (CkdPlayer *self, ClutterActor *slide)
         g_object_get (priv->view, "stage", &stage, NULL);
 
         gfloat stage_h = clutter_actor_get_height (stage);
-        
-        clutter_actor_animate (slide,
-                               CLUTTER_EASE_IN_OUT_CUBIC,
-                               priv->am_time,
-                               "y",
-                               - stage_h,
-                               "signal-after::completed",
-                               _slide_exit_cb,
-                               slide,
-                               NULL);
+
+        clutter_actor_save_easing_state (slide);
+        clutter_actor_set_easing_mode (slide, CLUTTER_EASE_IN_OUT_CUBIC);
+        clutter_actor_set_easing_duration (slide, priv->am_time);
+        clutter_actor_set_translation (slide, 0.0, - stage_h, 0.0);
+        clutter_actor_restore_easing_state (slide);
+
+        /* 销毁幻灯片 */
+        ClutterTransition *transition = clutter_actor_get_transition (slide, "translation-y");
+        g_signal_connect (transition, "completed", G_CALLBACK (_slide_exit_cb), slide);   
 }
 
 static void
@@ -792,15 +785,15 @@ _slide_exit_from_bottom (CkdPlayer *self, ClutterActor *slide)
 
         gfloat stage_h = clutter_actor_get_height (stage);
         
-        clutter_actor_animate (slide,
-                               CLUTTER_EASE_IN_OUT_CUBIC,
-                               priv->am_time,
-                               "y",
-                               stage_h,
-                               "signal-after::completed",
-                               _slide_exit_cb,
-                               slide,
-                               NULL);
+        clutter_actor_save_easing_state (slide);
+        clutter_actor_set_easing_mode (slide, CLUTTER_EASE_IN_OUT_CUBIC);
+        clutter_actor_set_easing_duration (slide, priv->am_time);
+        clutter_actor_set_translation (slide, 0.0, stage_h, 0.0);
+        clutter_actor_restore_easing_state (slide);
+
+        /* 销毁幻灯片 */
+        ClutterTransition *transition = clutter_actor_get_transition (slide, "translation-y");
+        g_signal_connect (transition, "completed", G_CALLBACK (_slide_exit_cb), slide);   
 }
 
 static void
@@ -808,24 +801,18 @@ _slide_exit_from_enlargement (CkdPlayer *self, ClutterActor *slide)
 {
         CkdPlayerPriv *priv = CKD_PLAYER_GET_PRIVATE (self);
 
-        ClutterActorBox box;
-        clutter_actor_get_allocation_box (slide, &box);
+        clutter_actor_set_pivot_point (slide, 0.5, 0.5);
         
-        gdouble scale_x, scale_y;
-        clutter_actor_get_scale (slide, &scale_x, &scale_y);
-        clutter_actor_set_scale_full (slide,
-                                      scale_x,
-                                      scale_y,
-                                      0.5 * (box.x1 + box.x2),
-                                      0.5 * (box.y1 + box.y2));
-        clutter_actor_animate (slide, CLUTTER_LINEAR, priv->am_time,
-                               "scale-x", 1.618,
-                               "scale-y", 1.618,
-                               "opacity", 0,
-                               "signal-after::completed",
-                               _slide_exit_cb,
-                               slide,
-                               NULL);
+        clutter_actor_save_easing_state (slide);
+        clutter_actor_set_easing_mode (slide, CLUTTER_LINEAR);
+        clutter_actor_set_easing_duration (slide, priv->am_time);
+        clutter_actor_set_scale (slide, 1.618, 1.618);
+        clutter_actor_set_opacity (slide, 0);
+        clutter_actor_restore_easing_state (slide);
+
+        /* 销毁幻灯片 */
+        ClutterTransition *transition = clutter_actor_get_transition (slide, "scale-x");
+        g_signal_connect (transition, "completed", G_CALLBACK (_slide_exit_cb), slide);
 }
 
 static void
@@ -833,25 +820,18 @@ _slide_exit_from_shrink (CkdPlayer *self, ClutterActor *slide)
 {
         CkdPlayerPriv *priv = CKD_PLAYER_GET_PRIVATE (self);
 
-        ClutterActorBox box;
-        clutter_actor_get_allocation_box (slide, &box);
+        clutter_actor_set_pivot_point (slide, 0.5, 0.5);
         
-        gdouble scale_x, scale_y;
-        clutter_actor_get_scale (slide, &scale_x, &scale_y);
-        clutter_actor_set_scale_full (slide,
-                                      scale_x,
-                                      scale_y,
-                                      0.5 * (box.x1 + box.x2),
-                                      0.5 * (box.y1 + box.y2));
+        clutter_actor_save_easing_state (slide);
+        clutter_actor_set_easing_mode (slide, CLUTTER_LINEAR);
+        clutter_actor_set_easing_duration (slide, priv->am_time);
+        clutter_actor_set_scale (slide, 0.618, 0.618);
+        clutter_actor_set_opacity (slide, 0);
+        clutter_actor_restore_easing_state (slide);
 
-        clutter_actor_animate (slide, CLUTTER_LINEAR, priv->am_time,
-                               "scale-x", 0.618,
-                               "scale-y", 0.618,
-                               "opacity", 0,
-                               "signal-after::completed",
-                               _slide_exit_cb,
-                               slide,
-                               NULL);
+        /* 销毁幻灯片 */
+        ClutterTransition *transition = clutter_actor_get_transition (slide, "scale-x");
+        g_signal_connect (transition, "completed", G_CALLBACK (_slide_exit_cb), slide);
 }
 
 static void
@@ -860,15 +840,16 @@ _slide_exit_from_fade (CkdPlayer *self, ClutterActor *slide)
         CkdPlayerPriv *priv = CKD_PLAYER_GET_PRIVATE (self);
 
         clutter_actor_set_opacity (slide, 255);
-        clutter_actor_animate (slide,
-                               CLUTTER_LINEAR,
-                               priv->am_time,
-                               "opacity",
-                               0,
-                               "signal-after::completed",
-                               _slide_exit_cb,
-                               slide,
-                               NULL);
+
+        clutter_actor_save_easing_state (slide);
+        clutter_actor_set_easing_mode (slide, CLUTTER_LINEAR);
+        clutter_actor_set_easing_duration (slide, priv->am_time);
+        clutter_actor_set_opacity (slide, 0);
+        clutter_actor_restore_easing_state (slide);
+
+        /* 销毁幻灯片 */
+        ClutterTransition *transition = clutter_actor_get_transition (slide, "opacity");
+        g_signal_connect (transition, "completed", G_CALLBACK (_slide_exit_cb), slide);  
 }
 
 static void
@@ -937,25 +918,31 @@ _slide_exit_from_curl (struct CkdSlideAmCurlData *data)
 
         clutter_actor_hide (data->next_slide);
         
-        ClutterActor *stage = clutter_actor_get_stage (data->current_slide);
-        gfloat h = clutter_actor_get_height (stage);
-        ClutterEffect *effect = clutter_page_turn_effect_new (0.0,
-                                                              45.0,
-                                                              0.15 * h);
+        ClutterTransition *t = clutter_actor_get_transition (data->current_slide, "curl");
+
+        if (t == NULL) {
+                ClutterActor *stage = clutter_actor_get_stage (data->current_slide);
+                gfloat h = clutter_actor_get_height (stage);
+                ClutterEffect *effect = clutter_page_turn_effect_new (1.0,
+                                                                      45.0,
+                                                                      0.15 * h);
+                clutter_deform_effect_set_n_tiles (CLUTTER_DEFORM_EFFECT(effect),
+                                                   128,
+                                                   128);
+                clutter_actor_add_effect_with_name (data->current_slide, "curl", effect);
+                
+                t = clutter_property_transition_new ("@effects.curl.period");
+
+                clutter_timeline_set_duration (CLUTTER_TIMELINE (t), 1.5 * priv->am_time);
+                clutter_actor_add_transition (data->current_slide, "curl", t);
+        }
         
-        clutter_deform_effect_set_n_tiles (CLUTTER_DEFORM_EFFECT(effect),
-                                           128,
-                                           128);
-        
-        clutter_actor_add_effect_with_name (data->current_slide, "curl", effect);
-        clutter_actor_animate (data->current_slide,
-                               CLUTTER_LINEAR,
-                               1.5 * priv->am_time,
-                               "@effects.curl.period", 1.0,
-                               "signal-after::completed",
-                               _slide_exit_from_curl_cb,
-                               data,
-                               NULL);
+        clutter_transition_set_from (t, G_TYPE_DOUBLE, 0.0);
+        clutter_transition_set_to (t, G_TYPE_DOUBLE, 1.0);
+        clutter_timeline_rewind (CLUTTER_TIMELINE (t));
+        clutter_timeline_start (CLUTTER_TIMELINE (t));
+
+        g_signal_connect (t, "completed", G_CALLBACK (_slide_exit_from_curl_cb), data);  
 }
 /* \end */
 

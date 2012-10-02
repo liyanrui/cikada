@@ -1,11 +1,11 @@
 cikada-ckd-script.o: ckd-script.c /usr/include/stdio.h \
  /usr/include/features.h /usr/include/sys/cdefs.h \
  /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h \
- /usr/include/gnu/stubs-32.h \
- /usr/lib/gcc/i686-pc-linux-gnu/4.6.3/include/stddef.h \
+ /usr/include/gnu/stubs-64.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/stddef.h \
  /usr/include/bits/types.h /usr/include/bits/typesizes.h \
  /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h \
- /usr/lib/gcc/i686-pc-linux-gnu/4.6.3/include/stdarg.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/stdarg.h \
  /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h \
  /usr/include/bits/stdio.h /usr/include/bits/stdio2.h \
  /usr/include/string.h /usr/include/bits/string.h \
@@ -20,12 +20,12 @@ cikada-ckd-script.o: ckd-script.c /usr/include/stdio.h \
  /usr/include/clutter-1.0/clutter/clutter-config.h \
  /usr/include/glib-2.0/glib.h /usr/include/glib-2.0/glib/galloca.h \
  /usr/include/glib-2.0/glib/gtypes.h \
- /usr/lib/glib-2.0/include/glibconfig.h \
+ /usr/lib64/glib-2.0/include/glibconfig.h \
  /usr/include/glib-2.0/glib/gmacros.h \
- /usr/lib/gcc/i686-pc-linux-gnu/4.6.3/include-fixed/limits.h \
- /usr/lib/gcc/i686-pc-linux-gnu/4.6.3/include-fixed/syslimits.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include-fixed/limits.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include-fixed/syslimits.h \
  /usr/include/limits.h \
- /usr/lib/gcc/i686-pc-linux-gnu/4.6.3/include/float.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/float.h \
  /usr/include/glib-2.0/glib/gversionmacros.h /usr/include/time.h \
  /usr/include/bits/time.h /usr/include/glib-2.0/glib/garray.h \
  /usr/include/glib-2.0/glib/gasyncqueue.h \
@@ -93,13 +93,13 @@ cikada-ckd-script.o: ckd-script.c /usr/include/stdio.h \
  /usr/include/cairo/cairo.h /usr/include/cairo/cairo-version.h \
  /usr/include/cairo/cairo-features.h \
  /usr/include/cairo/cairo-deprecated.h /usr/include/cogl/cogl/cogl.h \
- /usr/include/cogl/cogl/cogl-defines.h /usr/include/GL/gl.h \
- /usr/include/GL/glext.h /usr/include/inttypes.h \
- /usr/lib/gcc/i686-pc-linux-gnu/4.6.3/include/stdint.h \
- /usr/include/stdint.h /usr/include/bits/wchar.h \
+ /usr/include/cogl/cogl/cogl-defines.h \
  /usr/include/cogl/cogl/cogl-object.h \
  /usr/include/cogl/cogl/cogl1-context.h \
- /usr/include/cogl/cogl/cogl-types.h /usr/include/glib-2.0/glib-object.h \
+ /usr/include/cogl/cogl/cogl-types.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/stdint.h \
+ /usr/include/stdint.h /usr/include/bits/wchar.h \
+ /usr/include/glib-2.0/glib-object.h \
  /usr/include/glib-2.0/gobject/gbinding.h \
  /usr/include/glib-2.0/gobject/gobject.h \
  /usr/include/glib-2.0/gobject/gtype.h \
@@ -141,6 +141,7 @@ cikada-ckd-script.o: ckd-script.c /usr/include/stdio.h \
  /usr/include/cogl/cogl/cogl-types.h \
  /usr/include/cogl/cogl/cogl-offscreen.h \
  /usr/include/cogl/cogl/cogl-primitives.h \
+ /usr/include/cogl/cogl/cogl-version.h \
  /usr/include/cogl/cogl/cogl-clip-state.h \
  /usr/include/cogl/cogl/cogl-enum-types.h \
  /usr/include/cogl/cogl/cogl-fixed.h \
@@ -498,9 +499,9 @@ cikada-ckd-script.o: ckd-script.c /usr/include/stdio.h \
 
 /usr/include/gnu/stubs.h:
 
-/usr/include/gnu/stubs-32.h:
+/usr/include/gnu/stubs-64.h:
 
-/usr/lib/gcc/i686-pc-linux-gnu/4.6.3/include/stddef.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/stddef.h:
 
 /usr/include/bits/types.h:
 
@@ -512,7 +513,7 @@ cikada-ckd-script.o: ckd-script.c /usr/include/stdio.h \
 
 /usr/include/wchar.h:
 
-/usr/lib/gcc/i686-pc-linux-gnu/4.6.3/include/stdarg.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/stdarg.h:
 
 /usr/include/bits/stdio_lim.h:
 
@@ -562,17 +563,17 @@ cikada-ckd-script.o: ckd-script.c /usr/include/stdio.h \
 
 /usr/include/glib-2.0/glib/gtypes.h:
 
-/usr/lib/glib-2.0/include/glibconfig.h:
+/usr/lib64/glib-2.0/include/glibconfig.h:
 
 /usr/include/glib-2.0/glib/gmacros.h:
 
-/usr/lib/gcc/i686-pc-linux-gnu/4.6.3/include-fixed/limits.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include-fixed/limits.h:
 
-/usr/lib/gcc/i686-pc-linux-gnu/4.6.3/include-fixed/syslimits.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include-fixed/syslimits.h:
 
 /usr/include/limits.h:
 
-/usr/lib/gcc/i686-pc-linux-gnu/4.6.3/include/float.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/float.h:
 
 /usr/include/glib-2.0/glib/gversionmacros.h:
 
@@ -750,23 +751,17 @@ cikada-ckd-script.o: ckd-script.c /usr/include/stdio.h \
 
 /usr/include/cogl/cogl/cogl-defines.h:
 
-/usr/include/GL/gl.h:
-
-/usr/include/GL/glext.h:
-
-/usr/include/inttypes.h:
-
-/usr/lib/gcc/i686-pc-linux-gnu/4.6.3/include/stdint.h:
-
-/usr/include/stdint.h:
-
-/usr/include/bits/wchar.h:
-
 /usr/include/cogl/cogl/cogl-object.h:
 
 /usr/include/cogl/cogl/cogl1-context.h:
 
 /usr/include/cogl/cogl/cogl-types.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/4.6.3/include/stdint.h:
+
+/usr/include/stdint.h:
+
+/usr/include/bits/wchar.h:
 
 /usr/include/glib-2.0/glib-object.h:
 
@@ -853,6 +848,8 @@ cikada-ckd-script.o: ckd-script.c /usr/include/stdio.h \
 /usr/include/cogl/cogl/cogl-offscreen.h:
 
 /usr/include/cogl/cogl/cogl-primitives.h:
+
+/usr/include/cogl/cogl/cogl-version.h:
 
 /usr/include/cogl/cogl/cogl-clip-state.h:
 

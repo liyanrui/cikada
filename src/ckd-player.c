@@ -644,12 +644,13 @@ _slide_enter_from_curl (CkdPlayer *self, ClutterActor *slide)
 {
         CkdPlayerPriv *priv = CKD_PLAYER_GET_PRIVATE (self);
 
-        ClutterActor *stage = clutter_actor_get_stage (slide);
-        gfloat h = clutter_actor_get_height (stage);
+        gfloat w, h, d;
+        clutter_actor_get_size (slide, &w, &h);
+        d = (w <= h)?w:h;
         
         ClutterEffect *effect = clutter_page_turn_effect_new (1.0,
                                                               45.0,
-                                                              0.15 * h);
+                                                              0.15 * d);
         clutter_deform_effect_set_n_tiles (CLUTTER_DEFORM_EFFECT(effect),
                                            128,
                                            128);
@@ -910,7 +911,6 @@ _slide_exit_from_curl_cb (ClutterAnimation *am, gpointer data)
         g_slice_free (struct CkdSlideAmCurlData, curl_data);
 }
 
-
 static void
 _slide_exit_from_curl (struct CkdSlideAmCurlData *data)
 {
@@ -921,11 +921,14 @@ _slide_exit_from_curl (struct CkdSlideAmCurlData *data)
         ClutterTransition *t = clutter_actor_get_transition (data->current_slide, "curl");
 
         if (t == NULL) {
-                ClutterActor *stage = clutter_actor_get_stage (data->current_slide);
-                gfloat h = clutter_actor_get_height (stage);
+                gfloat w, h, d;
+                clutter_actor_get_size (data->current_slide, &w, &h);
+                d = (w <= h)?w:h;
+                
                 ClutterEffect *effect = clutter_page_turn_effect_new (1.0,
                                                                       45.0,
-                                                                      0.15 * h);
+                                                                      0.15 * d);
+                
                 clutter_deform_effect_set_n_tiles (CLUTTER_DEFORM_EFFECT(effect),
                                                    128,
                                                    128);

@@ -1,4 +1,5 @@
 #include <math.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #include "ckd-slide.h"
 
 G_DEFINE_TYPE (CkdSlide, ckd_slide, CLUTTER_TYPE_ACTOR);
@@ -88,11 +89,40 @@ ckd_slide_new_for_image (GFile *file)
         CkdSlide *self = g_object_new (CKD_TYPE_SLIDE, NULL);
         CkdSlidePriv *priv = CKD_SLIDE_GET_PRIVATE (self);
 
+        GdkPixbuf *pixbuf;
+        ClutterContent *image;
+
+        /* 载入图像数据 */
         gchar *image_path = g_file_get_path (file);
-        priv->content = clutter_texture_new_from_file (image_path, NULL);
-        g_free (image_path);
+        pixbuf = gdk_pixbuf_new_from_file (image_path, NULL);
+
+        /* 获取图像尺寸 */
+        gfloat w = gdk_pixbuf_get_width (pixbuf);
+        gfloat h = gdk_pixbuf_get_height (pixbuf);
         
-        clutter_texture_set_keep_aspect_ratio (CLUTTER_TEXTURE (priv->content), TRUE);
+        image = clutter_image_new ();
+        clutter_image_set_data (CLUTTER_IMAGE (image),
+                                gdk_pixbuf_get_pixels (pixbuf),
+                                gdk_pixbuf_get_has_alpha (pixbuf)
+                                ? COGL_PIXEL_FORMAT_RGBA_8888
+                                : COGL_PIXEL_FORMAT_RGB_888,
+                                (guint)w,
+                                (guint)h,
+                                gdk_pixbuf_get_rowstride (pixbuf),
+                                NULL);
+        g_object_unref (pixbuf);
+        g_free (image_path);
+                
+        priv->content = clutter_actor_new ();
+
+        clutter_actor_set_size (priv->content, w, h);
+        clutter_actor_set_content_scaling_filters (priv->content,
+                                                   CLUTTER_SCALING_FILTER_TRILINEAR,
+                                                   CLUTTER_SCALING_FILTER_LINEAR);
+        clutter_actor_set_content (priv->content, image);
+        g_object_unref (image);
+  
+
         clutter_actor_add_child (CLUTTER_ACTOR(self), priv->content);
         
         return (ClutterActor *)self;
@@ -124,8 +154,6 @@ draw_page (ClutterCanvas *canvas, cairo_t *cr, int width, int height, gpointer d
         poppler_page_render (POPPLER_PAGE(draw_data->page), cr);
         return TRUE;
 }
-
-
 
 ClutterActor *
 ckd_slide_new_for_poppler_page (PopplerPage *page, gdouble scale)

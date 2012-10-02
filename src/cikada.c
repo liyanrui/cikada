@@ -77,7 +77,7 @@ main (int argc, char **argv)
 
         /* \begin create stage */
         ClutterColor stage_color = { 0x00, 0x00, 0x00, 0xff };
-        ClutterActor *stage = clutter_stage_get_default ();
+        ClutterActor *stage = clutter_stage_new ();
         clutter_stage_set_minimum_size(CLUTTER_STAGE(stage), CKD_STAGE_WIDTH, CKD_STAGE_HEIGHT);
         clutter_stage_set_user_resizable (CLUTTER_STAGE(stage), TRUE);
         clutter_actor_set_background_color (stage, &stage_color);

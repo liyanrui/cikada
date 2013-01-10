@@ -21,7 +21,7 @@ Cikada version 0.5 is rewritten totally. Its main features:
 
 \startitemize
 \item Supporting hard disk cache. With this mode Cikada can convert all PDF pages to images and put them in \type{/tmp/cikada/(MD5 code)}.
-\item Supporting the regular animation effects, such as move, scale, fade-in/out, curl etc.
+\item Supporting the regular animation effects, such as move, scale, fade-in/out, etc.
 \item Providing progress bar. It can trace the progress of presention and can be used to go to some slide quickly.
 \item Supporting \CONTEXT-like format configuration file. In configuration we can set the animation effect of slides and the color of progress bar. Furthermore we can combine some sequences of slides with \quotation{Continuation}. Each sequence is amount to one slide.
 \stopitemize
@@ -110,7 +110,6 @@ There are three commands totally in configuation file.
 \item \type{\setupreport}: set the slides default animation effect (style)、progress bar vertical size(progress-bar-vsize), progress bar color (progress-bar-color) and nonius color (nonius-color); the color format is \type{{red, green, blue, alpha}}。
 \item \type{\slide}: according slide number (begin from 1) set specified slide default animation effect; At present there are these animation effects:
 \startitemize
-\item curl: curl-in/out
 \item fade: fade-in/out
 \item shrink: zoom-in/out
 \item enlargement: the other zoom-in/out

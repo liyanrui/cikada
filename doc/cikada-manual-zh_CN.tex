@@ -23,7 +23,7 @@ Cikada 0.5 版是代码经过完全重写的版本，主要功能如下：
 
 \startitemize
 \item 提供了幻灯片硬盘缓存模式，可将全部幻灯片转化为图片存储于 /tmp 目录，并对 PDF 文档进行 MD5 校验，避免对同一份 PDF 文档重复进行缓存；
-\item 具有页面平移、缩放、淡入/淡出、卷轴这些常规的幻灯片切换动画效果；
+\item 具有页面平移、缩放、淡入/淡出这些常规的幻灯片切换动画效果；
 \item 提供了进度条，不仅可用于追踪演讲进度，还可用于页面跳转；
 \item \TEX\ 风格的配置文件，可以配置幻灯片默认的动画效果、进度条的颜色及尺寸，也可将一组连续的幻灯片组织为“延续体”，用于静态页面所构成的动画演示。
 \stopitemize
@@ -117,7 +117,6 @@ $ cikada ~/Documents/foo.pdf
 \item \type{\setupreport}：用于设定幻灯片的默认切换动画效果（style）、进度条竖向尺寸（progress-bar-vsize）、进度条颜色（progress-bar-color）以及滑块颜色（nonius-color），其中进度条与滑块的颜色采用的是 \type{{red, green, blue, alpha}} 格式。
 \item \type{\slide}：根据幻灯片编号设定单张幻灯片切换动画效果，它的第一个选项是幻灯片编号（从 1 开始），第二个选项是幻灯片切换动画效果。目前 Cikada 所具备的幻灯片切换动画效果如下：
 \startitemize
-\item curl：卷轴进入/退出；
 \item fade：幻灯片淡入/淡出；
 \item shrink：幻灯片缩小进入/退出；
 \item enlargement：幻灯片放大进入/退出；

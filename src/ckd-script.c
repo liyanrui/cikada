@@ -248,8 +248,6 @@ get_slide_am (gchar *text)
         if (text) {
                 if (g_str_equal (text, "fade"))
                         am = CKD_SLIDE_AM_FADE;
-                else if (g_str_equal (text, "curl"))
-                        am = CKD_SLIDE_AM_CURL;
                 else if (g_str_equal (text, "enlargement"))
                         am = CKD_SLIDE_AM_ENLARGEMENT;
                 else if (g_str_equal (text, "shrink"))

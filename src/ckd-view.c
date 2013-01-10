@@ -156,7 +156,7 @@ ckd_view_config_stage (CkdView *self, ClutterActor *stage)
         g_signal_connect (priv->stage,
                           "allocation-changed",
                           G_CALLBACK(ckd_view_on_stage_allocation),
-                          self);      
+                          self);
 }
 
 static void

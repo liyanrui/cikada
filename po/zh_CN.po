@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cikada 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-06-26 19:40+0800\n"
+"POT-Creation-Date: 2013-01-16 21:47+0800\n"
 "PO-Revision-Date: 2012-06-26 19:43+0800\n"
 "Last-Translator: garfileo <liyanrui.m2@gmail.com>\n"
 "Language-Team: Chinese (simplified)\n"
@@ -28,7 +28,7 @@ msgstr "设置图像缩放比例"
 msgid "Set slides cache mode."
 msgstr "启用幻灯片缓冲模式"
 
-#: src/cikada.c:62
+#: src/cikada.c:67
 msgid ""
 "filename.pdf\n"
 "\n"
@@ -40,11 +40,11 @@ msgstr ""
 "简介：\n"
 " Cikada 是一款 PDF 文档演示工具"
 
-#: src/cikada.c:69
+#: src/cikada.c:74
 msgid "You should input PDF file name!\n"
 msgstr "你应当输入 PDF 文件名！\n"
 
-#: src/ckd-meta-slides.c:405
+#: src/ckd-meta-slides.c:378
 #, c-format
 msgid "the time of loading slides: %fs\n"
 msgstr "幻灯片加载时间：%f秒\n"

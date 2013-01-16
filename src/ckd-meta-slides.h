@@ -39,6 +39,7 @@ GType ckd_meta_slides_get_type (void);
 void ckd_meta_slides_create_cache (CkdMetaSlides *self);
 
 ClutterActor *ckd_meta_slides_get_slide (CkdMetaSlides *self, gint i);
+ClutterActor *ckd_meta_slides_get_scaled_slide (CkdMetaSlides *self, gint i, gdouble s);
 
 CkdMetaEntry *ckd_meta_slides_get_meta_entry (CkdMetaSlides *self, gint i);
 

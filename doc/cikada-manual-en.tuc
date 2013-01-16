@@ -2,7 +2,7 @@ local utilitydata = { }
 
 utilitydata.comment={
  ["escape"]="[===[ ... ]===]",
- ["file"]="cikada-manual-zh_CN",
+ ["file"]="cikada-manual-en",
  ["format"]="cont-en",
  ["stamp"]="2013.01.13 23:10",
  ["version"]="1.21",
@@ -20,7 +20,7 @@ local utilitydata_job = utilitydata.job if not utilitydata_job then utilitydata_
 local utilitydata_job_variables = utilitydata_job.variables if not utilitydata_job_variables then utilitydata_job_variables = { } utilitydata_job.variables = utilitydata_job_variables end
 
 utilitydata_job_variables.collected={
- ["randomseed"]=0.091501045083395,
+ ["randomseed"]=0.97326827048011,
 }
 
 local utilitydata_job = utilitydata.job if not utilitydata_job then utilitydata_job = { } utilitydata.job = utilitydata_job end
@@ -58,7 +58,7 @@ utilitydata_job_structure.collected={
    ["type"]="environment",
   },
  },
- ["name"]="cikada-manual-zh_CN",
+ ["name"]="cikada-manual-en",
  ["type"]="text",
 }
 
@@ -132,7 +132,7 @@ utilitydata_structures_lists.collected={
   },
   ["titledata"]={
    ["label"]="chapter",
-   ["title"]="Cikada 0.5 使用指南",
+   ["title"]="Cikada 0.5 Manual",
   },
  },
  {
@@ -146,7 +146,7 @@ utilitydata_structures_lists.collected={
   },
   ["titledata"]={
    ["label"]="section",
-   ["title"]="简介",
+   ["title"]="Introduction",
   },
  },
  {
@@ -155,12 +155,12 @@ utilitydata_structures_lists.collected={
   ["references"]={
    ["block"]="bodypart",
    ["internal"]=3,
-   ["realpage"]=1,
+   ["realpage"]=2,
    ["section"]=0,
   },
   ["titledata"]={
    ["label"]="section",
-   ["title"]="功能简介",
+   ["title"]="Installation",
   },
  },
  {
@@ -174,7 +174,7 @@ utilitydata_structures_lists.collected={
   },
   ["titledata"]={
    ["label"]="section",
-   ["title"]="安装",
+   ["title"]="Running Cikada",
   },
  },
  {
@@ -188,7 +188,7 @@ utilitydata_structures_lists.collected={
   },
   ["titledata"]={
    ["label"]="section",
-   ["title"]="运行 Cikada",
+   ["title"]="Switching slides",
   },
  },
  {
@@ -202,21 +202,7 @@ utilitydata_structures_lists.collected={
   },
   ["titledata"]={
    ["label"]="section",
-   ["title"]="页面切换",
-  },
- },
- {
-  ["metadata"]=4,
-  ["numberdata"]=6,
-  ["references"]={
-   ["block"]="bodypart",
-   ["internal"]=7,
-   ["realpage"]=3,
-   ["section"]=0,
-  },
-  ["titledata"]={
-   ["label"]="section",
-   ["title"]="进度",
+   ["title"]="Progress Bar",
   },
  },
  {
@@ -225,12 +211,27 @@ utilitydata_structures_lists.collected={
   ["prefixdata"]=10,
   ["references"]={
    ["block"]="bodypart",
+   ["internal"]=7,
+   ["realpage"]=3,
+   ["reference"]="progress-bar",
+   ["section"]=0,
+  },
+  ["titledata"]={
+   ["title"]="Cikada's Progress Bar",
+  },
+ },
+ {
+  ["metadata"]=4,
+  ["numberdata"]=6,
+  ["references"]={
+   ["block"]="bodypart",
    ["internal"]=8,
    ["realpage"]=3,
    ["section"]=0,
   },
   ["titledata"]={
-   ["title"]="进度条",
+   ["label"]="section",
+   ["title"]="Magnifier",
   },
  },
  {
@@ -240,25 +241,12 @@ utilitydata_structures_lists.collected={
    ["block"]="bodypart",
    ["internal"]=9,
    ["realpage"]=4,
+   ["reference"]="configuration",
    ["section"]=0,
   },
   ["titledata"]={
    ["label"]="section",
-   ["title"]="放大镜",
-  },
- },
- {
-  ["metadata"]=4,
-  ["numberdata"]=6,
-  ["references"]={
-   ["block"]="bodypart",
-   ["internal"]=10,
-   ["realpage"]=4,
-   ["section"]=0,
-  },
-  ["titledata"]={
-   ["label"]="section",
-   ["title"]="配置文件",
+   ["title"]="Configuration File",
   },
  },
 }
@@ -309,6 +297,8 @@ local utilitydata_structures = utilitydata.structures if not utilitydata_structu
 local utilitydata_structures_references = utilitydata_structures.references if not utilitydata_structures_references then utilitydata_structures_references = { } utilitydata_structures.references = utilitydata_structures_references end
 
 utilitydata_structures_references.referred={
+ { 3, 2 },
+ { 3, 4 },
 }
 
 local utilitydata_structures = utilitydata.structures if not utilitydata_structures then utilitydata_structures = { } utilitydata.structures = utilitydata_structures end

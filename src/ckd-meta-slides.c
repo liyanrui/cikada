@@ -413,9 +413,8 @@ ckd_meta_slides_get_slide (CkdMetaSlides *self, gint i)
                 return NULL;
 
         entry = g_array_index (priv->cache, CkdMetaEntry *, i);
-
+        meta_slide = entry->slide;
         if (priv->cache_mode == CKD_META_SLIDES_NO_CACHE) {
-                meta_slide = entry->slide;
                 slide = ckd_slide_new_for_poppler_page (meta_slide,
                                                         priv->scale);
         } else if (priv->cache_mode == CKD_META_SLIDES_DISK_CACHE) {
@@ -423,10 +422,24 @@ ckd_meta_slides_get_slide (CkdMetaSlides *self, gint i)
                 while (i >= priv->next_cached_slide_id) {
                         g_usleep (0.01 *  G_USEC_PER_SEC);
                 }
-                meta_slide = entry->slide;
                 slide = ckd_slide_new_for_image (meta_slide);
         }
 
+        return slide;
+}
+
+ClutterActor *
+ckd_meta_slides_get_scaled_slide (CkdMetaSlides *self, gint i, gdouble s)
+{
+        CkdMetaSlidesPriv *priv = CKD_META_SLIDES_GET_PRIVATE (self);
+        /* 页码约束 [0, (n_ofpages - 1)] */
+        if (i < 0 || i >= priv->n_of_slides)
+                return NULL;
+
+        PopplerPage *page = poppler_document_get_page (priv->pdf_doc, i);
+        ClutterActor *slide = ckd_slide_new_for_poppler_page (page, s);
+        g_object_unref (page);
+        
         return slide;
 }
 

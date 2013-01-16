@@ -2,6 +2,7 @@
 #include <glib/gprintf.h>
 #include "ckd-meta-slides.h"
 #include "ckd-view.h"
+#include "ckd-magnifier.h"
 #include "ckd-player.h"
 
 G_DEFINE_TYPE (CkdPlayer, ckd_player, G_TYPE_OBJECT);
@@ -12,7 +13,7 @@ G_DEFINE_TYPE (CkdPlayer, ckd_player, G_TYPE_OBJECT);
 typedef struct _CkdPlayerPriv CkdPlayerPriv;
 struct _CkdPlayerPriv {
         CkdView  *view;
-
+        CkdMagnifier *mag;
         gboolean slide_number_is_shown;
         ClutterActor *slide_number;
         ClutterActor *slide_number_bg;
@@ -33,6 +34,8 @@ enum {
         PROK_CKD_PLAYER_AM_TIME,
         N_CKD_PLAYER_PROPS
 };
+
+static void ckd_player_update_view (CkdPlayer *self);
 
 static gint
 ckd_player_get_n_of_slides (CkdPlayer *self)
@@ -80,15 +83,40 @@ ckd_player_get_meta_slides (CkdPlayer *self)
 }
 
 static gboolean
+ckd_player_cursor_motion (ClutterActor *a, ClutterEvent * e, gpointer data)
+{
+        CkdPlayer *player = data;
+        CkdPlayerPriv *priv = CKD_PLAYER_GET_PRIVATE (player);
+        gfloat pos_x, pos_y;
+        
+        if (e->button.modifier_state == CLUTTER_SHIFT_MASK) {
+                clutter_event_get_coords (e, &pos_x, &pos_y);
+                if (priv->mag) {
+                        ckd_magnifier_move (priv->mag, pos_x, pos_y);
+                }
+        }
+}
+
+static gboolean
 ckd_player_button_press (ClutterActor *a, ClutterEvent * e, gpointer data)
 {
         CkdPlayer *player = data;
-
-        gint button_pressed = clutter_event_get_button (e);
-
+        CkdPlayerPriv *priv = CKD_PLAYER_GET_PRIVATE (player);
+        guint button_pressed = clutter_event_get_button (e);
+        gfloat pos_x, pos_y;
         switch (button_pressed) {
         case 1:
-                ckd_player_step (player, 1);
+                if (e->button.modifier_state == CLUTTER_SHIFT_MASK) {
+                        clutter_event_get_coords (e, &pos_x, &pos_y);
+                        if (priv->mag) {
+                                ckd_magnifier_close (priv->mag);
+                                priv->mag = NULL;
+                        } else {
+                                priv->mag = ckd_magnifier_alloc (priv->view, pos_x, pos_y);
+                        }
+                } else {
+                        ckd_player_step (player, 1);
+                }
                 break;
         case 2:
                 break;
@@ -98,7 +126,6 @@ ckd_player_button_press (ClutterActor *a, ClutterEvent * e, gpointer data)
         default:
                 break;
         }
-
         return FALSE;
 }
 
@@ -128,9 +155,6 @@ ckd_player_key_press (ClutterActor *actor, ClutterEvent *event, gpointer data)
                 else
                         clutter_stage_set_fullscreen (CLUTTER_STAGE(actor), TRUE);
                 break;
-        case CLUTTER_KEY_O:
-        case CLUTTER_KEY_o:
-                break;
         case CLUTTER_KEY_D:
         case CLUTTER_KEY_d:
                 if (priv->slide_number_is_shown) {
@@ -147,6 +171,29 @@ ckd_player_key_press (ClutterActor *actor, ClutterEvent *event, gpointer data)
                 break;
         }
         
+        return TRUE;
+}
+
+static gboolean
+ckd_player_key_release (ClutterActor *actor, ClutterEvent *event, gpointer data)
+{
+        CkdPlayer *player = data;
+        CkdPlayerPriv *priv = CKD_PLAYER_GET_PRIVATE (player);
+        
+        guint keyval = clutter_event_get_key_symbol (event);
+        
+        switch (keyval) {
+        case CLUTTER_KEY_Shift_L:
+        case CLUTTER_KEY_Shift_R:
+                if (priv->mag) { /* 关闭放大镜 */
+                        ckd_magnifier_close (priv->mag);
+                        priv->mag = NULL;
+                }
+                break;
+        default:
+                break;
+        }
+                
         return TRUE;
 }
 
@@ -249,8 +296,18 @@ ckd_player_config_view (CkdPlayer *self)
                           self);
 
         g_signal_connect (stage,
+                          "motion-event",
+                          G_CALLBACK (ckd_player_cursor_motion),
+                          self);
+
+        g_signal_connect (stage,
                           "key-press-event",
                           G_CALLBACK (ckd_player_key_press),
+                          self);
+        
+        g_signal_connect (stage,
+                          "key-release-event",
+                          G_CALLBACK (ckd_player_key_release),
                           self);
 
         ClutterActor *bar;
@@ -481,7 +538,8 @@ void ckd_player_init (CkdPlayer *self)
         clutter_actor_hide (priv->slide_number_bg);
         clutter_actor_hide (priv->slide_number);
         /* \end */
-        
+
+        priv->mag = NULL;
         priv->script = NULL;
         priv->am_time = 1000;
 }
@@ -636,7 +694,7 @@ _slide_enter_from_fade (CkdPlayer *self, ClutterActor *slide)
         clutter_actor_set_easing_mode (slide, CLUTTER_LINEAR);
         clutter_actor_set_easing_duration (slide, priv->am_time);
         clutter_actor_set_opacity (slide, 255);
-        clutter_actor_restore_easing_state (slide);        
+        clutter_actor_restore_easing_state (slide);
 }
 
 static void
@@ -860,7 +918,7 @@ void
 ckd_player_step (CkdPlayer *self, gint step)
 {
         CkdPlayerPriv *priv = CKD_PLAYER_GET_PRIVATE (self);
-
+        
         CkdMetaSlides *meta_slides;
         g_object_get (priv->view, "meta-slides", &meta_slides, NULL);
         

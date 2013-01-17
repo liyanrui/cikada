@@ -26,6 +26,9 @@ struct _CkdViewPriv {
         ClutterColor *nonius_color;
         gfloat bar_vsize;
         /* \end */
+
+        /* 放大镜倍率 */
+        gfloat scale;
 };
 
 enum {
@@ -40,6 +43,7 @@ enum {
         PROP_CKD_VIEW_BAR_COLOR,
         PROP_CKD_VIEW_BAR_VSIZE,
         PROP_CKD_VIEW_NONIUS_COLOR,
+        PROP_CKD_VIEW_SCALE,
         N_CKD_VIEW_PROPS
 };
 
@@ -202,6 +206,9 @@ ckd_view_set_property (GObject *o, guint prop, const GValue *v, GParamSpec *p)
                 priv->nonius_color = g_value_get_pointer (v);
                 clutter_actor_set_background_color (priv->nonius, priv->nonius_color);
                 break;
+        case PROP_CKD_VIEW_SCALE:
+                priv->scale = g_value_get_float (v);
+                break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (o, prop, p);
                 break;
@@ -232,6 +239,9 @@ ckd_view_get_property (GObject *o, guint prop, GValue *v, GParamSpec *p)
                 break;
         case PROP_CKD_VIEW_BAR:
                 g_value_set_pointer (v, priv->bar);
+                break;
+        case PROP_CKD_VIEW_SCALE:
+                g_value_set_float (v, priv->scale);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (o, prop, p);
@@ -339,6 +349,11 @@ ckd_view_class_init (CkdViewClass *c)
                                                                   "Nonius Color",
                                                                   "Nonius Color",
                                                                   rw_flags);
+        props[PROP_CKD_VIEW_SCALE] = g_param_spec_float ("scale",
+                                                         "Scale",
+                                                         "Scale",
+                                                         1.0, G_MAXFLOAT, 2.0,
+                                                         rw_flags);
         
         g_object_class_install_properties (base_class, N_CKD_VIEW_PROPS, props);
 }

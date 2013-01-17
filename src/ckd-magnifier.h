@@ -10,9 +10,6 @@ typedef struct _CkdMagnifier CkdMagnifier;
 struct _CkdMagnifier {
         CkdView *view;
         ClutterActor *workspace;
-        gdouble scale;
-        gdouble pos_x;
-        gdouble pos_y;
 };
 
 CkdMagnifier * ckd_magnifier_alloc (CkdView *view, gfloat pos_x, gfloat pos_y);

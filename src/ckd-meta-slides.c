@@ -20,7 +20,7 @@ struct _CkdMetaSlidesPriv {
         CkdMetaSlidesCacheMode cache_mode;
         gchar *tmp_dir;
         GArray *cache;
-        gdouble scale;
+        gfloat scale;
         gint n_of_slides;
 
         /* 在硬盘缓存模式中用于记录缓存线程的进度 */
@@ -101,7 +101,7 @@ ckd_meta_slides_set_property (GObject *obj,
                 }
                 break;
         case PROP_CKD_META_SLIDES_SCALE:
-                priv->scale = g_value_get_double (value);
+                priv->scale = g_value_get_float (value);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, property_id, pspec);
@@ -132,7 +132,7 @@ ckd_meta_slides_get_property (GObject *obj,
                 g_value_set_pointer (value, priv->cache);
                 break;
         case PROP_CKD_META_SLIDES_SCALE:
-                g_value_set_double (value, priv->scale);
+                g_value_set_float (value, priv->scale);
                 break;
         case PROP_CKD_META_SLIDES_N_OF_SLIDES:
                 g_value_set_int (value, priv->n_of_slides);
@@ -220,12 +220,12 @@ ckd_meta_slides_class_init (CkdMetaSlidesClass *klass)
                                       "Cache",
                                       G_PARAM_READABLE);
         props[PROP_CKD_META_SLIDES_SCALE] =
-                g_param_spec_double ("scale", "Scale", "Scale",
-                                     G_MINDOUBLE,
-                                     G_MAXDOUBLE,
-                                     1.0,
-                                     G_PARAM_READWRITE
-                                     | G_PARAM_CONSTRUCT_ONLY);
+                g_param_spec_float ("scale", "Scale", "Scale",
+                                    G_MINFLOAT,
+                                    G_MAXFLOAT,
+                                    1.0,
+                                    G_PARAM_READWRITE
+                                    | G_PARAM_CONSTRUCT_ONLY);
         props[PROP_CKD_META_SLIDES_N_OF_SLIDES] =
                 g_param_spec_int ("n-of-slides",
                                   "n of slides",

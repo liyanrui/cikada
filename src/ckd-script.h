@@ -31,6 +31,7 @@ GList *ckd_script_output_meta_entry_list (GNode *script);
 ClutterColor *ckd_script_get_progress_bar_color (GNode *script);
 ClutterColor *ckd_script_get_nonius_color (GNode *script);
 gfloat ckd_script_get_progress_bar_vsize (GNode *script);
+gfloat ckd_script_get_magnifier_ratio (GNode *script);
 
 gboolean ckd_script_equal (GNode *a, GNode *b);
 

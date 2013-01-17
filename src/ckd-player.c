@@ -357,6 +357,10 @@ ckd_player_update_view (CkdPlayer *self)
         if (bar_vsize >= 0)
                 g_object_set (priv->view, "bar-vsize", bar_vsize, NULL);
 
+        gfloat scale = ckd_script_get_magnifier_ratio (priv->script);
+        if (scale > 0)
+                g_object_set (priv->view, "scale", scale, NULL);
+
         /* \begin 重新调整场景布局并重绘图形 */
         ClutterActor *stage;
         g_object_get (priv->view, "stage", &stage, NULL);

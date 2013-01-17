@@ -23,6 +23,7 @@ struct _CkdScriptReportSetup {
         ClutterColor *progress_bar_color;
         ClutterColor *nonius_color;
         gfloat progress_bar_vsize;
+        gfloat magnifier_ratio;
 
         /* 输出元幻灯片表时用于确定列表长度 */
         gint n_of_slides;
@@ -360,6 +361,24 @@ parse_report_setup (CkdScriptReportSetup *rs, gchar *text)
         g_match_info_free (info);
         g_regex_unref (am_re);
         /* \end */
+
+        /* \begin 解析放大镜倍数 */
+        GRegex *magnifier_ratio_re = g_regex_new ("magnifier-ratio"
+                                                  "\\s*=\\s*"
+                                                  "\\d+",
+                                                  0, 0, NULL);
+        g_regex_match (magnifier_ratio_re, text,  0, &info);
+        if (g_match_info_matches (info)) {
+                gchar *s = g_match_info_fetch (info, 0);
+                gchar **splitted_text = g_strsplit (s, "=", 0);
+                rs->magnifier_ratio = g_ascii_strtod (splitted_text[1], NULL);
+                g_strfreev (splitted_text);
+                g_free (s);
+        }
+        g_match_info_free (info);
+        g_regex_unref (am_re);        
+
+        /* \end */
 }
 
 static void
@@ -507,6 +526,7 @@ ckd_script_new (gchar *filename, gint n_of_slides)
         rs->progress_bar_color = NULL;
         rs->nonius_color = NULL;
         rs->progress_bar_vsize = 16.0;
+        rs->magnifier_ratio = 2.0;
 
         CkdScriptNode *root_data = g_slice_alloc (sizeof(CkdScriptNode));
         root_data->data = rs;
@@ -853,6 +873,19 @@ ckd_script_get_progress_bar_vsize (GNode *script)
                 return -1.0;
 }
 
+gfloat
+ckd_script_get_magnifier_ratio (GNode *script)
+{
+        GNode *root = g_node_get_root (script);
+        CkdScriptNode *report_setup_node = root->data;
+        CkdScriptReportSetup *report_setup = report_setup_node->data;
+
+        if (report_setup) {
+                return report_setup->magnifier_ratio;
+        } else
+                return -1.0;
+}
+
 static gboolean
 ckd_meta_entry_equal (CkdMetaEntry *a, CkdMetaEntry *b)
 {
@@ -903,6 +936,8 @@ ckd_script_equal (GNode *a, GNode *b)
                         }
                 }
                 if (G_MINFLOAT < fabsf (rs_a->progress_bar_vsize - rs_b->progress_bar_vsize))
+                        return FALSE;
+                if (G_MINFLOAT < fabsf (rs_a->magnifier_ratio - rs_b->magnifier_ratio))
                         return FALSE;
         }
         /* \end */

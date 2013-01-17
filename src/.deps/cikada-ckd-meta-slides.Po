@@ -94,28 +94,7 @@ cikada-ckd-meta-slides.o: ckd-meta-slides.c \
  /usr/include/glib-2.0/gobject/gvaluetypes.h \
  /usr/include/poppler/glib/poppler-features.h \
  /usr/include/poppler/glib/poppler-document.h \
- /usr/include/poppler/glib/poppler.h \
- /usr/include/poppler/glib/poppler-page.h /usr/include/cairo/cairo.h \
- /usr/include/cairo/cairo-version.h /usr/include/cairo/cairo-features.h \
- /usr/include/cairo/cairo-deprecated.h \
- /usr/include/poppler/glib/poppler-layer.h \
- /usr/include/poppler/glib/poppler-action.h \
- /usr/include/poppler/glib/poppler-form-field.h \
- /usr/include/poppler/glib/poppler-enums.h \
- /usr/include/poppler/glib/poppler-attachment.h \
- /usr/include/poppler/glib/poppler-annot.h \
- /usr/include/poppler/glib/poppler-date.h \
- /usr/include/poppler/glib/poppler-movie.h \
- /usr/include/poppler/glib/poppler-media.h \
- /usr/include/glib-2.0/glib/gprintf.h /usr/include/stdio.h \
- /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h \
- /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h \
- /usr/include/bits/stdio.h /usr/include/bits/stdio2.h \
- /usr/include/glib-2.0/glib/gi18n.h /usr/include/libintl.h \
- /usr/include/locale.h /usr/include/bits/locale.h /usr/include/string.h \
- /usr/include/bits/string.h /usr/include/bits/string2.h \
- /usr/include/bits/string3.h /usr/include/glib-2.0/gio/gio.h \
- /usr/include/glib-2.0/gio/giotypes.h \
+ /usr/include/glib-2.0/gio/gio.h /usr/include/glib-2.0/gio/giotypes.h \
  /usr/include/glib-2.0/gio/gioenums.h /usr/include/glib-2.0/gio/gaction.h \
  /usr/include/glib-2.0/gio/gactiongroup.h \
  /usr/include/glib-2.0/gio/gactiongroupexporter.h \
@@ -244,7 +223,28 @@ cikada-ckd-meta-slides.o: ckd-meta-slides.c \
  /usr/include/glib-2.0/gio/gremoteactiongroup.h \
  /usr/include/glib-2.0/gio/gmenumodel.h /usr/include/glib-2.0/gio/gmenu.h \
  /usr/include/glib-2.0/gio/gmenuexporter.h \
- /usr/include/glib-2.0/gio/gdbusmenumodel.h ckd-meta-slides.h \
+ /usr/include/glib-2.0/gio/gdbusmenumodel.h \
+ /usr/include/poppler/glib/poppler.h \
+ /usr/include/poppler/glib/poppler-page.h /usr/include/cairo/cairo.h \
+ /usr/include/cairo/cairo-version.h /usr/include/cairo/cairo-features.h \
+ /usr/include/cairo/cairo-deprecated.h \
+ /usr/include/poppler/glib/poppler-layer.h \
+ /usr/include/poppler/glib/poppler-action.h \
+ /usr/include/poppler/glib/poppler-form-field.h \
+ /usr/include/poppler/glib/poppler-enums.h \
+ /usr/include/poppler/glib/poppler-attachment.h \
+ /usr/include/poppler/glib/poppler-annot.h \
+ /usr/include/poppler/glib/poppler-date.h \
+ /usr/include/poppler/glib/poppler-movie.h \
+ /usr/include/poppler/glib/poppler-media.h \
+ /usr/include/glib-2.0/glib/gprintf.h /usr/include/stdio.h \
+ /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h \
+ /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h \
+ /usr/include/bits/stdio.h /usr/include/bits/stdio2.h \
+ /usr/include/glib-2.0/glib/gi18n.h /usr/include/libintl.h \
+ /usr/include/locale.h /usr/include/bits/locale.h /usr/include/string.h \
+ /usr/include/bits/string.h /usr/include/bits/string2.h \
+ /usr/include/bits/string3.h ckd-meta-slides.h \
  /usr/include/clutter-1.0/clutter/clutter.h \
  /usr/include/clutter-1.0/clutter/clutter-config.h \
  /usr/include/clutter-1.0/clutter/clutter-types.h \
@@ -743,70 +743,6 @@ cikada-ckd-meta-slides.o: ckd-meta-slides.c \
 
 /usr/include/poppler/glib/poppler-document.h:
 
-/usr/include/poppler/glib/poppler.h:
-
-/usr/include/poppler/glib/poppler-page.h:
-
-/usr/include/cairo/cairo.h:
-
-/usr/include/cairo/cairo-version.h:
-
-/usr/include/cairo/cairo-features.h:
-
-/usr/include/cairo/cairo-deprecated.h:
-
-/usr/include/poppler/glib/poppler-layer.h:
-
-/usr/include/poppler/glib/poppler-action.h:
-
-/usr/include/poppler/glib/poppler-form-field.h:
-
-/usr/include/poppler/glib/poppler-enums.h:
-
-/usr/include/poppler/glib/poppler-attachment.h:
-
-/usr/include/poppler/glib/poppler-annot.h:
-
-/usr/include/poppler/glib/poppler-date.h:
-
-/usr/include/poppler/glib/poppler-movie.h:
-
-/usr/include/poppler/glib/poppler-media.h:
-
-/usr/include/glib-2.0/glib/gprintf.h:
-
-/usr/include/stdio.h:
-
-/usr/include/libio.h:
-
-/usr/include/_G_config.h:
-
-/usr/include/wchar.h:
-
-/usr/include/bits/stdio_lim.h:
-
-/usr/include/bits/sys_errlist.h:
-
-/usr/include/bits/stdio.h:
-
-/usr/include/bits/stdio2.h:
-
-/usr/include/glib-2.0/glib/gi18n.h:
-
-/usr/include/libintl.h:
-
-/usr/include/locale.h:
-
-/usr/include/bits/locale.h:
-
-/usr/include/string.h:
-
-/usr/include/bits/string.h:
-
-/usr/include/bits/string2.h:
-
-/usr/include/bits/string3.h:
-
 /usr/include/glib-2.0/gio/gio.h:
 
 /usr/include/glib-2.0/gio/giotypes.h:
@@ -1086,6 +1022,70 @@ cikada-ckd-meta-slides.o: ckd-meta-slides.c \
 /usr/include/glib-2.0/gio/gmenuexporter.h:
 
 /usr/include/glib-2.0/gio/gdbusmenumodel.h:
+
+/usr/include/poppler/glib/poppler.h:
+
+/usr/include/poppler/glib/poppler-page.h:
+
+/usr/include/cairo/cairo.h:
+
+/usr/include/cairo/cairo-version.h:
+
+/usr/include/cairo/cairo-features.h:
+
+/usr/include/cairo/cairo-deprecated.h:
+
+/usr/include/poppler/glib/poppler-layer.h:
+
+/usr/include/poppler/glib/poppler-action.h:
+
+/usr/include/poppler/glib/poppler-form-field.h:
+
+/usr/include/poppler/glib/poppler-enums.h:
+
+/usr/include/poppler/glib/poppler-attachment.h:
+
+/usr/include/poppler/glib/poppler-annot.h:
+
+/usr/include/poppler/glib/poppler-date.h:
+
+/usr/include/poppler/glib/poppler-movie.h:
+
+/usr/include/poppler/glib/poppler-media.h:
+
+/usr/include/glib-2.0/glib/gprintf.h:
+
+/usr/include/stdio.h:
+
+/usr/include/libio.h:
+
+/usr/include/_G_config.h:
+
+/usr/include/wchar.h:
+
+/usr/include/bits/stdio_lim.h:
+
+/usr/include/bits/sys_errlist.h:
+
+/usr/include/bits/stdio.h:
+
+/usr/include/bits/stdio2.h:
+
+/usr/include/glib-2.0/glib/gi18n.h:
+
+/usr/include/libintl.h:
+
+/usr/include/locale.h:
+
+/usr/include/bits/locale.h:
+
+/usr/include/string.h:
+
+/usr/include/bits/string.h:
+
+/usr/include/bits/string2.h:
+
+/usr/include/bits/string3.h:
 
 ckd-meta-slides.h:
 

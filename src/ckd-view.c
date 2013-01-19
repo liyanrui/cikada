@@ -296,6 +296,7 @@ ckd_view_class_init (CkdViewClass *c)
         GParamFlags w_co_flags = G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY;
         GParamFlags rw_co_flags = G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY;
         GParamFlags rw_flags = G_PARAM_READWRITE;
+        GParamFlags rw_c_flags = G_PARAM_READWRITE | G_PARAM_CONSTRUCT;
         
         props[PROP_CKD_VIEW_STAGE] = g_param_spec_pointer ("stage",
                                                            "Stage",
@@ -352,8 +353,8 @@ ckd_view_class_init (CkdViewClass *c)
         props[PROP_CKD_VIEW_SCALE] = g_param_spec_float ("scale",
                                                          "Scale",
                                                          "Scale",
-                                                         1.0, G_MAXFLOAT, 2.0,
-                                                         rw_flags);
+                                                         0.0, G_MAXFLOAT, 1.618,
+                                                         rw_c_flags);
         
         g_object_class_install_properties (base_class, N_CKD_VIEW_PROPS, props);
 }

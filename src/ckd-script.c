@@ -376,8 +376,7 @@ parse_report_setup (CkdScriptReportSetup *rs, gchar *text)
                 g_free (s);
         }
         g_match_info_free (info);
-        g_regex_unref (am_re);        
-
+        g_regex_unref (am_re);
         /* \end */
 }
 

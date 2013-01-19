@@ -6,7 +6,7 @@
 #include <clutter/clutter.h>
 #include "ckd-script.h"
 
-#define CKD_META_SLIDES_LOWEST_RESOLUTION 1024.0
+#define CKD_META_SLIDES_LOWEST_RESOLUTION 800.0
 
 #define CKD_TYPE_META_SLIDES (ckd_meta_slides_get_type ())
 #define CKD_META_SLIDES(object) (G_TYPE_CHECK_INSTANCE_CAST((object), CKD_TYPE_META_SLIDES, CkdMetaSlides))

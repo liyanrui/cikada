@@ -23,7 +23,6 @@ ckd_magnifier_alloc (CkdView *view, gfloat pos_x, gfloat pos_y)
         gint current_slide_number;
         CkdMetaSlides *meta_slides;
         gfloat old_scale, scale;
-        
         g_object_get (mag->view, "meta-slides", &meta_slides, NULL);
         g_object_get (mag->view,
                       "slide", &current_slide,
@@ -32,15 +31,27 @@ ckd_magnifier_alloc (CkdView *view, gfloat pos_x, gfloat pos_y)
                       NULL);
 
         g_object_get (meta_slides, "scale", &old_scale, NULL);
+
+        /* 因为 Cairo 并非线程安全，所以在使用 PDF 页面硬盘缓存模式时，
+           需要等待全部页面缓冲完毕后方可开启放大镜，这里需要检测 */
+        gint n_of_slides, caching_progress;
+        g_object_get (meta_slides,
+                      "n-of-slides", &n_of_slides,
+                      "caching-progress", &caching_progress,
+                      NULL);
+        if (caching_progress < n_of_slides) {
+                g_warning ("You should wait for opening magnifier until all slides are cached!\n");
+                return NULL;
+        }
+        
+        
         mag->workspace = ckd_meta_slides_get_scaled_slide (meta_slides,
                                                            current_slide_number,
                                                            scale + old_scale);
-        
         /* 设置 workspace 的长宽比例与 current_slide 相等，修正 mag->sclae 值 */
         gfloat slide_w, slide_h;
         clutter_actor_get_size (current_slide, &slide_w, &slide_h);
         clutter_actor_set_size (mag->workspace, scale * slide_w, scale * slide_h);
-
         ckd_magnifier_move (mag, pos_x, pos_y);
         
         ClutterActor *stage;
@@ -93,23 +104,12 @@ ckd_magnifier_move (CkdMagnifier *mag, gfloat x, gfloat y)
                                y - w_y);
 }
 
-static void
-_magnifier_close_cb (ClutterAnimation *am, gpointer data)
-{
-        CkdMagnifier *mag = data;
-        ckd_magnifier_free (mag);
-}
-
 void
 ckd_magnifier_close (CkdMagnifier *mag)
-{
-        _actor_fade (mag->workspace, 240, 100, 500);
-
+{       
         ClutterActor *current_slide;
         g_object_get (mag->view, "slide", &current_slide, NULL);
         _actor_fade (current_slide, 220, 255, 500);
-        
-        /* 动画结束后销毁放大镜 */
-        ClutterTransition *trans = clutter_actor_get_transition (mag->workspace, "opacity");
-        g_signal_connect (trans, "completed", G_CALLBACK (_magnifier_close_cb), mag);
+
+        ckd_magnifier_free (mag);
 }

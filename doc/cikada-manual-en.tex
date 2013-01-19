@@ -1,7 +1,7 @@
 \environment env-plain-en
 
 \starttext
-\title{Cikada 0.5 Manual}
+\title{Cikada 0.6 Manual}
 
 \placefigure[none]{}{\externalfigure[cikada-0.5.0.png][width=.25\textwidth]}
 
@@ -96,7 +96,8 @@ The syntax of configuration looks like \CONTEXT. This is an example:
 \setupreport[style=fade,
              progress-bar-vsize=16,
              progress-bar-color={51, 51, 51, 255},
-             nonius-color={151, 0, 0, 255}]
+             nonius-color={151, 0, 0, 255},
+             magnifier-ratio=2.0]
 
 \slide[1][enlargement]
 \slide[2][shrink]
@@ -111,7 +112,7 @@ The syntax of configuration looks like \CONTEXT. This is an example:
 There are three commands totally in configuation file.
 
 \startitemize
-\item \type{\setupreport}: set the slides default animation effect (style)、progress bar vertical size(progress-bar-vsize), progress bar color (progress-bar-color) and nonius color (nonius-color); the color format is \type{{red, green, blue, alpha}}。
+\item \type{\setupreport}: set the slides default animation effect (style)、progress bar vertical size(progress-bar-vsize), progress bar color (progress-bar-color), nonius color (nonius-color) and the ratio of magnifier (magnifier-ratio); the color format is \type{{red, green, blue, alpha}}。
 \item \type{\slide}: according slide number (begin from 1) set specified slide default animation effect; At present there are these animation effects:
 \startitemize
 \item fade: fade-in/out

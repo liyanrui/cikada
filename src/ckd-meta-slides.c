@@ -24,7 +24,7 @@ struct _CkdMetaSlidesPriv {
         gint n_of_slides;
 
         /* 在硬盘缓存模式中用于记录缓存线程的进度 */
-        gint next_cached_slide_id;
+        gint caching_progress;
 };
 
 enum {
@@ -35,6 +35,7 @@ enum {
         PROP_CKD_META_SLIDES_CACHE,
         PROP_CKD_META_SLIDES_SCALE,
         PROP_CKD_META_SLIDES_N_OF_SLIDES,
+        PROP_CKD_META_SLIDES_CACHING_PROGRESS,
         N_CKD_META_SLIDES_PROPS
 };
 
@@ -137,6 +138,9 @@ ckd_meta_slides_get_property (GObject *obj,
         case PROP_CKD_META_SLIDES_N_OF_SLIDES:
                 g_value_set_int (value, priv->n_of_slides);
                 break;
+        case PROP_CKD_META_SLIDES_CACHING_PROGRESS:
+                g_value_set_int (value, priv->caching_progress);
+                break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, property_id, pspec);
                 break;
@@ -234,7 +238,14 @@ ckd_meta_slides_class_init (CkdMetaSlidesClass *klass)
                                   G_MAXINT,
                                   0,
                                   G_PARAM_READABLE);
-
+        props[PROP_CKD_META_SLIDES_CACHING_PROGRESS] =
+                g_param_spec_int ("caching-progress",
+                                  "Caching progress",
+                                  "Caching progress",
+                                  G_MININT,
+                                  G_MAXINT,
+                                  0,
+                                  G_PARAM_READABLE);
         g_object_class_install_properties (base_class,
                                            N_CKD_META_SLIDES_PROPS,
                                            props);
@@ -253,7 +264,7 @@ ckd_meta_slides_init (CkdMetaSlides *self)
         priv->cache      = NULL;
         priv->scale      = 1.0;
         priv->n_of_slides = 0;
-        priv->next_cached_slide_id = 0;
+        priv->caching_progress = 0;
 }
 
 static gboolean
@@ -326,10 +337,11 @@ ckd_meta_slides_create_disk_cache (CkdMetaSlides *self)
         gchar *image_path = NULL;
         cairo_surface_t *cs;
         cairo_t *cr;
-
+        
         for (gint i = 0; i < priv->n_of_slides; i++) {
                 entry = g_array_index (priv->cache, CkdMetaEntry *, i);
                 page = poppler_document_get_page (priv->pdf_doc, i);
+                
                 poppler_page_get_size (page, &w, &h);
                 w *= priv->scale;
                 h *= priv->scale;
@@ -359,7 +371,7 @@ ckd_meta_slides_create_disk_cache (CkdMetaSlides *self)
                         cairo_destroy (cr);
                 }
                 g_object_unref (page);
-                priv->next_cached_slide_id ++;
+                priv->caching_progress ++;
         }
 }
 
@@ -419,7 +431,7 @@ ckd_meta_slides_get_slide (CkdMetaSlides *self, gint i)
                                                         priv->scale);
         } else if (priv->cache_mode == CKD_META_SLIDES_DISK_CACHE) {
                 /* 如果缓存文件尚未生成，就等那么一会 */
-                while (i >= priv->next_cached_slide_id) {
+                while (i >= priv->caching_progress) {
                         g_usleep (0.01 *  G_USEC_PER_SEC);
                 }
                 slide = ckd_slide_new_for_image (meta_slide);

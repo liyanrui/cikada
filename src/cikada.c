@@ -35,13 +35,10 @@ ckd_get_slides_scale (PopplerDocument *pdf_doc)
         for (gint i = 0; i < n_of_pages; i++) {
                 page = poppler_document_get_page (pdf_doc, i);
                 poppler_page_get_size (page, &w, &h);
-                if (w > h)
-                        size = w;
-                else
-                        size = h;
-                
+                size = (w > h) ? w : h;
                 if (min_size > size)
                         min_size = size;
+                
                 g_object_unref (page);
         }
         

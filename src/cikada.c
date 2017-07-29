@@ -6,8 +6,8 @@
 #include "ckd-player.h"
 #include "ckd-script.h"
 
-#define CKD_STAGE_WIDTH  640
-#define CKD_STAGE_HEIGHT 480
+#define CKD_STAGE_WIDTH  800
+#define CKD_STAGE_HEIGHT 600
 
 static gboolean _ckd_fullscreen = FALSE;
 static gdouble _ckd_scale = 1.5;

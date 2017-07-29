@@ -2,7 +2,8 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include "ckd-slide.h"
 
-G_DEFINE_TYPE (CkdSlide, ckd_slide, CLUTTER_TYPE_ACTOR);
+G_DEFINE_TYPE(CkdSlide, ckd_slide, CLUTTER_TYPE_ACTOR);
+
 #define CKD_SLIDE_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), CKD_TYPE_SLIDE, CkdSlidePriv))
 
 typedef struct _CkdSlidePriv {

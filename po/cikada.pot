@@ -1,6 +1,6 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR Li Yanrui
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the cikada package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cikada 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-16 21:47+0800\n"
+"POT-Creation-Date: 2016-01-17 08:49+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,7 +29,7 @@ msgstr ""
 msgid "Set slides cache mode."
 msgstr ""
 
-#: src/cikada.c:67
+#: src/cikada.c:64
 msgid ""
 "filename.pdf\n"
 "\n"
@@ -37,11 +37,6 @@ msgid ""
 "Cikada is a presentation tool for PDF slides"
 msgstr ""
 
-#: src/cikada.c:74
+#: src/cikada.c:71
 msgid "You should input PDF file name!\n"
-msgstr ""
-
-#: src/ckd-meta-slides.c:378
-#, c-format
-msgid "the time of loading slides: %fs\n"
 msgstr ""

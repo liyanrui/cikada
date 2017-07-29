@@ -88,8 +88,9 @@ ckd_player_cursor_motion (ClutterActor *a, ClutterEvent * e, gpointer data)
         CkdPlayer *player = data;
         CkdPlayerPriv *priv = CKD_PLAYER_GET_PRIVATE (player);
         gfloat pos_x, pos_y;
-        
-        if (e->button.modifier_state == CLUTTER_SHIFT_MASK) {
+        ClutterModifierType state = clutter_event_get_state (e);
+        gboolean shift_pressed = (state & CLUTTER_SHIFT_MASK ? TRUE : FALSE);
+        if (shift_pressed) {
                 clutter_event_get_coords (e, &pos_x, &pos_y);
                 if (priv->mag) {
                         ckd_magnifier_move (priv->mag, pos_x, pos_y);
@@ -104,9 +105,11 @@ ckd_player_button_press (ClutterActor *a, ClutterEvent * e, gpointer data)
         CkdPlayerPriv *priv = CKD_PLAYER_GET_PRIVATE (player);
         guint button_pressed = clutter_event_get_button (e);
         gfloat pos_x, pos_y;
+        ClutterModifierType state = clutter_event_get_state (e);
+        gboolean shift_pressed = (state & CLUTTER_SHIFT_MASK ? TRUE : FALSE);
         switch (button_pressed) {
         case 1:
-                if (e->button.modifier_state == CLUTTER_SHIFT_MASK) {
+                if (shift_pressed) {
                         clutter_event_get_coords (e, &pos_x, &pos_y);
                         if (priv->mag) {
                                 ckd_magnifier_close (priv->mag);
